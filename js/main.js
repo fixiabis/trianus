@@ -56,8 +56,7 @@ doc.querySelector("#title").addEventListener("click",function(){
 })
 function Loader(url){
 	var xhr=new XMLHttpRequest();
-	xhr.onreadystatechange=function(r){
-		if(this.readyState!=4||this.status!=200)return;
+	xhr.onload=function(){
 		var result=JSON.parse(this.response);
 		for(var i=0;i<result.data.length;i++){
 			if(!result.data[i].message)continue;
@@ -72,6 +71,9 @@ function Loader(url){
 			Story_Sort();return
 		}
 		Loader(result.paging.next);
+	}
+	xhr.onerror=function(){
+		Loader(url)
 	}
 	xhr.open("get",url);
 	xhr.send();
