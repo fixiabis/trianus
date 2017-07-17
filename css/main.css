@@ -26,6 +26,7 @@ header{
 	position:fixed;
 	top:0px;
 	width:100%;
+	z-index:5;
 }
 .story{
 	animation:show 1s;
@@ -88,7 +89,6 @@ header{
 }
 #list div{
 	animation:show 1s;
-	margin:10px 10px;
 	white-space:nowrap;
 }
 #list span{
@@ -99,14 +99,21 @@ header{
 	height:26px;
 	width:20px;
 }
-#list .title{
+#list .index,#list .tab{
+	margin:10px 10px;
+}
+#list .tab{
 	background-image:url(../image/down.png);
 	background-position:right center;
 	background-repeat:no-repeat;
 	background-size:5%;
+	cursor:pointer;
+	font-size:20px;
+	font-weight:bold;
 	transition:background-image 0.1s;
 }
 #menu,#menuc{
+	cursor:pointer;
 	display:none;
 	height:40px;
 	left:10px;

@@ -23,18 +23,6 @@ var doc=document,Cookies={
 	newo:[],
 	refs:[]
 },Storys=[];
-doc.body.onhashchange=function(){
-	doc.body.scrollTop=0;
-	var id=location.hash;
-	var field=doc.querySelectorAll(".story.article");
-	for(var i=0;i<field.length;i++){
-		var d="";
-		if(field[i].id!=id.replace("#",""))d="none";
-		else d="";
-		if(!id)d="";
-		field[i].style.display=d;
-	}
-}
 doc.body.onload=function(){
 	Story_Load()
 }
@@ -43,6 +31,7 @@ doc.body.onresize=function(){
 	var menuc=doc.querySelector("#menuc");
 	if(menuc)menuc.id="menu";
 }
+doc.body.onhashchange=Story_View;
 doc.querySelector("#menu").addEventListener("click",function(){
 	var list=doc.querySelector("#list");
 	if(this.id=="menu"){
@@ -173,7 +162,7 @@ function Story_Link(id,index,n){
 		t=Storys[p].title.split(" ");
 	if(t.length<3)t=t[0].split("_");
 	for(var i=3;i<t.length;i++)t[2]+=" "+t[i];
-	a.href="#trianus_"+p;
+	a.href="#_trianus_"+p;
 	if(index){
 		for(var i=1;i<c;i++){
 			var n=doc.createElement("span");
@@ -183,7 +172,20 @@ function Story_Link(id,index,n){
 		l.innerHTML=t[1]+" "+t[2];
 		a.appendChild(l);
 	}else a.innerHTML=Storys[p].title;
+	a.onclick=Story_View;
 	return a
+}
+function Story_View(){
+	var id=location.hash;
+	var field=doc.querySelectorAll(".story.article");
+	for(var i=0;i<field.length;i++){
+		var d="";
+		if(field[i].id!=id.replace("#_",""))d="none";
+		else d="";
+		if(!id)d="";
+		field[i].style.display=d;
+	}
+	doc.body.scrollTop=0;
 }
 function Index_Show(sort){
 	for(var i=0;i<sort.length;i++){
@@ -194,13 +196,13 @@ function Index_Show(sort){
 			if(t.length<3)t=t[0].split("_");
 			if(j==0){
 				var title=doc.createElement("div");
-				title.className="title";
+				title.className="tab";
 				title.innerHTML=t[0];
 				title.appendChild
 				title.onclick=function(){
 					var d=this.nextSibling.style.display,
 						x=doc.querySelectorAll("#list .index"),
-						t=doc.querySelectorAll("#list .title");
+						t=doc.querySelectorAll("#list .tab");
 					for(var k=0;k<x.length;k++)x[k].style.display="none";
 					for(var k=0;k<t.length;k++)t[k].style.backgroundImage="";
 					if(d==""){
@@ -211,14 +213,14 @@ function Index_Show(sort){
 						this.nextSibling.style.display=""
 					}
 				}
-				doc.querySelector("#list").appendChild(title);
+				doc.querySelector("#forest").appendChild(title);
 			}
 			n.style.display="none";
 			n.className="index";
 			n.appendChild(Story_Link(sort[i][j],true));
 			n.appendChild(doc.createElement("br"));
 		}
-		doc.querySelector("#list").appendChild(n);
+		doc.querySelector("#forest").appendChild(n);
 	}
 	doc.querySelector("#list .loading").style.display="none";
 }
