@@ -158,19 +158,14 @@ function Story_Show(Story){
 function Story_Link(id,index,n){
 	var a=doc.createElement("a"),
 		p=Temp.refs.indexOf(id),
-		c=id.split("_")[2],
+		c=(id.split("_")[2]-1)*20,
 		t=Storys[p].title.split(" ");
 	if(t.length<3)t=t[0].split("_");
 	for(var i=3;i<t.length;i++)t[2]+=" "+t[i];
 	a.href="#_trianus_"+p;
 	if(index){
-		for(var i=1;i<c;i++){
-			var n=doc.createElement("span");
-			a.appendChild(n);
-		}
-		var l=doc.createElement("font");
-		l.innerHTML=t[1]+" "+t[2];
-		a.appendChild(l);
+		a.innerHTML=t[1]+" "+t[2];
+		a.style.marginLeft=c+"px";
 	}else a.innerHTML=Storys[p].title;
 	a.onclick=Story_View;
 	return a
