@@ -87,12 +87,14 @@ function Loader(url){
 	xhr.send();
 }
 function Story_Kill(){
-	Temp.edit={post:"#trianus_seed"};
+	Temp.edit={type:"#trianus_seed"};
 	doc.querySelector("#trianus_title").value="";
 	doc.querySelector("#trianus_Mtitle").value="";
 	doc.querySelector("#trianus_content").value="";
 	doc.querySelector("#trianus_count").value=1;
 	doc.querySelector("#trianus_post").value="播種";
+	doc.querySelector("#trianus_title").readOnly=true;
+	doc.querySelector("#trianus_Mtitle").readOnly=true;
 	Story_Post();
 }
 function Story_Sort(){
@@ -137,19 +139,21 @@ function Story_Proc(content,id){
 		}
 		Story.article+="<p>"+content[i]+"</p>";
 	}
-	var ser=Temp.prev.indexOf(Story.prev)
-	if(ser<0){
-		Temp.prev.push(Story.prev);
-		Temp.next.push([Story.id]);
-	}else{
-		Temp.next[ser].push(Story.id);
-	}
-	var ser=Temp.news.indexOf(Story.Title)
-	if(ser<0){
-		Temp.news.push(Story.Title);
-		Temp.newo.push([Story.id]);
-	}else{
-		Temp.newo[ser].push(Story.id);
+	if(Story.type!="#trianus_rock"&&Story.type!="#trianus_sand"){
+		var ser=Temp.prev.indexOf(Story.prev);
+		if(ser<0){
+			Temp.prev.push(Story.prev);
+			Temp.next.push([Story.id]);
+		}else{
+			Temp.next[ser].push(Story.id);
+		}
+		var ser=Temp.news.indexOf(Story.Title)
+		if(ser<0){
+			Temp.news.push(Story.Title);
+			Temp.newo.push([Story.id]);
+		}else{
+			Temp.newo[ser].push(Story.id);
+		}
 	}
 	Temp.refs.push(Story.id);
 	Story_Show(Story);
@@ -173,17 +177,26 @@ function Story_Show(Story){
 		window.open("https://facebook.com/groups/1961795094104661?view=permalink&id="+Story.Post_id)
 	};
 	if(Story.type=="#trianus_rock")action.value="投水";
+	else if(Story.type=="#trianus_sand")action.value="掩埋";
 	else action.value="培養";
 	action.type="button";
 	action.onclick=function(){
-		Temp.edit.type=Story.type;
-		Temp.edit.id=Story.id;
-		Temp.edit.count=Story.id.split("_")[2]*1+1;
-		Temp.edit.title=Story.id.split("_")[1];
-		doc.querySelector("#trianus_count").value=Temp.edit.count;
-		doc.querySelector("#trianus_Mtitle").value=Temp.edit.title;
-		Temp.edit.post=(Story.type=="#trianus_rock")?"#trianus_rock":"#trianus_grow";
-		doc.querySelector("#trianus_post").value=(Story.type=="#trianus_rock")?"投水":"培養";
+		var type=Story.type;
+		if(type=="#trianus_rock"||type=="#trianus_sand"){
+			Temp.edit.title=Story.id.split("_")[1];
+			doc.querySelector("#trianus_count").value="";
+			Temp.edit.type=(type=="#trianus_rock")?"#trianus_rock":"#trianus_sand";
+			doc.querySelector("#trianus_post").value=(type=="#trianus_rock")?"投水":"掩埋";
+			doc.querySelector("#trianus_title").readOnly=true;
+		}else{
+			Temp.edit.id=Story.id;
+			Temp.edit.count=Story.id.split("_")[2]*1+1;
+			doc.querySelector("#trianus_count").value=Temp.edit.count;
+			doc.querySelector("#trianus_Mtitle").value=Temp.edit.title;
+			Temp.edit.type="#trianus_grow";
+			doc.querySelector("#trianus_post").value="培養";
+			doc.querySelector("#trianus_Mtitle").readOnly=true;
+		}
 		location=field.id.replace("trianus_","#_trianus_");
 		Story_Post();Story_View();
 	}
@@ -236,13 +249,19 @@ function Story_Save(){
 		content=doc.querySelector("#trianus_content"),
 		count=doc.querySelector("#trianus_count"),
 		format=doc.querySelector("#trianus_format");
-	if(!title.value||!Title.value||content.value.length<50)return;
-	format.value=Temp.edit.post+"\n";
-	format.value+="#trianus_"+Title.value+"_"+count.value+"_"+title.value+"\n";
-	format.value+=Title.value+" "+count.value+" "+title.value+"\n";
+	if(!Title.value||content.value.length<50)return;
+	if(!title.value&&Temp.edit.type!="#trianus_rock"&&Temp.edit.type!="#trianus_sand")return;
+	format.value=Temp.edit.type+"\n";
+	if(Temp.edit.type!="#trianus_rock"&&Temp.edit.type!="#trianus_sand"){
+		format.value+="#trianus_"+Title.value+"_"+count.value+"_"+title.value+"\n";
+		format.value+=Title.value+" "+count.value+" "+title.value+"\n";
+	}else{
+		format.value+="#trianus_"+Title.value+"\n";
+		format.value+=Title.value+"\n";
+	}
 	format.value+=content.value;
-	if(Temp.edit.post=="grow")format.value+="\n"+Temp.edit.id;
-	else format.value+="\n";return 1;
+	if(Temp.edit.type=="grow")format.value+="\n"+Temp.edit.id;
+	return 1;
 }
 function Index_Show(sort){
 	for(var i=0;i<sort.length;i++){
