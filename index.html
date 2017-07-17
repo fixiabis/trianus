@@ -4,6 +4,7 @@
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="initial-scale=1, maximum-scale=1">
 		<style>@import "css/main.css";</style>
+		<script src="js/clipboard.min.js"></script>
 	</head>
 	<body>
 		<header>
@@ -16,13 +17,26 @@
 			</div>
 		</header>
 		<div class="story" style="margin-top:70px;height:0px;padding:0px"></div>
+		<div class="story" id="post" style="display:none">
+			<input type="text" id="trianus_Mtitle" placeholder="故事標題"/><input type="text" id="trianus_count" readonly="true" value="1"/>
+			<input type="text" id="trianus_title" placeholder="段落標題"/>
+			<textarea id="trianus_content" placeholder="內容"></textarea>
+			<textarea id="trianus_format" style="width:0px;height:0px;"></textarea>
+			<input type="button" id="trianus_copy" style="display:none" data-clipboard-action="copy" data-clipboard-target="#trianus_format"/>
+			<div style="text-align:right">
+				<input type="button" value="風景" id="trianus_view"/>
+				<input type="button" value="播種" id="trianus_post"/>
+				<input type="button" value="摘除" id="trianus_kill"/>
+			</div>
+		</div>
 		<div class="story" id="loading">
 			<div class="loading" style="animation:show 1s infinite">正在載入...</div>
 		</div>
 		<div id="list">
-			<div class="loading" style="animation:show 1s infinite;10px 10px">正在準備索引...</div>
-			<div id="forest">
-				<div class="title" style="margin-left:5px">森林</div>
+			<div class="loading" style="animation:show 1s infinite;margin:10px;">正在準備索引...</div>
+			<div id="forest" style="display:none">
+				<div class="title" style="margin-left:5px" id="seed">播種</div>
+				<div class="title" style="margin-left:5px" id="tree">森林</div>
 			</div>
 		</div>
 		<script src="js/main.js"></script>
