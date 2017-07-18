@@ -206,7 +206,7 @@ function Story_Show(Story){
 	next.className="next";
 	comment.onclick=function(){
 		var group=Story.Post_id.split("_")[0],feeds=Story.Post_id.split("_")[1]
-		window.open("https://facebook.com/"+group+"/1961795094104661?view=permalink&id="+feeds)
+		window.open("https://facebook.com/"+group+"?view=permalink&id="+feeds)
 	};
 	action.value="培養";
 	action2.value=(Story.type=="#trianus_seed"||Story.type=="#trianus_root")?"扎根":"擴展";
