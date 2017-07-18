@@ -277,7 +277,7 @@ function Story_Save(){
 		content=doc.querySelector("#trianus_content"),
 		count=doc.querySelector("#trianus_count"),
 		format=doc.querySelector("#trianus_format");
-	if(!Title.value||content.value.length<50||!title.value)return;
+	if(!Title.value||content.value.length<60||!title.value)return;
 	format.value=Temp.edit.type+"\n";
 	format.value+="#trianus_"+Title.value+"_"+count.value+"_"+title.value+"\n";
 	format.value+=Title.value+" "+count.value+" "+title.value+"\n";
