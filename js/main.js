@@ -97,7 +97,7 @@ function Story_Kill(){
 	doc.querySelector("#trianus_content").value="";
 	doc.querySelector("#trianus_count").value=1;
 	doc.querySelector("#trianus_post").value="播種";
-	doc.querySelector("#trianus_Mtitle").readOnly=true;
+	doc.querySelector("#trianus_Mtitle").readOnly=false;
 	Story_Post();
 }
 function Story_Sort(){
@@ -148,9 +148,10 @@ function Story_Tree(series,page,tree,seed){
 	return Story_Tree(series,page+1,tree);
 }
 function Story_Load(){
-	var access_token="access_token=EAAEAhFsvEQIBAK6LTYJo1jv0lp5trzauCWyvJArA9jkwzEkIP7R2NsisUAogl7b4eWteLWk3ygt1CYTGhAN7vQRIjOVUDzmCLyyl8SFYb5Cye3QPRLXrV80ZC5DX78sVBa05l7dckDAUoT18eo5ZAZCA6qCqhA0jsUODy1sqgZDZD";
-	Loader("https://graph.facebook.com/1961795094104661/feed?"+access_token);
-	//Loader("https://graph.facebook.com/1511206835567537/feed?"+access_token);
+	var parameter="access_token=EAAEAhFsvEQIBAK6LTYJo1jv0lp5trzauCWyvJArA9jkwzEkIP7R2NsisUAogl7b4eWteLWk3ygt1CYTGhAN7vQRIjOVUDzmCLyyl8SFYb5Cye3QPRLXrV80ZC5DX78sVBa05l7dckDAUoT18eo5ZAZCA6qCqhA0jsUODy1sqgZDZD";
+	//parameter+="&fields=likes.limit(1).summary(true),message,from";
+	Loader("https://graph.facebook.com/1961795094104661/feed?"+parameter);
+	//Loader("https://graph.facebook.com/1511206835567537/feed?"+parameter);
 }
 function Story_Proc(content,id){
 	content=content.split("\n");
