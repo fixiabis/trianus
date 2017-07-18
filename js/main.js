@@ -29,7 +29,7 @@ Temp={
 },
 Storys=[],
 clipboard = new Clipboard("#trianus_copy");
-clipboard.on('success',function(e){doc.querySelector("#trianus_post").value="已複製";console.log(e)});
+clipboard.on('success',function(e){doc.querySelector("#trianus_post").value="已複製"});
 doc.body.oncontextmenu=function(e){
 	e.preventDefault();
 }
@@ -99,28 +99,34 @@ function Story_Kill(){
 function Story_Sort(){
 	var sort=[];
 	for(var i=0;i<Temp.newo.length;i++){
-		var q=[],b=1;
+		var q=[],b=1,fc=0,dl=0,sd=[],lq=[];
 		for(var j=0;j<Temp.newo[i].length;j++){
-			var c=Temp.newo[i][j].split("_")
+			var id=Temp.newo[i][j],c=id.split("_"),p=Temp.refs.indexOf(id);
 			if(c[2]>b)b=c[2];
-			if(c[2]==1)q.push(Temp.newo[i][j]);
+			if(c[2]==1&&Storys[p].prev==""){q.push(id);sd.push(id)}
 		}
-		for(var k=2;k<b;k++){
-			for(var j=0;j<Temp.newo[i].length;j++){
-				var c=Temp.newo[i][j].split("_");
-				if(c[2]==k)q.unshift(Temp.newo[i][j]);
-			}
+		while(q.length!=Temp.newo[i].length&&dl<100){
+			for(var k=1;k<b*1+1;k++){
+				for(var j=0;j<Temp.newo[i].length;j++){
+					var id=Temp.newo[i][j],c=id.split("_"),p=Temp.refs.indexOf(id);
+					if(q.indexOf(id)>-1)continue;
+					if(c[2]==k&&q.indexOf(Storys[p].prev)>-1)q.push(id);
+				}
+			}dl++;
 		}
-		Temp.newo[i]=q.reverse();
-		console.log(q)
-		sort=sort.concat([Story_Tree(Temp.newo[i],0,[])]);
+		Temp.newo[i]=q;
+		for(var j=0;j<sd.length;j++){
+			var p=q.indexOf(sd[j]);
+			lq=lq.concat(Story_Tree(Temp.newo[i],p,[],1));
+		}
+		sort=sort.concat([lq]);
 	}
 	Index_Show(sort)
 }
-function Story_Tree(series,page,tree){
+function Story_Tree(series,page,tree,seed){
 	var id=series[page];
-	if(page==0)tree.push(id);
-	else if(page==series.length)return tree
+	if(seed)tree.push(id);
+	else if(page==series.length)return tree;
 	else{
 		var ref=Temp.refs.indexOf(id),p=tree.indexOf(Storys[ref].prev);
 			prevfield=doc.querySelector("#trianus_"+Temp.refs.indexOf(Storys[ref].prev)+" .next");
@@ -128,7 +134,7 @@ function Story_Tree(series,page,tree){
 			prevfield.appendChild(Story_Link(id));
 			prevfield.appendChild(doc.createElement("br"));
 			tree.splice(p+1,0,id);
-		}
+		}else return tree;
 	}
 	return Story_Tree(series,page+1,tree);
 }
@@ -178,7 +184,8 @@ function Story_Show(Story){
 		next=doc.createElement("div"),
 		buttons=doc.createElement("div"),
 		comment=doc.createElement("input"),
-		action=doc.createElement("input");
+		action=doc.createElement("input"),
+		action2=doc.createElement("input");
 	field.className="story article";
 	field.id="trianus_"+(Storys.length-1);
 	title.innerHTML=Story.title;
@@ -189,25 +196,36 @@ function Story_Show(Story){
 		window.open("https://facebook.com/groups/1961795094104661?view=permalink&id="+Story.Post_id)
 	};
 	action.value="培養";
+	action2.value=(Story.type=="#trianus_seed"||Story.type=="#trianus_root")?"扎根":"樹枝";
 	action.type="button";
-	action.onclick=function(){
+	action2.type="button";
+	var proc=function(){
 		var type=Story.type;
 		Temp.edit.id=Story.id;
-		Temp.edit.count=Story.id.split("_")[2]*1+1;
+		Temp.edit.count=Story.id.split("_")[2]*1;
 		Temp.edit.title=Story.title.split(" ")[0];
+		Temp.edit.type="#trianus_grow";
+		if(this.value!="扎根"&&this.value!="樹枝"){
+			Temp.edit.count++;
+		}else{
+			if(this.value=="扎根")Temp.edit.type="#trianus_root";
+			else Temp.edit.type="#trianus_stem";
+		}
 		doc.querySelector("#trianus_count").value=Temp.edit.count;
 		doc.querySelector("#trianus_Mtitle").value=Temp.edit.title;
-		Temp.edit.type="#trianus_grow";
-		doc.querySelector("#trianus_post").value="培養";
+		doc.querySelector("#trianus_post").value=this.value;
 		doc.querySelector("#trianus_Mtitle").readOnly=true;
 		location=field.id.replace("trianus_","#_trianus_");
 		Story_Post();Story_View();
 	}
+	action.onclick=proc;
+	action2.onclick=proc;
 	comment.value="吹拂";
 	comment.type="button";
 	comment.style.marginLeft="10px";
 	buttons.style.textAlign="right";
 	buttons.appendChild(action);
+	buttons.appendChild(action2);
 	buttons.appendChild(comment);
 	field.appendChild(title);
 	field.appendChild(doc.createElement("hr"));
