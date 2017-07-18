@@ -236,7 +236,7 @@ function Story_Show(Story){
 	comment.type="button";
 	comment.style.marginLeft="10px";
 	buttons.style.textAlign="right";
-	buttons.appendChild(action);
+	if(Story.type=="#trianus_seed"||Story.type=="#trianus_grow")buttons.appendChild(action);
 	buttons.appendChild(action2);
 	buttons.appendChild(comment);
 	field.appendChild(title);
