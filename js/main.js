@@ -140,7 +140,7 @@ function Story_Tree(series,page,tree,seed){
 			prevfield.appendChild(doc.createElement("br"));
 			for(var i=p+1;i<tree.length;i++){
 				var nid=Storys[Temp.refs.indexOf(tree[i])].type;
-				if(nid=="#trianus_root"||nid=="#trianus_stem")sr++;
+				if(nid=="#trianus_root"||nid=="#trianus_bole")sr++;
 			}
 			tree.splice(sr,0,id);
 		}else return tree;
@@ -221,7 +221,7 @@ function Story_Show(Story){
 			Temp.edit.count++;
 		}else{
 			if(this.value=="扎根")Temp.edit.type="#trianus_root";
-			else Temp.edit.type="#trianus_stem";
+			else Temp.edit.type="#trianus_bole";
 		}
 		doc.querySelector("#trianus_count").value=Temp.edit.count;
 		doc.querySelector("#trianus_Mtitle").value=Temp.edit.title;
