@@ -10,13 +10,13 @@ a,input,textarea{
 	outline:none;
 }
 body{
+	-ms-user-select:none;
+	-moz-user-select:none;
+	-webkit-user-select:none;
 	background:#222;
 	color:#ddd;
 	margin:0px;
 	user-select:none;
-	-ms-user-select:none;
-	-moz-user-select:none;
-	-webkit-user-select:none;
 }
 header{
 	background:#111;
@@ -29,13 +29,17 @@ header{
 	z-index:5;
 }
 .story{
+	-ms-user-select:none;
+	-moz-user-select:none;
+	-webkit-user-select:none;
 	animation:show 1s;
 	background:#333;
 	border-radius:10px;
 	letter-spacing:4px;
-	margin:10px calc((100% - 640px) / 2);
+	margin:10px 10px;
 	padding:10px 10px 0px;
 	transition:all 1s;
+	user-select:none;
 	width:580px;
 }
 .story a,#list a{
@@ -43,7 +47,11 @@ header{
 	padding-left:5px;
 }
 .story article{
+	-ms-user-select:none;
+	-moz-user-select:none;
+	-webkit-user-select:none;
 	padding:0px 10px;
+	user-select:none;
 }
 .story div:last-child{
 	padding-bottom:10px;
@@ -88,7 +96,7 @@ header{
 	position:fixed;
 	top:60px;
 	transition:all 1s;
-	width:calc((100% - 640px) / 2 - 10px );
+	width:calc((100% - 640px) / 2);
 }
 #list a{
 	color:#3b5998;
@@ -159,6 +167,14 @@ header{
 #seed{
 	margin:10px;
 }
+#Story{
+	height:calc(100% - 60px);
+	left:calc((100% - 640px) / 2);
+	overflow:auto;
+	position:fixed;
+	top:60px;
+	width:calc(100% - (100% - 640px) / 2);
+}
 #title{
 	cursor:pointer;
 	font-size:40px;
@@ -199,17 +215,21 @@ header{
 	}
 }
 @media screen and (max-width:1249px){
+	#Story{
+		left:300px;
+		width:calc(100% - 300px);
+	}
 	.story{
-		margin:10px calc((100% - 900px) / 2 + 300px);
+		margin:10px calc((100% - 600px) / 2);
 	}
 	#list{
 		width:300px;
 	}
 }
 @media screen and (max-width:919px){
-	.story{
-		margin:10px calc((100% - 600px) / 2);
-		width:580px;
+	#Story{
+		left:0px;
+		width:100%;
 	}
 	#list{
 		left:-300px;

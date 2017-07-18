@@ -43,14 +43,7 @@ doc.body.onresize=function(){
 }
 doc.body.onhashchange=Story_View;
 doc.body.onkeyup=Story_Save;
-doc.querySelector("#menu").addEventListener("click",function(){
-	var list=doc.querySelector("#list");
-	if(this.id=="menu"){
-		list.style.left="0px";this.id="menuc"
-	}else{
-		list.style.left="";this.id="menu"
-	}
-});
+doc.querySelector("#menu").addEventListener("click",Index_View);
 doc.querySelector("#title").addEventListener("click",function(){location="#"});
 doc.querySelector("#tree").addEventListener("click",function(){location="#"});
 doc.querySelector("#trianus_post").addEventListener("click",function(){
@@ -61,6 +54,17 @@ doc.querySelector("#trianus_view").addEventListener("click",function(){
 	doc.querySelector("#post").style.display="none";
 });
 doc.querySelector("#seed").addEventListener("click",Story_Kill);
+doc.querySelector("#Story").addEventListener("click",Index_View);
+function Index_View(){
+	var list=doc.querySelector("#list"),
+		menu=doc.querySelector("#menu"),
+		menuc=doc.querySelector("#menuc");
+	if(menu&&this.id!="Story"){
+		list.style.left="0px";menu.id="menuc"
+	}else if(menuc){
+		list.style.left="";menuc.id="menu"
+	}
+}
 function Loader(url){
 	var xhr=new XMLHttpRequest();
 	xhr.onload=function(){
@@ -239,7 +243,7 @@ function Story_Show(Story){
 	field.appendChild(article);
 	field.appendChild(next);
 	field.appendChild(buttons);
-	doc.body.insertBefore(field,doc.querySelector("#loading"));
+	doc.querySelector("#Story").insertBefore(field,doc.querySelector("#loading"));
 }
 function Story_Link(id,index,n){
 	var a=doc.createElement("a"),
@@ -270,6 +274,7 @@ function Story_View(){
 }
 function Story_Post(){
 	doc.querySelector("#post").style.display="";
+	doc.body.scrollTop=0;
 }
 function Story_Save(){
 	var title=doc.querySelector("#trianus_title"),

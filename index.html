@@ -16,21 +16,22 @@
 				<a href="https://facebook.com/groups/trianus" target="_new">加入我們</a>，讓故事如同樹一般的成長吧。
 			</div>
 		</header>
-		<div class="story" style="margin-top:70px;height:0px;padding:0px"></div>
-		<div class="story" id="post" style="display:none">
-			<input type="text" id="trianus_Mtitle" placeholder="故事標題"/><input type="text" id="trianus_count" readonly="true" value="1"/>
-			<input type="text" id="trianus_title" placeholder="段落標題"/>
-			<textarea id="trianus_content" placeholder="內容"></textarea>
-			<textarea id="trianus_format" style="width:0px;height:0px;"></textarea>
-			<input type="button" id="trianus_copy" style="display:none" data-clipboard-action="copy" data-clipboard-target="#trianus_format"/>
-			<div style="text-align:right">
-				<input type="button" value="風景" id="trianus_view"/>
-				<input type="button" value="播種" id="trianus_post"/>
-				<input type="button" value="摘除" id="trianus_kill"/>
+		<div id="Story">
+			<div class="story" id="post" style="display:none">
+				<input type="text" id="trianus_Mtitle" placeholder="故事標題"/><input type="text" id="trianus_count" readonly="true" value="1"/>
+				<input type="text" id="trianus_title" placeholder="段落標題"/>
+				<textarea id="trianus_content" placeholder="內容"></textarea>
+				<textarea id="trianus_format" style="width:0px;height:0px;"></textarea>
+				<input type="button" id="trianus_copy" style="display:none" data-clipboard-action="copy" data-clipboard-target="#trianus_format"/>
+				<div style="text-align:right">
+					<input type="button" value="風景" id="trianus_view"/>
+					<input type="button" value="播種" id="trianus_post"/>
+					<input type="button" value="摘除" id="trianus_kill"/>
+				</div>
 			</div>
-		</div>
-		<div class="story" id="loading">
-			<div class="loading" style="animation:show 1s infinite">正在載入...</div>
+			<div class="story" id="loading">
+				<div class="loading" style="animation:show 1s infinite">正在載入...</div>
+			</div>
 		</div>
 		<div id="list">
 			<div class="loading" style="animation:show 1s infinite;margin:10px;">正在準備索引...</div>
