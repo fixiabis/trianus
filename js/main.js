@@ -144,7 +144,9 @@ function Story_Tree(series,page,tree,seed){
 	return Story_Tree(series,page+1,tree);
 }
 function Story_Load(){
-	Loader("https://graph.facebook.com/1961795094104661/feed?access_token=EAAEAhFsvEQIBAK6LTYJo1jv0lp5trzauCWyvJArA9jkwzEkIP7R2NsisUAogl7b4eWteLWk3ygt1CYTGhAN7vQRIjOVUDzmCLyyl8SFYb5Cye3QPRLXrV80ZC5DX78sVBa05l7dckDAUoT18eo5ZAZCA6qCqhA0jsUODy1sqgZDZD")
+	var access_token="access_token=EAAEAhFsvEQIBAK6LTYJo1jv0lp5trzauCWyvJArA9jkwzEkIP7R2NsisUAogl7b4eWteLWk3ygt1CYTGhAN7vQRIjOVUDzmCLyyl8SFYb5Cye3QPRLXrV80ZC5DX78sVBa05l7dckDAUoT18eo5ZAZCA6qCqhA0jsUODy1sqgZDZD";
+	Loader("https://graph.facebook.com/1961795094104661/feed?"+access_token);
+	//Loader("https://graph.facebook.com/1511206835567537/feed?"+access_token);
 }
 function Story_Proc(content,id){
 	content=content.split("\n");
@@ -201,7 +203,7 @@ function Story_Show(Story){
 		window.open("https://facebook.com/groups/1961795094104661?view=permalink&id="+Story.Post_id)
 	};
 	action.value="培養";
-	action2.value=(Story.type=="#trianus_seed"||Story.type=="#trianus_root")?"扎根":"樹枝";
+	action2.value=(Story.type=="#trianus_seed"||Story.type=="#trianus_root")?"扎根":"分枝";
 	action.type="button";
 	action2.type="button";
 	var proc=function(){
@@ -210,7 +212,7 @@ function Story_Show(Story){
 		Temp.edit.count=Story.id.split("_")[2]*1;
 		Temp.edit.title=Story.title.split(" ")[0];
 		Temp.edit.type="#trianus_grow";
-		if(this.value!="扎根"&&this.value!="樹枝"){
+		if(this.value!="扎根"&&this.value!="分枝"){
 			Temp.edit.count++;
 		}else{
 			if(this.value=="扎根")Temp.edit.type="#trianus_root";
