@@ -93,14 +93,26 @@ function Story_Kill(){
 	doc.querySelector("#trianus_content").value="";
 	doc.querySelector("#trianus_count").value=1;
 	doc.querySelector("#trianus_post").value="播種";
-	doc.querySelector("#trianus_title").readOnly=true;
 	doc.querySelector("#trianus_Mtitle").readOnly=true;
 	Story_Post();
 }
 function Story_Sort(){
 	var sort=[];
 	for(var i=0;i<Temp.newo.length;i++){
-		Temp.newo[i].sort();
+		var q=[],b=1;
+		for(var j=0;j<Temp.newo[i].length;j++){
+			var c=Temp.newo[i][j].split("_")
+			if(c[2]>b)b=c[2];
+			if(c[2]==1)q.push(Temp.newo[i][j]);
+		}
+		for(var k=2;k<b;k++){
+			for(var j=0;j<Temp.newo[i].length;j++){
+				var c=Temp.newo[i][j].split("_");
+				if(c[2]==k)q.unshift(Temp.newo[i][j]);
+			}
+		}
+		Temp.newo[i]=q.reverse();
+		console.log(q)
 		sort=sort.concat([Story_Tree(Temp.newo[i],0,[])]);
 	}
 	Index_Show(sort)
@@ -112,9 +124,11 @@ function Story_Tree(series,page,tree){
 	else{
 		var ref=Temp.refs.indexOf(id),p=tree.indexOf(Storys[ref].prev);
 			prevfield=doc.querySelector("#trianus_"+Temp.refs.indexOf(Storys[ref].prev)+" .next");
-		prevfield.appendChild(Story_Link(id));
-		prevfield.appendChild(doc.createElement("br"));
-		tree.splice(p+1,0,id);
+		if(prevfield){
+			prevfield.appendChild(Story_Link(id));
+			prevfield.appendChild(doc.createElement("br"));
+			tree.splice(p+1,0,id);
+		}
 	}
 	return Story_Tree(series,page+1,tree);
 }
@@ -125,8 +139,8 @@ function Story_Proc(content,id){
 	content=content.split("\n");
 	var Story={
 			Post_id:id.split("_")[1],
-			type:content[0],
-			id:content[1],
+			type:content[0].substr(0,13).replace(/ /g,""),
+			id:content[1].replace(/ /g,""),
 			title:content[2],
 			Title:content[2].split(" ")[0],
 			article:"",
@@ -134,26 +148,24 @@ function Story_Proc(content,id){
 		};
 	if(Story.id.substr(0,9)!="#trianus_")return;
 	for(var i=3;i<content.length;i++){
-		if(content[i].substr(0,9)=="#trianus_"){
-			Story.prev=content[i];break
+		if(content[i].search("#trianus_")>-1){
+			Story.prev=content[i].replace(/ /g,"");break
 		}
 		Story.article+="<p>"+content[i]+"</p>";
 	}
-	if(Story.type!="#trianus_rock"&&Story.type!="#trianus_sand"){
-		var ser=Temp.prev.indexOf(Story.prev);
-		if(ser<0){
-			Temp.prev.push(Story.prev);
-			Temp.next.push([Story.id]);
-		}else{
-			Temp.next[ser].push(Story.id);
-		}
-		var ser=Temp.news.indexOf(Story.Title)
-		if(ser<0){
-			Temp.news.push(Story.Title);
-			Temp.newo.push([Story.id]);
-		}else{
-			Temp.newo[ser].push(Story.id);
-		}
+	var ser=Temp.prev.indexOf(Story.prev);
+	if(ser<0){
+		Temp.prev.push(Story.prev);
+		Temp.next.push([Story.id]);
+	}else{
+		Temp.next[ser].push(Story.id);
+	}
+	var ser=Temp.news.indexOf(Story.Title)
+	if(ser<0){
+		Temp.news.push(Story.Title);
+		Temp.newo.push([Story.id]);
+	}else{
+		Temp.newo[ser].push(Story.id);
 	}
 	Temp.refs.push(Story.id);
 	Story_Show(Story);
@@ -176,27 +188,18 @@ function Story_Show(Story){
 	comment.onclick=function(){
 		window.open("https://facebook.com/groups/1961795094104661?view=permalink&id="+Story.Post_id)
 	};
-	if(Story.type=="#trianus_rock")action.value="投水";
-	else if(Story.type=="#trianus_sand")action.value="掩埋";
-	else action.value="培養";
+	action.value="培養";
 	action.type="button";
 	action.onclick=function(){
 		var type=Story.type;
-		if(type=="#trianus_rock"||type=="#trianus_sand"){
-			Temp.edit.title=Story.id.split("_")[1];
-			doc.querySelector("#trianus_count").value="";
-			Temp.edit.type=(type=="#trianus_rock")?"#trianus_rock":"#trianus_sand";
-			doc.querySelector("#trianus_post").value=(type=="#trianus_rock")?"投水":"掩埋";
-			doc.querySelector("#trianus_title").readOnly=true;
-		}else{
-			Temp.edit.id=Story.id;
-			Temp.edit.count=Story.id.split("_")[2]*1+1;
-			doc.querySelector("#trianus_count").value=Temp.edit.count;
-			doc.querySelector("#trianus_Mtitle").value=Temp.edit.title;
-			Temp.edit.type="#trianus_grow";
-			doc.querySelector("#trianus_post").value="培養";
-			doc.querySelector("#trianus_Mtitle").readOnly=true;
-		}
+		Temp.edit.id=Story.id;
+		Temp.edit.count=Story.id.split("_")[2]*1+1;
+		Temp.edit.title=Story.title.split(" ")[0];
+		doc.querySelector("#trianus_count").value=Temp.edit.count;
+		doc.querySelector("#trianus_Mtitle").value=Temp.edit.title;
+		Temp.edit.type="#trianus_grow";
+		doc.querySelector("#trianus_post").value="培養";
+		doc.querySelector("#trianus_Mtitle").readOnly=true;
 		location=field.id.replace("trianus_","#_trianus_");
 		Story_Post();Story_View();
 	}
@@ -249,18 +252,12 @@ function Story_Save(){
 		content=doc.querySelector("#trianus_content"),
 		count=doc.querySelector("#trianus_count"),
 		format=doc.querySelector("#trianus_format");
-	if(!Title.value||content.value.length<50)return;
-	if(!title.value&&Temp.edit.type!="#trianus_rock"&&Temp.edit.type!="#trianus_sand")return;
+	if(!Title.value||content.value.length<50||!title.value)return;
 	format.value=Temp.edit.type+"\n";
-	if(Temp.edit.type!="#trianus_rock"&&Temp.edit.type!="#trianus_sand"){
-		format.value+="#trianus_"+Title.value+"_"+count.value+"_"+title.value+"\n";
-		format.value+=Title.value+" "+count.value+" "+title.value+"\n";
-	}else{
-		format.value+="#trianus_"+Title.value+"\n";
-		format.value+=Title.value+"\n";
-	}
+	format.value+="#trianus_"+Title.value+"_"+count.value+"_"+title.value+"\n";
+	format.value+=Title.value+" "+count.value+" "+title.value+"\n";
 	format.value+=content.value;
-	if(Temp.edit.type=="grow")format.value+="\n"+Temp.edit.id;
+	if(Temp.edit.type!="seed")format.value+="\n"+Temp.edit.id;
 	return 1;
 }
 function Index_Show(sort){
