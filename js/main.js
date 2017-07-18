@@ -131,9 +131,14 @@ function Story_Tree(series,page,tree,seed){
 		var ref=Temp.refs.indexOf(id),p=tree.indexOf(Storys[ref].prev);
 			prevfield=doc.querySelector("#trianus_"+Temp.refs.indexOf(Storys[ref].prev)+" .next");
 		if(prevfield){
+			var sr=p+1;
 			prevfield.appendChild(Story_Link(id));
 			prevfield.appendChild(doc.createElement("br"));
-			tree.splice(p+1,0,id);
+			for(var i=p+1;i<tree.length;i++){
+				var nid=Storys[Temp.refs.indexOf(tree[i])].type;
+				if(nid=="#trianus_root"||nid=="#trianus_stem")sr++;
+			}
+			tree.splice(sr,0,id);
 		}else return tree;
 	}
 	return Story_Tree(series,page+1,tree);
