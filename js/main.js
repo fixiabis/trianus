@@ -309,7 +309,7 @@ function Story_Link(id,index,n){
 function Story_View(){
 	var id=location.hash;
 	var field=doc.querySelectorAll(".story.article");
-	if(id[1]!="_")id="#_trianus_"+Temp.refs.indexOf(id);
+	if(id&&id[1]!="_")id="#_trianus_"+Temp.refs.indexOf(id);
 	for(var i=0;i<field.length;i++){
 		var d="";
 		if(field[i].id!=id.replace("#_",""))d="none";
