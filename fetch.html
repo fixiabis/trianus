@@ -1,0 +1,64 @@
+<html>
+	<head>
+		<title>datafetch</title>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+	</head>
+	<body>
+		<input type="button" id="prev" value="上一個" onclick="Load(now-1)"/><input type="button" id="next" value="下一個" onclick="Load(now+1)"/>
+		<div id="content">
+			正在裝載...
+		</div>
+		<script>
+			var access_token="access_token=EAAEAhFsvEQIBAK6LTYJo1jv0lp5trzauCWyvJArA9jkwzEkIP7R2NsisUAogl7b4eWteLWk3ygt1CYTGhAN7vQRIjOVUDzmCLyyl8SFYb5Cye3QPRLXrV80ZC5DX78sVBa05l7dckDAUoT18eo5ZAZCA6qCqhA0jsUODy1sqgZDZD",
+				group_id="1511206835567537",
+				feed_ids=[],
+				feed_messages=[],
+				feed_comments=[],
+				doc=document,
+				now=0;
+			function FBRequest(id,type,req,proc){
+				var url="https://graph.facebook.com/"+id+"/"+type+"?"+access_token+"&fields="+req;
+				Request(url,proc);
+			}
+			function Request(url,proc){
+				var data={},
+					xhr=new XMLHttpRequest();
+				xhr.open("get",url);
+				xhr.onload=function(){proc(JSON.parse(this.response))}
+				xhr.send();
+			}
+			function GetAllFeedId(){
+				var proc=function(r){
+					for(var i=0;i<r.data.length;i++){
+						feed_ids.push(r.data[i].id);
+						feed_messages.push(r.data[i].message);
+					}
+					if(r.paging&&r.paging.next)Request(r.paging.next,proc);
+					else GetAllMsgCmt();
+				}
+				FBRequest(group_id,"feed","id,message",proc);
+			}
+			function GetAllMsgCmt(){
+				var c=0,proc=function(r,p){
+					if(typeof p!="number"){
+						p=feed_comments.length;feed_comments.push([feed_messages[p]])
+					};
+					for(var i=0;i<r.data.length;i++)feed_comments[p].push(r.data[i].message);
+					if(r.paging&&r.paging.next)Request(r.paging.next,function(r){proc(r,p)});
+					else c++;
+					if(c==feed_ids.length-1)Load(now);
+				}
+				for(var i=0;i<feed_ids.length;i++){
+					FBRequest(feed_ids[i],"comments","message",proc)
+				}
+			}
+			function Load(p){
+				if(!feed_comments[p])return;
+				var content="<pre>"+feed_comments[p].join("<br>")+"</pre>";
+				doc.querySelector("#content").innerHTML=content;now=p;
+			}
+			GetAllFeedId();
+		</script>
+	</body>
+</html>
