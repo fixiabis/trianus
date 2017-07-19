@@ -51,6 +51,7 @@ doc.body.onresize=function(){
 	if(menuc)menuc.id="menu";
 }
 doc.body.onhashchange=Story_View;
+doc.body.oncontextmenu=function(e){e.preventDefault()}
 doc.body.onkeyup=Story_Save;
 doc.querySelector("#menu").addEventListener("click",Index_View);
 doc.querySelector("#title").addEventListener("click",function(){location="#"});
@@ -89,7 +90,7 @@ function Loader(url){
 		if(!result.paging||!result.paging.next){
 			doc.querySelector("#loading").style.display="none";
 			doc.querySelector("#forest").style.display="";
-			Story_Sort();return
+			Story_Sort();Story_View();return
 		}
 		Loader(result.paging.next);
 	}
@@ -221,14 +222,14 @@ function Story_Show(Story){
 	};
 	switch(Story.type){
 		case"#trianus_soil":
-			action.value="土壤";action.title="試著寫寫看前傳吧?";
+			action.value="翻土";action.title="試著寫寫看前傳吧?";
 			action2.value="施肥";action2.title="以不同視角描述看看吧?";break;
 		case"#trianus_muck":
 			action.value="施肥";action.title="以不同視角描述看看吧?";break;
 		case"#trianus_seed":
 			action.value="培養";action.title="來接續文章吧?";
 			action2.value="扎根";action2.title="以不同視角描述看看吧?";
-			action3.value="土壤";action3.title="試著寫寫看前傳吧?";break;
+			action3.value="翻土";action3.title="試著寫寫看前傳吧?";break;
 		case"#trianus_root":
 			action.value="扎根";action.title="以不同視角描述看看吧?";break;
 		case"#trianus_grow":
@@ -255,7 +256,7 @@ function Story_Show(Story){
 		var type=Story.type,
 			name=this.value,
 			oname=[
-				"土壤","繁殖","培養","結葉","結露","施肥","扎根","擴展","葉脈","薄霧"
+				"翻土","繁殖","培養","結葉","結露","施肥","扎根","擴展","葉脈","薄霧"
 			],
 			otype=Temp.type;
 		Temp.edit.id=Story.id;
@@ -308,6 +309,7 @@ function Story_Link(id,index,n){
 function Story_View(){
 	var id=location.hash;
 	var field=doc.querySelectorAll(".story.article");
+	if(id[1]!="_")id="#_trianus_"+Temp.refs.indexOf(id);
 	for(var i=0;i<field.length;i++){
 		var d="";
 		if(field[i].id!=id.replace("#_",""))d="none";
