@@ -25,7 +25,7 @@
 				var data={},
 					xhr=new XMLHttpRequest();
 				xhr.open("get",url);
-				xhr.onload=function(){proc(JSON.parse(this.response))}
+				xhr.onload=function(){proc(JSON.parse(this.response),url)}
 				xhr.send();
 			}
 			function GetAllFeedId(){
@@ -40,12 +40,11 @@
 				FBRequest(group_id,"feed","id,message",proc);
 			}
 			function GetAllMsgCmt(){
-				var c=0,proc=function(r,p){
-					if(typeof p!="number"){
-						p=feed_comments.length;feed_comments.push([feed_messages[p]])
-					};
+				var c=0,proc=function(r,url){
+					var p=feed_ids.indexOf(url.split("/")[3]);
+					if(!feed_comments[p])feed_comments[p]=[feed_messages[p]];
 					for(var i=0;i<r.data.length;i++)feed_comments[p].push(r.data[i].message);
-					if(r.paging&&r.paging.next)Request(r.paging.next,function(r){proc(r,p)});
+					if(r.paging&&r.paging.next)Request(r.paging.next,function(r){proc(r,url)});
 					else c++;
 					if(c==feed_ids.length-1)Load(now);
 				}
