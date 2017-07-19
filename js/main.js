@@ -51,7 +51,7 @@ doc.body.onresize=function(){
 	if(menuc)menuc.id="menu";
 }
 doc.body.onhashchange=Story_View;
-doc.body.oncontextmenu=function(e){e.preventDefault()}
+//doc.body.oncontextmenu=function(e){e.preventDefault()}
 doc.body.onkeyup=Story_Save;
 doc.querySelector("#menu").addEventListener("click",Index_View);
 doc.querySelector("#title").addEventListener("click",function(){location="#"});
