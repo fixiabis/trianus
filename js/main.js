@@ -334,7 +334,7 @@ function Story_Save(){
 	format.value+="#trianus_"+Title.value+"_"+count.value+"_"+title.value+"\n";
 	format.value+=Title.value+" "+count.value+" "+title.value+"\n";
 	format.value+=content.value;
-	if(Temp.edit.type!="seed")format.value+="\n"+Temp.edit.id;
+	if(Temp.edit.type!="#trianus_seed")format.value+="\n"+Temp.edit.id;
 	return 1;
 }
 function Index_Show(sort){
