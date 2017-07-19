@@ -18,6 +18,18 @@ var doc=document,Cookies={
 	}
 },
 Temp={
+	type:[
+		"#trianus_soil",
+		"#trianus_seed",
+		"#trianus_grow",
+		"#trianus_leaf",
+		"#trianus_dews",
+		"#trianus_muck",
+		"#trianus_root",
+		"#trianus_bole",
+		"#trianus_vein",
+		"#trianus_mist"
+	],
 	edit:{
 		post:"#trianus_seed"
 	},
@@ -30,9 +42,6 @@ Temp={
 Storys=[],
 clipboard = new Clipboard("#trianus_copy");
 clipboard.on('success',function(e){doc.querySelector("#trianus_post").value="已複製"});
-doc.body.oncontextmenu=function(e){
-	e.preventDefault();
-}
 doc.body.onload=function(){
 	Story_Load()
 }
@@ -140,7 +149,7 @@ function Story_Tree(series,page,tree,seed){
 			prevfield.appendChild(doc.createElement("br"));
 			for(var i=p+1;i<tree.length;i++){
 				var nid=Storys[Temp.refs.indexOf(tree[i])].type;
-				if(nid=="#trianus_root"||nid=="#trianus_bole")sr++;
+				if(Temp.type.indexOf(nid)>5)sr++;
 			}
 			tree.splice(sr,0,id);
 		}else return tree;
@@ -197,9 +206,11 @@ function Story_Show(Story){
 		buttons=doc.createElement("div"),
 		comment=doc.createElement("input"),
 		action=doc.createElement("input"),
-		action2=doc.createElement("input");
+		action2=doc.createElement("input"),
+		action3=doc.createElement("input");
 	field.className="story article";
 	field.id="trianus_"+(Storys.length-1);
+	field.oncontextmenu=function(e){e.preventDefault()}
 	title.innerHTML=Story.title;
 	title.className="title";
 	article.innerHTML=Story.article;
@@ -208,22 +219,51 @@ function Story_Show(Story){
 		var group=Story.Post_id.split("_")[0],feeds=Story.Post_id.split("_")[1]
 		window.open("https://facebook.com/"+group+"?view=permalink&id="+feeds)
 	};
-	action.value="培養";
-	action2.value=(Story.type=="#trianus_seed"||Story.type=="#trianus_root")?"扎根":"擴展";
+	switch(Story.type){
+		case"#trianus_soil":
+			action.value="土壤";action.title="試著寫寫看前傳吧?";
+			action2.value="施肥";action2.title="以不同視角描述看看吧?";break;
+		case"#trianus_muck":
+			action.value="施肥";action.title="以不同視角描述看看吧?";break;
+		case"#trianus_seed":
+			action.value="培養";action.title="來接續文章吧?";
+			action2.value="扎根";action2.title="以不同視角描述看看吧?";
+			action3.value="土壤";action3.title="試著寫寫看前傳吧?";break;
+		case"#trianus_root":
+			action.value="扎根";action.title="以不同視角描述看看吧?";break;
+		case"#trianus_grow":
+			action.value="培養";action.title="來接續文章吧?";
+			action2.value="擴展";action2.title="以不同視角描述看看吧?";
+			action3.value="結葉";action3.title="寫一個結尾吧?";break;
+		case"#trianus_bole":
+			action.value="擴展";action.title="以不同視角描述看看吧?";break;
+		case"#trianus_leaf":
+			action.value="結露";action.title="寫一個後續吧?";
+			action2.value="葉脈";action2.title="以不同視角描述看看吧?";break;
+		case"#trianus_vein":
+			action.value="葉脈";action.title="以不同視角描述看看吧?";break;
+		case"#trianus_dews":
+			action.value="繁殖";action.title="寫一個新的種子吧?";
+			action2.value="薄霧";action2.title="以不同視角描述看看吧?";break;
+		case"#trianus_mist":
+			action.value="薄霧";action.title="以不同視角描述看看吧?";break;
+	}
 	action.type="button";
 	action2.type="button";
+	action3.type="button";
 	var proc=function(){
-		var type=Story.type;
+		var type=Story.type,
+			name=this.value,
+			oname=[
+				"土壤","繁殖","培養","結葉","結露","施肥","扎根","擴展","葉脈","薄霧"
+			],
+			otype=Temp.type;
 		Temp.edit.id=Story.id;
 		Temp.edit.count=Story.id.split("_")[2]*1;
 		Temp.edit.title=Story.title.split(" ")[0];
-		Temp.edit.type="#trianus_grow";
-		if(this.value!="扎根"&&this.value!="擴展"){
-			Temp.edit.count++;
-		}else{
-			if(this.value=="扎根")Temp.edit.type="#trianus_root";
-			else Temp.edit.type="#trianus_bole";
-		}
+		if(oname.indexOf(name)<5)Temp.edit.count++;
+		Temp.edit.type=otype[oname.indexOf(name)];
+		if(Temp.edit.type==otype[0])Temp.edit.count=0;
 		doc.querySelector("#trianus_count").value=Temp.edit.count;
 		doc.querySelector("#trianus_Mtitle").value=Temp.edit.title;
 		doc.querySelector("#trianus_post").value=this.value;
@@ -233,12 +273,15 @@ function Story_Show(Story){
 	}
 	action.onclick=proc;
 	action2.onclick=proc;
+	action3.onclick=proc;
 	comment.value="吹拂";
 	comment.type="button";
+	comment.title="說說你的想法吧?";
 	comment.style.marginLeft="10px";
 	buttons.style.textAlign="right";
-	if(Story.type=="#trianus_seed"||Story.type=="#trianus_grow")buttons.appendChild(action);
-	buttons.appendChild(action2);
+	buttons.appendChild(action);
+	if(action2.value)buttons.appendChild(action2);
+	if(action3.value)buttons.appendChild(action3);
 	buttons.appendChild(comment);
 	field.appendChild(title);
 	field.appendChild(doc.createElement("hr"));
@@ -272,11 +315,11 @@ function Story_View(){
 		if(!id)d="";
 		field[i].style.display=d;
 	}
-	doc.body.scrollTop=0;
+	doc.querySelector("#Story").scrollTop=0;
 }
 function Story_Post(){
 	doc.querySelector("#post").style.display="";
-	doc.body.scrollTop=0;
+	doc.querySelector("#Story").scrollTop=0;
 }
 function Story_Save(){
 	var title=doc.querySelector("#trianus_title"),
