@@ -120,7 +120,7 @@ input[type=button]:hover{
 	background-repeat:no-repeat;
 	background-size:5%;
 	cursor:pointer;
-	font-size:20px;
+	font-size:18px;
 	font-weight:bold;
 	transition:background-image 0.1s;
 }
