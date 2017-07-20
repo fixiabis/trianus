@@ -166,8 +166,8 @@ input[type=button]:hover{
 	letter-spacing:4px;
 	line-height:25px;
 }
-#seed{
-	margin:10px;
+#seed,#flow,#rock{
+	margin:5px 10%;
 }
 #Story{
 	height:calc(100% - 60px);
