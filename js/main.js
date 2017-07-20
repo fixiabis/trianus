@@ -409,10 +409,16 @@ function Story_Save(){
 		content=doc.querySelector("#trianus_content"),
 		count=doc.querySelector("#trianus_count"),
 		format=doc.querySelector("#trianus_format"),
-		type=Temp.edit.type;
+		type=Temp.edit.type,
+		id="#trianus_"+Title.value+"_"+count.value+"_"+title.value,
+		rp=0;
 	if(!Title.value||content.value.length<60||!title.value)return;
+	if(Temp.refs.indexOf(id)>-1)while(1){
+		if(Temp.refs.indexOf(id+"_"+rp)>-1)rp++;
+		else{id=id+"_"+rp;break}
+	}
 	format.value=Temp.edit.type+"\n";
-	format.value+="#trianus_"+Title.value+"_"+count.value+"_"+title.value+"\n";
+	format.value+=id+"\n";
 	format.value+=Title.value+" "+count.value+" "+title.value+"\n";
 	format.value+=content.value;
 	if(type!="#trianus_seed"&&type!="#trianus_flow"&&type!="#trianus_rock"){
