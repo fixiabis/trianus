@@ -28,7 +28,9 @@ Temp={
 		"#trianus_root",
 		"#trianus_bole",
 		"#trianus_vein",
-		"#trianus_mist"
+		"#trianus_mist",
+		"#trianus_flow",
+		"#trianus_sand"
 	],
 	edit:{
 		post:"#trianus_seed"
@@ -37,10 +39,12 @@ Temp={
 	next:[],
 	news:[],
 	newo:[],
-	refs:[]
+	refs:[],
+	floc:[]
 },
 Storys=[],
-clipboard = new Clipboard("#trianus_copy");
+clipboard = new Clipboard("#trianus_copy"),
+access_token="access_token=EAAEAhFsvEQIBAK6LTYJo1jv0lp5trzauCWyvJArA9jkwzEkIP7R2NsisUAogl7b4eWteLWk3ygt1CYTGhAN7vQRIjOVUDzmCLyyl8SFYb5Cye3QPRLXrV80ZC5DX78sVBa05l7dckDAUoT18eo5ZAZCA6qCqhA0jsUODy1sqgZDZD";
 clipboard.on('success',function(e){doc.querySelector("#trianus_post").value="已複製"});
 doc.body.onload=function(){
 	Story_Load()
@@ -55,7 +59,17 @@ doc.body.onhashchange=Story_View;
 doc.body.onkeyup=Story_Save;
 doc.querySelector("#menu").addEventListener("click",Index_View);
 doc.querySelector("#title").addEventListener("click",function(){location="#"});
-doc.querySelector("#tree").addEventListener("click",function(){location="#"});
+doc.querySelector("#tree").addEventListener("click",function(){
+	var trtab=doc.querySelectorAll(".tree"),display="";
+	if(trtab[0].style.display==""){
+		display="none";
+		this.style.backgroundImage="url(image/up.png)";
+	}else this.style.backgroundImage="";
+	for(var i=0;i<trtab.length;i++){
+		if(trtab[i].className.search("index")<0||display!="")trtab[i].style.display=display;
+		if(trtab[i].className.search("tab")>-1&&display!="")trtab[i].style.backgroundImage="";
+	}
+});
 doc.querySelector("#trianus_post").addEventListener("click",function(){
 	if(Story_Save())doc.querySelector("#trianus_copy").click();
 });
@@ -75,30 +89,34 @@ function Index_View(){
 		list.style.left="";menuc.id="menu"
 	}
 }
-function Loader(url){
+function Loader(url,proc,parameter){
 	var xhr=new XMLHttpRequest();
-	xhr.onload=function(){
-		var result=JSON.parse(this.response);
-		for(var i=0;i<result.data.length;i++){
-			if(!result.data[i].message)continue;
-			var ser=result.data[i].message.search("#trianus_");
-			if(ser==-1)continue;
-			var content=result.data[i].message.substr(ser,result.data[i].message.length-ser),
-				id=result.data[i].id;
-			Story_Proc(content.replace(/\n\n/g,"\n"),id);
-		}
-		if(!result.paging||!result.paging.next){
-			doc.querySelector("#loading").style.display="none";
-			doc.querySelector("#forest").style.display="";
-			Story_Sort();Story_View();return
-		}
-		Loader(result.paging.next);
-	}
-	xhr.onerror=function(){
-		Loader(url)
-	}
+	xhr.onload=function(){proc(JSON.parse(this.response),url,parameter)}
+	xhr.onerror=function(){Loader(url,proc)}
 	xhr.open("get",url);
 	xhr.send();
+}
+function Story_Flow(field,article,Post_id,l){
+	var parameter=access_token,
+		proc=function(result,url,p){
+			for(var i=0;i<result.data.length;i++){
+				if(result.data[i].message.search("#flow ")==0){
+					if(i!=0&&!p.f)Temp.floc[p.p]+="</p>";
+					Temp.floc[p.p]+="<p>"+result.data[i].message.replace("#flow ","");
+				}else if(result.data[i].message.search("#join ")==0){
+					Temp.floc[p.p]+=result.data[i].message.replace("#join ","");
+				}
+			}
+			if(p.f)p.f=0;
+			if(result.paging&&result.paging.next)Loader(result.paging.next,proc,p);
+			else{
+				p.article.innerHTML+=Temp.floc+"</p>";p.field.style.display="";
+			}
+		};
+	parameter+="&fields=message";
+	Loader("https://graph.facebook.com/"+Post_id+"/comments?"+parameter,proc,{
+		f:1,p:l,article:article,field:field
+	})
 }
 function Story_Kill(){
 	Temp.edit={type:"#trianus_seed"};
@@ -158,9 +176,26 @@ function Story_Tree(series,page,tree,seed){
 	return Story_Tree(series,page+1,tree);
 }
 function Story_Load(){
-	var parameter="access_token=EAAEAhFsvEQIBAK6LTYJo1jv0lp5trzauCWyvJArA9jkwzEkIP7R2NsisUAogl7b4eWteLWk3ygt1CYTGhAN7vQRIjOVUDzmCLyyl8SFYb5Cye3QPRLXrV80ZC5DX78sVBa05l7dckDAUoT18eo5ZAZCA6qCqhA0jsUODy1sqgZDZD";
-	//parameter+="&fields=comments,message,from";
-	Loader("https://graph.facebook.com/1961795094104661/feed?"+parameter);
+	var parameter=access_token;
+		parameter+="&fields=comments,message",
+		proc=function(result){
+			for(var i=0;i<result.data.length;i++){
+				if(!result.data[i].message)continue;
+				var ser=result.data[i].message.search("#trianus_");
+				if(ser==-1)continue;
+				var content=result.data[i].message.substr(ser,result.data[i].message.length-ser),
+					id=result.data[i].id;
+				Story_Proc(content.replace(/\n\n/g,"\n"),id);
+			}
+			if(!result.paging||!result.paging.next){
+				doc.querySelector("#loading").style.display="none";
+				doc.querySelector("#forest").style.display="";
+				Story_Sort();Story_View();return
+			}
+			Loader(result.paging.next,proc);
+		};
+	
+	Loader("https://graph.facebook.com/1961795094104661/feed?"+parameter,proc);
 	//Loader("https://graph.facebook.com/1511206835567537/feed?"+parameter);
 }
 function Story_Proc(content,id){
@@ -181,19 +216,21 @@ function Story_Proc(content,id){
 		}
 		Story.article+="<p>"+content[i]+"</p>";
 	}
-	var ser=Temp.prev.indexOf(Story.prev);
-	if(ser<0){
-		Temp.prev.push(Story.prev);
-		Temp.next.push([Story.id]);
-	}else{
-		Temp.next[ser].push(Story.id);
-	}
-	var ser=Temp.news.indexOf(Story.Title)
-	if(ser<0){
-		Temp.news.push(Story.Title);
-		Temp.newo.push([Story.id]);
-	}else{
-		Temp.newo[ser].push(Story.id);
+	if(Temp.type.indexOf(Story.type)<10){
+		var ser=Temp.prev.indexOf(Story.prev);
+		if(ser<0){
+			Temp.prev.push(Story.prev);
+			Temp.next.push([Story.id]);
+		}else{
+			Temp.next[ser].push(Story.id);
+		}
+		var ser=Temp.news.indexOf(Story.Title)
+		if(ser<0){
+			Temp.news.push(Story.Title);
+			Temp.newo.push([Story.id]);
+		}else{
+			Temp.newo[ser].push(Story.id);
+		}
 	}
 	Temp.refs.push(Story.id);
 	Story_Show(Story);
@@ -209,13 +246,19 @@ function Story_Show(Story){
 		action=doc.createElement("input"),
 		action2=doc.createElement("input"),
 		action3=doc.createElement("input");
-	field.className="story article";
 	field.id="trianus_"+(Storys.length-1);
+	field.className="story article";
 	field.oncontextmenu=function(e){e.preventDefault()}
-	title.innerHTML=Story.title;
-	title.className="title";
+	title.innerHTML=Story.title;title.className="title";
 	article.innerHTML=Story.article;
+	if(Story.type=="#trianus_flow"){
+		var l=Temp.floc.length;
+		Temp.floc.push([]);
+		Story_Flow(field,article,Story.Post_id,l);
+		field.style.display="none";
+	}
 	next.className="next";
+	comment.value="吹拂";comment.type="button";comment.title="說說你的想法吧?";
 	comment.onclick=function(){
 		var group=Story.Post_id.split("_")[0],feeds=Story.Post_id.split("_")[1]
 		window.open("https://facebook.com/"+group+"?view=permalink&id="+feeds)
@@ -248,10 +291,10 @@ function Story_Show(Story){
 			action2.value="薄霧";action2.title="以不同視角描述看看吧?";break;
 		case"#trianus_mist":
 			action.value="薄霧";action.title="以不同視角描述看看吧?";break;
+		case"#trianus_flow":
+			comment.value="延續";break;
 	}
-	action.type="button";
-	action2.type="button";
-	action3.type="button";
+	action.type="button";action2.type="button";action3.type="button";
 	var proc=function(){
 		var type=Story.type,
 			name=this.value,
@@ -272,15 +315,10 @@ function Story_Show(Story){
 		location=field.id.replace("trianus_","#_trianus_");
 		Story_Post();Story_View();
 	}
-	action.onclick=proc;
-	action2.onclick=proc;
-	action3.onclick=proc;
-	comment.value="吹拂";
-	comment.type="button";
-	comment.title="說說你的想法吧?";
-	comment.style.marginLeft="10px";
+	action.onclick=proc;action2.onclick=proc;action3.onclick=proc;
+	buttons.style.paddingBottom="0px";
 	buttons.style.textAlign="right";
-	buttons.appendChild(action);
+	if(action.value)buttons.appendChild(action);
 	if(action2.value)buttons.appendChild(action2);
 	if(action3.value)buttons.appendChild(action3);
 	buttons.appendChild(comment);
@@ -346,7 +384,7 @@ function Index_Show(sort){
 			if(t.length<3)t=t[0].split("_");
 			if(j==0){
 				var title=doc.createElement("div");
-				title.className="tab";
+				title.className="tab tree";
 				title.innerHTML=t[0];
 				title.appendChild
 				title.onclick=function(){
@@ -366,7 +404,7 @@ function Index_Show(sort){
 				doc.querySelector("#forest").appendChild(title);
 			}
 			n.style.display="none";
-			n.className="index";
+			n.className="index tree";
 			n.appendChild(Story_Link(sort[i][j],true));
 			n.appendChild(doc.createElement("br"));
 		}
