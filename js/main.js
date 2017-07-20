@@ -70,13 +70,16 @@ doc.querySelector("#prock").addEventListener("click",Index_Hide);
 doc.querySelector("#trianus_post").addEventListener("click",function(){
 	if(Story_Save())doc.querySelector("#trianus_copy").click();
 });
-doc.querySelector("#trianus_kill").addEventListener("dblclick",Story_Kill);
+doc.querySelector("#trianus_kill").addEventListener("dblclick",function(){
+	var type=(["繁殖","尋源","投石"])[(["摘除","絕源","腐蝕"]).indexOf(this.value)];
+	Story_Edit("",1,type,(type=="繁殖")?"播種":type,1);
+});
 doc.querySelector("#trianus_view").addEventListener("click",function(){
 	doc.querySelector("#post").style.display="none";
 });
-doc.querySelector("#seed").addEventListener("click",Story_Kill);
-doc.querySelector("#flow").addEventListener("click",Story_Kill);
-doc.querySelector("#rock").addEventListener("click",Story_Kill);
+doc.querySelector("#seed").addEventListener("click",function(){Story_Edit("",1,"繁殖","播種",1)});
+doc.querySelector("#flow").addEventListener("click",function(){Story_Edit("",1,"尋源","尋源",1)});
+doc.querySelector("#rock").addEventListener("click",function(){Story_Edit("",1,"投石","投石",1)});
 doc.querySelector("#Story").addEventListener("click",Index_View);
 function Index_Hide(){
 	var trtab=doc.querySelectorAll(this.id.replace("p",".")),display="";
@@ -128,20 +131,27 @@ function Story_Flow(field,article,Post_id,l){
 		f:1,p:l,article:article,field:field
 	})
 }
-function Story_Kill(){
-	Temp.edit={type:"#trianus_"+this.id};
-	doc.querySelector("#trianus_title").value="";
-	doc.querySelector("#trianus_Mtitle").value="";
-	doc.querySelector("#trianus_content").value="";
-	doc.querySelector("#trianus_count").value="";
-	doc.querySelector("#trianus_Mtitle").readOnly=false;
-	var n=this.value,k="摘除",s="播種";
+function Story_Edit(title,count,type,post,clear){
+	var n=(["翻土","繁殖","培養","結葉","結露","施肥","扎根","擴展","葉脈","薄霧","尋源","投石","撒沙"]).indexOf(type),
+		kill="摘除",read=true;
 	switch(true){
-		case(n=="摘除"||n=="播種"):k="摘除";s="播種";
-			doc.querySelector("#trianus_count").value=1;
-		break
-		case(n=="絕源"||n=="尋源"):k="絕緣";s="尋源";break
-		case(n=="腐蝕"||n=="投石"):k="腐蝕";s="投石";break
+		case n == 0:count=0;break;
+		case n == 1:read=false;break;
+		case n <  5:count++;break;
+		case n < 10:break;
+		case n ==10:kill="絕源";count="";title="";read=false;break;
+		case n ==11:kill="腐蝕";count="";title="";read=false;break;
+		case n ==12:kill="腐蝕";count="";break;
+	}
+	Temp.edit.type=Temp.type[n];
+	doc.querySelector("#trianus_Mtitle").value=title;
+	doc.querySelector("#trianus_Mtitle").readOnly=read;
+	doc.querySelector("#trianus_count").value=count;
+	doc.querySelector("#trianus_kill").value=kill;
+	doc.querySelector("#trianus_post").value=post;
+	if(clear){
+		doc.querySelector("#trianus_title").value="";
+		doc.querySelector("#trianus_content").value="";
 	}
 	Story_Post();
 }
@@ -340,35 +350,9 @@ function Story_Show(Story){
 	}
 	action.type="button";action2.type="button";action3.type="button";
 	var proc=function(){
-		var type=Story.type,
-			name=this.value,
-			oname=[
-				"翻土","繁殖","培養","結葉","結露","施肥","扎根","擴展","葉脈","薄霧","尋源","","撒沙"
-			],
-			otype=Temp.type;
+		Story_Edit(Story.title.split(" ")[0],Story.id.split("_")[2]*1,this.value,this.value)
 		Temp.edit.id=Story.id;
-		Temp.edit.count=Story.id.split("_")[2]*1;
-		Temp.edit.title=Story.title.split(" ")[0];
-		if(oname.indexOf(name)<5)Temp.edit.count++;
-		Temp.edit.type=otype[oname.indexOf(name)];
-		if(Temp.edit.type==otype[0])Temp.edit.count=0;
-		doc.querySelector("#trianus_count").value=Temp.edit.count;
-		doc.querySelector("#trianus_Mtitle").value=Temp.edit.title;
-		doc.querySelector("#trianus_post").value=this.value;
-		doc.querySelector("#trianus_Mtitle").readOnly=true;
-		var kill="摘除";
-		if(otype.indexOf(Temp.edit.type)>9){
-			kill="腐蝕";
-			doc.querySelector("#trianus_count").value="";
-		}
-		if(Temp.edit.type==otype[10]){
-			kill="絕緣";
-			doc.querySelector("#trianus_Mtitle").value="";
-			doc.querySelector("#trianus_Mtitle").readOnly=false;
-		}
-		doc.querySelector("#trianus_kill").value=kill;
-		location=field.id.replace("trianus_","#_trianus_");
-		Story_Post();Story_View();
+		Story_View();
 	}
 	action.onclick=proc;action2.onclick=proc;action3.onclick=proc;
 	buttons.style.paddingBottom="0px";
