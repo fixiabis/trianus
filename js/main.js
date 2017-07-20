@@ -76,6 +76,7 @@ doc.querySelector("#trianus_view").addEventListener("click",function(){
 });
 doc.querySelector("#seed").addEventListener("click",Story_Kill);
 doc.querySelector("#flow").addEventListener("click",Story_Kill);
+doc.querySelector("#rock").addEventListener("click",Story_Kill);
 doc.querySelector("#Story").addEventListener("click",Index_View);
 function Index_Hide(){
 	var trtab=doc.querySelectorAll(this.id.replace("p",".")),display="";
@@ -132,14 +133,16 @@ function Story_Kill(){
 	doc.querySelector("#trianus_title").value="";
 	doc.querySelector("#trianus_Mtitle").value="";
 	doc.querySelector("#trianus_content").value="";
-	doc.querySelector("#trianus_count").value=1;
-	if(this.value!="#trianus_kill"){
-		doc.querySelector("#trianus_post").value=this.value;
-		var kill="摘除";
-		if(this.value=="尋源")kill="絕源";
-		doc.querySelector("#trianus_kill").value=kill
-	}
+	doc.querySelector("#trianus_count").value="";
 	doc.querySelector("#trianus_Mtitle").readOnly=false;
+	var n=this.value,k="摘除",s="播種";
+	switch(true){
+		case(n=="摘除"||n=="播種"):k="摘除";s="播種";
+			doc.querySelector("#trianus_count").value=1;
+		break
+		case(n=="絕源"||n=="尋源"):k="絕緣";s="尋源";break
+		case(n=="腐蝕"||n=="投石"):k="腐蝕";s="投石";break
+	}
 	Story_Post();
 }
 function Story_Sort(){
@@ -330,13 +333,17 @@ function Story_Show(Story){
 			action.value="薄霧";action.title="以不同視角描述看看吧?";break;
 		case"#trianus_flow":
 			action.value="尋源";action.title="寫一個新的源頭吧?";comment.value="延續";break;
+		case"#trianus_rock":
+			action.value="撒沙";action.title="以這個主題寫一個單篇吧?";break;
+		case"#trianus_sand":
+			action.value="撒沙";action.title="以這個主題寫一個單篇吧?";break;
 	}
 	action.type="button";action2.type="button";action3.type="button";
 	var proc=function(){
 		var type=Story.type,
 			name=this.value,
 			oname=[
-				"翻土","繁殖","培養","結葉","結露","施肥","扎根","擴展","葉脈","薄霧","尋源"
+				"翻土","繁殖","培養","結葉","結露","施肥","扎根","擴展","葉脈","薄霧","尋源","","撒沙"
 			],
 			otype=Temp.type;
 		Temp.edit.id=Story.id;
@@ -348,9 +355,18 @@ function Story_Show(Story){
 		doc.querySelector("#trianus_count").value=Temp.edit.count;
 		doc.querySelector("#trianus_Mtitle").value=Temp.edit.title;
 		doc.querySelector("#trianus_post").value=this.value;
-		var kill=(Temp.edit.type==otype[10])?"絕源":"摘除";
-		doc.querySelector("#trianus_kill").value=kill;
 		doc.querySelector("#trianus_Mtitle").readOnly=true;
+		var kill="摘除";
+		if(otype.indexOf(Temp.edit.type)>9){
+			kill="腐蝕";
+			doc.querySelector("#trianus_count").value="";
+		}
+		if(Temp.edit.type==otype[10]){
+			kill="絕緣";
+			doc.querySelector("#trianus_Mtitle").value="";
+			doc.querySelector("#trianus_Mtitle").readOnly=false;
+		}
+		doc.querySelector("#trianus_kill").value=kill;
 		location=field.id.replace("trianus_","#_trianus_");
 		Story_Post();Story_View();
 	}
@@ -373,6 +389,7 @@ function Story_Link(id,index,n){
 		p=Temp.refs.indexOf(id),
 		c=(id.split("_")[2]-1)*20,
 		t=Storys[p].title.split(" ");
+	if(c<0)c=0;
 	if(t.length<3)t=t[0].split("_");
 	for(var i=3;i<t.length;i++)t[2]+=" "+t[i];
 	a.href="#_trianus_"+p;
@@ -412,7 +429,9 @@ function Story_Save(){
 	format.value+="#trianus_"+Title.value+"_"+count.value+"_"+title.value+"\n";
 	format.value+=Title.value+" "+count.value+" "+title.value+"\n";
 	format.value+=content.value;
-	if(type!="#trianus_seed"&&type!="#trianus_flow")format.value+="\n"+Temp.edit.id;
+	if(type!="#trianus_seed"&&type!="#trianus_flow"&&type!="#trianus_rock"){
+		format.value+="\n"+Temp.edit.id;
+	}
 	return 1;
 }
 function Index_Show(sort,field,name){
