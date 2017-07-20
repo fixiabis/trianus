@@ -387,7 +387,7 @@ function Story_Link(id,index,n){
 	return a
 }
 function Story_View(){
-	var id=location.hash;
+	var id=decodeURI(location.hash);
 	var field=doc.querySelectorAll(".story.article");
 	if(id&&id[1]!="_")id="#_trianus_"+Temp.refs.indexOf(id);
 	for(var i=0;i<field.length;i++){
