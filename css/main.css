@@ -168,7 +168,17 @@ input[type=button]:hover{
 	line-height:25px;
 }
 #seed,#flow,#rock{
-	margin:5px 10%;
+	margin:5px 0px;
+}
+#seed{
+	border-right:0px;
+	border-top-right-radius:0px;
+	border-bottom-right-radius:0px;
+}
+#flow{
+	border-left:#ddd solid 2px;
+	border-top-left-radius:0px;
+	border-bottom-left-radius:0px;
 }
 #Story{
 	height:calc(100% - 60px);

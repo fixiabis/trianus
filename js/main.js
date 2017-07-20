@@ -81,7 +81,7 @@ doc.querySelector("#trianus_view").addEventListener("click",function(){
 });
 doc.querySelector("#seed").addEventListener("click",function(){Story_Edit("",1,"繁殖","播種",1)});
 doc.querySelector("#flow").addEventListener("click",function(){Story_Edit("",1,"尋源","尋源",1)});
-doc.querySelector("#rock").addEventListener("click",function(){Story_Edit("",1,"投石","投石",1)});
+//doc.querySelector("#rock").addEventListener("click",function(){Story_Edit("",1,"投石","投石",1)});
 doc.querySelector("#Story").addEventListener("click",Index_View);
 function Index_Hide(){
 	var trtab=doc.querySelectorAll(this.id.replace("p",".")),display="";
