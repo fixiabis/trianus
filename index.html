@@ -17,10 +17,37 @@
 			</div>
 		</header>
 		<div id="Story">
+			<div class="story" id="welcome" style="display:none">
+				<div class="title">第一次來到這裡嗎?</div><hr>
+				<div style="padding:0px 10px">
+					<div style="font-size:18px;margin:10px 0px;font-weight:bold">了解一下文章下面的按鈕意思吧?</div>
+					<div id="tri_button">
+						<input type="button" value="翻土"/> 幫這篇文章寫一篇前傳<br>
+						<input type="button" value="培養"/> 幫這篇文章寫一篇接續<br>
+						<input type="button" value="結葉"/> 幫這篇文章寫一篇結局<br>
+						<input type="button" value="結露"/> 幫這篇結局寫一篇後續<br>
+						<input type="button" value="繁殖"/> 幫這篇後續寫一篇新章節<br>
+						<input type="button" value="扎根"/>
+						<input type="button" value="施肥"/>
+						<input type="button" value="擴展"/>
+						<input type="button" value="葉脈"/>
+						<input type="button" value="薄霧"/><br>
+						<div style="margin-bottom:10px;">
+							以上五個按鈕皆為幫這篇文章寫一篇不同視角的故事
+						</div>
+						<input type="button" value="吹拂"> 導向到<a href="https://facebook.com/groups/trianus" style="padding-left:0px;" target="_new">臉書社團</a>原始文章<br>
+						<input type="button" value="尋源"> 寫一篇新的文章，將以留言留言形式接續<br>
+						<input type="button" value="延續"> 導向到<a href="https://facebook.com/groups/trianus" style="padding-left:0px;" target="_new">臉書社團</a>原始文章，在下方留言#flow接續為段落，#join接續到上段落後<br>
+					</div>
+					<div style="font-size:18px;margin:10px 0px;font-weight:bold">發第一篇文怎麼做?</div>
+					<div id="tri_post" style="text-indent:32px;">你想接續他人文章的話，找到該篇文章後，可點選下方的按鈕類型，若是想發一篇新的文章，可以使用旁邊的項目欄(播種/尋源)，此時編輯介面將會跳出，輸入好內容後，點按剛剛所點過的按鈕類型，即可複製文章，由於facebook有些限制，因此無法自動發文，此編輯器適用於不太了解發文格式者。若還是不太能了解歡迎來找<a href="https://m.me/fixiabis" style="padding-left:0px;" target="_new">社長詢問</a>。
+					</div>
+				</div>
+			</div>
 			<div class="story" id="post" style="display:none;">
 				<input type="text" id="trianus_Mtitle" placeholder="故事標題"/><input type="text" id="trianus_count" readonly="true" value="1"/>
 				<input type="text" id="trianus_title" placeholder="段落標題"/>
-				<textarea id="trianus_content" placeholder="內容"></textarea>
+				<textarea id="trianus_content"></textarea>
 				<textarea id="trianus_format" style="width:0px;height:0px;"></textarea>
 				<input type="button" id="trianus_copy" style="display:none" data-clipboard-action="copy" data-clipboard-target="#trianus_format"/>
 				<div style="text-align:right;padding-bottom:0px;">

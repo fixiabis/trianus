@@ -52,7 +52,8 @@ clipboard = new Clipboard("#trianus_copy"),
 access_token="access_token=EAAEAhFsvEQIBAK6LTYJo1jv0lp5trzauCWyvJArA9jkwzEkIP7R2NsisUAogl7b4eWteLWk3ygt1CYTGhAN7vQRIjOVUDzmCLyyl8SFYb5Cye3QPRLXrV80ZC5DX78sVBa05l7dckDAUoT18eo5ZAZCA6qCqhA0jsUODy1sqgZDZD";
 clipboard.on('success',function(e){doc.querySelector("#trianus_post").value="已複製"});
 doc.body.onload=function(){
-	Story_Load()
+	Story_Load();
+	if(!Cookies.get("view"))doc.querySelector("#welcome").style.display="";
 }
 doc.body.onresize=function(){
 	doc.querySelector("#list").style.left="";
@@ -149,6 +150,7 @@ function Story_Edit(title,count,type,post,clear){
 	doc.querySelector("#trianus_Mtitle").value=title;
 	doc.querySelector("#trianus_Mtitle").readOnly=read;
 	doc.querySelector("#trianus_count").value=count;
+	doc.querySelector("#trianus_content").placeholder="內容至少要60字喔，所有欄位編輯完成後點選["+post+"]，即可複製已格式過的文章，並麻煩貼往facebook的社團喔~";
 	doc.querySelector("#trianus_kill").value=kill;
 	doc.querySelector("#trianus_post").value=post;
 	if(clear){

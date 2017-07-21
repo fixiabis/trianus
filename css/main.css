@@ -117,6 +117,7 @@ input[type=button]:hover{
 #list .tab{
 	background-image:url(../image/down.png);
 	background-position:calc(100% - 6.4px) 50%;
+	background-position:calc(100% - 6.4px) 50%;
 	background-repeat:no-repeat;
 	background-size:5%;
 	cursor:pointer;
