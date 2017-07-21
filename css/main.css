@@ -116,7 +116,7 @@ input[type=button]:hover{
 }
 #list .tab{
 	background-image:url(../image/down.png);
-	background-position:right center;
+	background-position:calc(100% - 6.4px) 50%;
 	background-repeat:no-repeat;
 	background-size:5%;
 	cursor:pointer;
@@ -167,16 +167,20 @@ input[type=button]:hover{
 	letter-spacing:4px;
 	line-height:25px;
 }
-#seed,#flow,#rock{
+#seed,#flow,#lake{
+	border:#ddd solid 2px;
 	margin:5px 0px;
 }
+#seed:hover,#flow:hover{
+	border-color:#3b5998;
+}
 #seed{
-	border-right:0px;
+	border-right:#ddd solid 1px;
 	border-top-right-radius:0px;
 	border-bottom-right-radius:0px;
 }
 #flow{
-	border-left:#ddd solid 2px;
+	border-left:#ddd solid 1px;
 	border-top-left-radius:0px;
 	border-bottom-left-radius:0px;
 }

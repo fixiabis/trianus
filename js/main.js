@@ -30,8 +30,8 @@ Temp={
 		"#trianus_vein",
 		"#trianus_mist",
 		"#trianus_flow",
-		"#trianus_rock",
-		"#trianus_sand",
+		"#trianus_lake",
+		"#trianus_pond",
 	],
 	edit:{
 		post:"#trianus_seed"
@@ -68,12 +68,12 @@ doc.querySelector("#menu").addEventListener("click",Index_View);
 doc.querySelector("#title").addEventListener("click",function(){location="#"});
 doc.querySelector("#ptree").addEventListener("click",Index_Hide);
 doc.querySelector("#pflow").addEventListener("click",Index_Hide);
-doc.querySelector("#prock").addEventListener("click",Index_Hide);
+doc.querySelector("#plake").addEventListener("click",Index_Hide);
 doc.querySelector("#trianus_post").addEventListener("click",function(){
 	if(Story_Save())doc.querySelector("#trianus_copy").click();
 });
 doc.querySelector("#trianus_kill").addEventListener("dblclick",function(){
-	var type=(["繁殖","尋源","投石"])[(["摘除","絕源","腐蝕"]).indexOf(this.value)];
+	var type=(["繁殖","尋源","掘湖"])[(["摘除","絕源","填湖"]).indexOf(this.value)];
 	Story_Edit("",1,type,(type=="繁殖")?"播種":type,1);
 });
 doc.querySelector("#trianus_view").addEventListener("click",function(){
@@ -81,7 +81,7 @@ doc.querySelector("#trianus_view").addEventListener("click",function(){
 });
 doc.querySelector("#seed").addEventListener("click",function(){Story_Edit("",1,"繁殖","播種",1)});
 doc.querySelector("#flow").addEventListener("click",function(){Story_Edit("",1,"尋源","尋源",1)});
-//doc.querySelector("#rock").addEventListener("click",function(){Story_Edit("",1,"投石","投石",1)});
+//doc.querySelector("#lake").addEventListener("click",function(){Story_Edit("",1,"掘湖","掘湖",1)});
 doc.querySelector("#Story").addEventListener("click",Index_View);
 function Index_Hide(){
 	var trtab=doc.querySelectorAll(this.id.replace("p",".")),display="";
@@ -134,7 +134,7 @@ function Story_Flow(field,article,Post_id,l){
 	})
 }
 function Story_Edit(title,count,type,post,clear){
-	var n=(["翻土","繁殖","培養","結葉","結露","施肥","扎根","擴展","葉脈","薄霧","尋源","投石","撒沙"]).indexOf(type),
+	var n=(["翻土","繁殖","培養","結葉","結露","施肥","扎根","擴展","葉脈","薄霧","尋源","掘湖","造湖"]).indexOf(type),
 		kill="摘除",read=true;
 	switch(true){
 		case n == 0:count=0;break;
@@ -142,8 +142,8 @@ function Story_Edit(title,count,type,post,clear){
 		case n <  5:count++;break;
 		case n < 10:break;
 		case n ==10:kill="絕源";count="";title="";read=false;break;
-		case n ==11:kill="腐蝕";count="";title="";read=false;break;
-		case n ==12:kill="腐蝕";count="";break;
+		case n ==11:kill="填湖";count="";title="";read=false;break;
+		case n ==12:kill="填湖";count="";break;
 	}
 	Temp.edit.type=Temp.type[n];
 	doc.querySelector("#trianus_Mtitle").value=title;
@@ -184,7 +184,7 @@ function Story_Sort(){
 	}
 	Index_Show(sort,"#forest","tree")
 	Index_Show(Temp.fewo,"#river","flow")
-	Index_Show(Temp.rewo,"#stone","rock")
+	Index_Show(Temp.rewo,"#lakes","lake")
 }
 function Story_Tree(series,page,tree,seed){
 	var id=series[page];
@@ -222,7 +222,7 @@ function Story_Load(){
 				doc.querySelector("#loading").style.display="none";
 				doc.querySelector("#forest").style.display="";
 				doc.querySelector("#river").style.display="";
-				doc.querySelector("#stone").style.display="";
+				doc.querySelector("#lakes").style.display="";
 				Story_Sort();Story_View();return
 			}
 			Loader(result.paging.next,proc);
@@ -274,7 +274,7 @@ function Story_Proc(content,id){
 				Temp.fewo[ser].push(Story.id);
 			}
 		}
-		if(Story.type=="#trianus_rock"||Story.type=="#trianus_sand"){
+		if(Story.type=="#trianus_lake"||Story.type=="#trianus_pond"){
 			var ser=Temp.rews.indexOf(Story.Title);
 			if(ser<0){
 				Temp.rews.push(Story.Title);
@@ -345,10 +345,10 @@ function Story_Show(Story){
 			action.value="薄霧";action.title="以不同視角描述看看吧?";break;
 		case"#trianus_flow":
 			action.value="尋源";action.title="寫一個新的源頭吧?";comment.value="延續";break;
-		case"#trianus_rock":
-			action.value="撒沙";action.title="以這個主題寫一個單篇吧?";break;
-		case"#trianus_sand":
-			action.value="撒沙";action.title="以這個主題寫一個單篇吧?";break;
+		case"#trianus_lake":
+			action.value="造湖";action.title="以這個主題寫一個單篇吧?";break;
+		case"#trianus_pond":
+			action.value="造湖";action.title="以這個主題寫一個單篇吧?";break;
 	}
 	action.type="button";action2.type="button";action3.type="button";
 	var proc=function(){
@@ -421,7 +421,7 @@ function Story_Save(){
 	format.value+=id+"\n";
 	format.value+=Title.value+" "+count.value+" "+title.value+"\n";
 	format.value+=content.value;
-	if(type!="#trianus_seed"&&type!="#trianus_flow"&&type!="#trianus_rock"){
+	if(type!="#trianus_seed"&&type!="#trianus_flow"&&type!="#trianus_lake"){
 		format.value+="\n"+Temp.edit.id;
 	}
 	return 1;
@@ -443,7 +443,7 @@ function Index_Show(sort,field,name){
 						x=doc.querySelectorAll("#list .index"),
 						t=doc.querySelectorAll("#list .tab");
 					for(var k=0;k<x.length;k++)x[k].style.display="none";
-					for(var k=0;k<t.length;k++)t[k].style.backgroundImage="";
+					for(var k=0;k<t.length;k++)if(!t[k].id)t[k].style.backgroundImage="";
 					if(d==""){
 						this.style.backgroundImage=""
 						this.nextSibling.style.display="none"
