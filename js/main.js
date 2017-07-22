@@ -391,6 +391,8 @@ function Story_Link(id,index,n){
 	if(index){
 		a.innerHTML=t[1]+" "+t[2];
 		a.style.marginLeft=c+"px";
+		var b=Temp.type.indexOf(Storys[p].type)
+		if(b>4&&b<10)a.style.opacity=0.5;
 	}else a.innerHTML=Storys[p].title;
 	a.onclick=Story_View;
 	return a
@@ -466,7 +468,13 @@ function Index_Show(sort,field,name){
 			n.style.display="none";
 			n.className="index "+name;
 			n.appendChild(Story_Link(sort[i][j],true));
-			n.appendChild(doc.createElement("br"));
+			var b=1,sp=doc.createElement("span");
+			if(sort[i][j+1]){
+				var h=Temp.type.indexOf(Storys[Temp.refs.indexOf(sort[i][j+1])].type);
+				if(h<4||h>10)b=1;sp.innerHTML=" ";
+			}
+			if(b)n.appendChild(doc.createElement("br"));
+			else n.appendChild(sp);
 		}
 		doc.querySelector(field).appendChild(n);
 	}
