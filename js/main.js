@@ -88,7 +88,7 @@ doc.querySelector("#show").addEventListener("click",function(){
 doc.querySelector("#Story").addEventListener("click",Index_View);
 function Welcome(){
 	var w=doc.querySelector("#welcome");
-	if(!w.style.display){w.style.display="none";Cookies.set("view","yes")}
+	if(!w.style.display){w.style.display="none";Cookies.set("view","yes",30)}
 }
 function Index_Hide(){
 	var trtab=doc.querySelectorAll(this.id.replace("p",".")),display="";
@@ -202,7 +202,8 @@ function Story_Tree(series,page,tree,seed){
 		var ref=Temp.refs.indexOf(id),p=tree.indexOf(Storys[ref].prev);
 			prevfield=doc.querySelector("#trianus_"+Temp.refs.indexOf(Storys[ref].prev)+" .next");
 		if(prevfield){
-			var sr=p+1;if(Temp.type.indexOf(Storys[ref].type)>4)sr--;
+			var sr=p+1,osr=Temp.type.indexOf(Storys[ref].type);
+			if(osr>4||osr==0)sr--;
 			prevfield.appendChild(Story_Link(id));
 			prevfield.appendChild(doc.createElement("br"));
 			tree.splice(sr,0,id);
@@ -373,7 +374,7 @@ function Story_Show(Story){
 	field.appendChild(article);
 	field.appendChild(next);
 	field.appendChild(buttons);
-	doc.querySelector("#Story").insertBefore(field,doc.querySelector("#loading"));
+	doc.querySelector("#Storyscroll").insertBefore(field,doc.querySelector("#loading"));
 }
 function Story_Link(id,index,n){
 	var a=doc.createElement("a"),
@@ -388,7 +389,7 @@ function Story_Link(id,index,n){
 		a.innerHTML=t[1]+" "+t[2];
 		a.style.marginLeft=c+"px";
 		var b=Temp.type.indexOf(Storys[p].type)
-		if(b>4&&b<10)a.style.opacity=0.5;
+		if(b==0||b>4&&b<10)a.style.opacity=0.5;
 	}else a.innerHTML=Storys[p].title;
 	a.onclick=Story_View;
 	return a
@@ -404,11 +405,11 @@ function Story_View(){
 		if(!d)field=fields[i];
 		fields[i].style.display=d;
 	}
-	doc.querySelector("#Story").scrollTop=field.offsetTop-10;
+	doc.querySelector("#Storyscroll").scrollTop=field.offsetTop-10;
 }
 function Story_Post(){
 	doc.querySelector("#post").style.display="";
-	doc.querySelector("#Story").scrollTop=doc.querySelector("#post").offsetTop-10;
+	doc.querySelector("#Storyscroll").scrollTop=doc.querySelector("#post").offsetTop-10;
 }
 function Story_Save(){
 	var title=doc.querySelector("#trianus_title"),
