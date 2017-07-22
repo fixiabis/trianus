@@ -110,6 +110,7 @@ input[type=button]:hover{
 }
 #list .index,#list .tab{
 	margin:10px 10px;
+	width:calc(100% - 17px);
 }
 #list .tab{
 	background-image:url(../image/down.png);
