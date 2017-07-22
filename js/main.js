@@ -82,8 +82,14 @@ doc.querySelector("#trianus_view").addEventListener("click",function(){
 });
 doc.querySelector("#seed").addEventListener("click",function(){Story_Edit("",1,"繁殖","播種",1)});
 doc.querySelector("#flow").addEventListener("click",function(){Story_Edit("",1,"尋源","尋源",1)});
-//doc.querySelector("#lake").addEventListener("click",function(){Story_Edit("",1,"掘湖","掘湖",1)});
+doc.querySelector("#show").addEventListener("click",function(){
+	Story_Post();doc.querySelector("#trianus_content").placeholder="內容至少要60字喔，所有欄位編輯完成後點選["+doc.querySelector("#trianus_post").value+"]，即可複製已格式過的文章，並麻煩貼往facebook的社團喔~";
+});
 doc.querySelector("#Story").addEventListener("click",Index_View);
+function Welcome(){
+	var w=doc.querySelector("#welcome");
+	if(!w.style.display){w.style.display="none";Cookies.set("view","yes")}
+}
 function Index_Hide(){
 	var trtab=doc.querySelectorAll(this.id.replace("p",".")),display="";
 	if(trtab[0].style.display==""){
@@ -245,6 +251,7 @@ function Story_Proc(content,id){
 			prev:""
 		};
 	if(Story.id.substr(0,9)!="#trianus_")return;
+	doc.querySelector("#list .loading").innerHTML="正在準備索引...(已載入"+Temp.refs.length+"篇)"
 	for(var i=3;i<content.length;i++){
 		if(content[i].search("#trianus_")>-1){
 			Story.prev=content[i].replace(/ /g,"");break
@@ -403,7 +410,7 @@ function Story_View(){
 }
 function Story_Post(){
 	doc.querySelector("#post").style.display="";
-	doc.querySelector("#Story").scrollTop=0;
+	doc.querySelector("#Story").scrollTop=doc.querySelector("#post").offsetTop-10;
 }
 function Story_Save(){
 	var title=doc.querySelector("#trianus_title"),

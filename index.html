@@ -43,6 +43,9 @@
 					<div id="tri_post" style="text-indent:32px;">你想接續他人文章的話，找到該篇文章後，可點選下方的按鈕類型，若是想發一篇新的文章，可以使用旁邊的項目欄(播種/尋源)，此時編輯介面將會跳出，輸入好內容後，點按剛剛所點過的按鈕類型，即可複製文章，由於facebook有些限制，因此無法自動發文，此編輯器適用於不太了解發文格式者。若還是不太能了解歡迎來找<a href="https://m.me/fixiabis" style="padding-left:0px;" target="_new">社長詢問</a>。
 					</div>
 				</div>
+				<div style="text-align:right;padding-bottom:0px;">
+					<input type="button" value="藏匿" onclick="Welcome()"/>
+				</div>
 			</div>
 			<div class="story" id="post" style="display:none;">
 				<input type="text" id="trianus_Mtitle" placeholder="故事標題"/><input type="text" id="trianus_count" readonly="true" value="1"/>
@@ -62,7 +65,7 @@
 		</div>
 		<div id="list">
 			<div align="center">
-				<input type="button" id="seed" value="播種" style="width:40%"/><input type="button" id="flow" value="尋源" style="width:40%"/>
+				<input type="button" id="seed" value="播種" style="width:30%"/><input type="button" id="flow" value="尋源" style="width:30%"/><input type="button" id="show" value="展現" style="width:30%"/>
 			</div>
 			<div class="loading" style="animation:show 1s infinite;margin:10px;">正在準備索引...</div>
 			<div id="forest" style="display:none">

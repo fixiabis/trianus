@@ -168,11 +168,11 @@ input[type=button]:hover{
 	letter-spacing:4px;
 	line-height:25px;
 }
-#seed,#flow,#lake{
+#seed,#flow,#show{
 	border:#ddd solid 2px;
 	margin:5px 0px;
 }
-#seed:hover,#flow:hover{
+#seed:hover,#flow:hover,#show:hover{
 	border-color:#3b5998;
 }
 #seed{
@@ -180,10 +180,15 @@ input[type=button]:hover{
 	border-top-right-radius:0px;
 	border-bottom-right-radius:0px;
 }
-#flow{
+#show{
 	border-left:#ddd solid 1px;
 	border-top-left-radius:0px;
 	border-bottom-left-radius:0px;
+}
+#flow{
+	border-right:#ddd solid 1px;
+	border-left:#ddd solid 1px;
+	border-radius:0px;
 }
 #Story{
 	height:calc(100% - 60px);
