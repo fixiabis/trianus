@@ -405,7 +405,7 @@ function Story_View(){
 		if(!d)field=fields[i];
 		fields[i].style.display=d;
 	}
-	doc.querySelector("#Storyscroll").scrollTop=field.offsetTop-10;
+	if(id)doc.querySelector("#Storyscroll").scrollTop=field.offsetTop-10;
 }
 function Story_Post(){
 	doc.querySelector("#post").style.display="";
