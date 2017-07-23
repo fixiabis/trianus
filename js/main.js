@@ -258,7 +258,11 @@ function Story_Proc(content,id){
 			prev:""
 		};
 	if(Story.id.substr(0,9)!="#trianus_")return;
-	doc.querySelector("#list .loading").innerHTML="正在準備索引...(已載入"+Temp.refs.length+"篇)"
+	doc.querySelector("#list .loading").innerHTML="正在準備索引...(已載入"+Temp.refs.length+"篇)";
+	var idcheck=Story.id.split("_")
+	if(isNaN(idcheck[2])){
+		idcheck.splice(2,0,"");Story.id=idcheck.join("_")
+	}
 	for(var i=3;i<content.length;i++){
 		if(content[i].search("#trianus_")>-1){
 			Story.prev=content[i].replace(/ /g,"");break
@@ -407,7 +411,7 @@ function Story_Link(id,index,n){
 function Story_View(){
 	var id=decodeURI(location.hash).replace("#","");
 	var fields=doc.querySelectorAll(".story.article");
-	for(var i=0;i<fields.length;i++)fields[i].style.display=(Storys[i].id.search(id)<0)?"none":"";
+	for(var i=0;i<fields.length;i++)fields[i].style.display=(Storys[i].id.search("_"+id+"_")<0)?"none":"";
 }
 function Story_Post(){
 	doc.querySelector("#post").style.display="";
