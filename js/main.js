@@ -82,6 +82,34 @@ doc.querySelector("#show").addEventListener("click",function(){
 	Story_Post();doc.querySelector("#trianus_content").placeholder="內容至少要60字喔，所有欄位編輯完成後點選["+doc.querySelector("#trianus_post").value+"]，即可複製已格式過的文章，並麻煩貼往facebook的社團喔~";
 });
 doc.querySelector("#Story").addEventListener("click",Index_View);
+function Message(msg,btn){
+	var arg=arguments;
+	doc.querySelector("#Msg").style.display="";
+	if(!msg){doc.querySelector("#Msg").style.display="none";return}
+	doc.querySelector("#msgc").innerHTML=msg;
+	doc.querySelector("#Msg :last-child").innerHTML="";
+	for(var i=1;i<arg.length;i++){
+		arg[i].type="button";
+		doc.querySelector("#Msg :last-child").appendChild(arg[i]);
+	}
+}
+function Intro(){
+	var n=doc.createElement("input"),f=doc.createElement("input"),c=doc.createElement("input");
+	n.value="不想";f.value="發文給人接";c.value="接別人發文";
+	f.style.width="100px";c.style.width="100px";
+	n.onclick=function(){
+		var y=doc.createElement("input"),n=doc.createElement("input");
+		y.value="好的";n.value="不想";
+		y.onclick=function(){
+			var b=doc.createElement("input")
+			b.value="吹拂";
+			Message("想瞭解哪個呢?")
+		}
+		n.onclick=function(){Message("")}
+		Message("需要瞭解網頁的常用功能嗎?",y,n)
+	}
+	Message("想試試如何發文嗎？",f,c,n);
+}
 function Mobile(){
 	return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i).test(navigator.userAgent)
 }
