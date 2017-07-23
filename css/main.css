@@ -272,7 +272,7 @@ input[type=button]:hover{
 		letter-spacing:2px;
 		line-height:20px;
 		margin:10px 0px;
-		width:100%;
+		width:calc(100% - 20px);
 	}
 	#join_us{
 		display:none;
