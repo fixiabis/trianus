@@ -78,11 +78,10 @@ doc.querySelector("#trianus_view").addEventListener("click",function(){
 });
 doc.querySelector("#seed").addEventListener("click",function(){Story_Edit("",1,"繁殖","播種",1)});
 doc.querySelector("#flow").addEventListener("click",function(){Story_Edit("",1,"尋源","尋源",1)});
-doc.querySelector("#show").addEventListener("click",function(){
-	Story_Post();doc.querySelector("#trianus_content").placeholder="內容至少要60字喔，所有欄位編輯完成後點選["+doc.querySelector("#trianus_post").value+"]，即可複製已格式過的文章，並麻煩貼往facebook的社團喔~";
-});
+doc.querySelector("#show").addEventListener("click",Intro);
 doc.querySelector("#Story").addEventListener("click",Index_View);
 function Message(msg,btn){
+	doc.querySelector("#Storyscroll").scrollTop=doc.querySelector("#Msg").offsetTop-10;
 	var arg=arguments;
 	doc.querySelector("#Msg").style.display="";
 	if(!msg){doc.querySelector("#Msg").style.display="none";return}
@@ -94,21 +93,78 @@ function Message(msg,btn){
 	}
 }
 function Intro(){
-	var n=doc.createElement("input"),f=doc.createElement("input"),c=doc.createElement("input");
-	n.value="不想";f.value="發文給人接";c.value="接別人發文";
+	var cre=function(){return doc.createElement("input")}
+	var n=cre(),f=cre(),c=cre(),b=cre();
+	n.value="不想";f.value="發文給人接";c.value="接別人發文";b.value="救我";
 	f.style.width="100px";c.style.width="100px";
+	b.onclick=function(){
+		var y=cre(),n=cre();
+		y.value="對，救我";
+		n.value="沒有";
+		y.onclick=function(){
+			var b=cre();
+			b.value="謝謝";
+			b.onclick=function(){Message()};
+			Story_Post();Message("好了",b);
+			doc.querySelector("#trianus_content").placeholder="內容至少要60字喔，所有欄位編輯完成後點選["+doc.querySelector("#trianus_post").value+"]，即可複製已格式過的文章，並麻煩貼往facebook的社團喔~";
+			doc.querySelector("#Storyscroll").scrollTop=doc.querySelector("#Msg").offsetTop-10;
+		}
+		n.onclick=function(){
+			var p=cre(),s=cre(),b=cre(),g=cre();
+			p.value="我不會發文";s.value="按爽的";b.value="我想找社長";g.value="我想去社團";
+			p.style.width="100px";g.style.width="100px";b.style.width="100px";
+			p.onclick=function(){Intro()};
+			s.onclick=function(){Message()};
+			b.onclick=function(){window.open("https://m.me/fixiabis");Message()};
+			g.onclick=function(){window.open("https://facebook.com/groups/trianus");Message()};
+			Message("不然??",p,g,b,s)
+		};
+		Message("手殘關到文字版面?",y,n);
+	}
 	n.onclick=function(){
-		var y=doc.createElement("input"),n=doc.createElement("input");
+		var y=cre(),n=cre();
 		y.value="好的";n.value="不想";
 		y.onclick=function(){
-			var b=doc.createElement("input")
-			b.value="吹拂";
-			Message("想瞭解哪個呢?")
+			var n=cre(),y=cre();
+			y.value="好的";
+			n.value="看不懂";
+			y.onclick=function(){
+				Message();
+				doc.querySelector("#Storyscroll").scrollTop=doc.querySelector("#welcome").offsetTop-10;
+			};
+			n.onclick=function(){
+				window.open("https://m.me/fixiabis");Message();
+			}
+			Welcome(1);Message("看看上面的內容吧",y,n)
 		}
-		n.onclick=function(){Message("")}
+		n.onclick=function(){Message()}
 		Message("需要瞭解網頁的常用功能嗎?",y,n)
 	}
-	Message("想試試如何發文嗎？",f,c,n);
+	f.onclick=function(){
+		var f=cre(),s=cre();
+		f.value="用fb留言";s.value="可以多項發展";
+		f.style.width="100px";s.style.width="120px";
+		f.onclick=function(){
+			var t=cre();t.value="到社團";
+			t.onclick=function(){window.open("https://facebook.com/groups/trianus");Message()};
+			Story_Edit("",1,"繁殖","播種",1);
+			Message("輸入好內容按下播種即可複製，直接貼往社團即可",t);
+		}
+		s.onclick=function(){
+			var t=cre();t.value="到社團";
+			t.onclick=function(){window.open("https://facebook.com/groups/trianus");Message()};
+			Story_Edit("",1,"尋源","尋源",1);
+			Message("輸入好內容按下尋源即可複製，直接貼往社團即可",t);
+		}
+		Message("你想以哪種形式的呢?",f,s);
+	}
+	c.onclick=function(){
+		var y=cre();
+		y.value="瞭解";
+		y.onclick=function(){window.open("https://m.me/fixiabis");Message();}
+		Message("寫接續，找到文章按下培養/延續<br>寫結局，找到文章按下結葉<br>填完內容後，點剛剛所點的按鈕(培養/延續/結頁)",y);
+	}
+	Message("想試試如何發文嗎？",f,c,n,b);
 }
 function Mobile(){
 	return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i).test(navigator.userAgent)
@@ -124,9 +180,10 @@ function Resize(){
 		doc.querySelector("#Storyscroll").style.height="calc(100% + 17px)"
 	}
 }
-function Welcome(){
+function Welcome(y){
 	var w=doc.querySelector("#welcome");
-	if(!w.style.display){w.style.display="none";Cookies.set("view","yes",30)}
+	if(!w.style.display&&!y){w.style.display="none";Cookies.set("view","yes",30)}
+	else w.style.display="";
 }
 function Index_Hide(){
 	var trtab=doc.querySelectorAll(this.id.replace("p",".")),display="";
