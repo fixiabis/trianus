@@ -105,12 +105,12 @@ input[type=button]:hover{
 }
 #list div{
 	animation:show 1s;
-	margin:0px 0px 10px;
+	margin-bottom:10px;
 	white-space:nowrap;
 }
 #list .index,#list .tab{
 	margin:10px 10px;
-	width:calc(100% - 17px);
+	width:calc(100% - 20px);
 }
 #list .tab{
 	background-image:url(../image/down.png);
@@ -246,7 +246,7 @@ input[type=button]:hover{
 		width:calc(100% - 300px);
 	}
 	.story{
-		margin:10px calc((100% - 600px) / 2);
+		margin:10px calc(((100% - 17px) - 600px) / 2 + 7.5px);
 	}
 	#list{
 		width:300px;
@@ -271,8 +271,8 @@ input[type=button]:hover{
 	.story{
 		letter-spacing:2px;
 		line-height:20px;
-		margin:10px;
-		width:calc(100% - 40px);
+		margin:10px 0px;
+		width:calc(100% - 22px);
 	}
 	#join_us{
 		display:none;

@@ -452,6 +452,7 @@ function Index_Show(sort,field,name){
 						t=doc.querySelectorAll("#list .tab");
 					for(var k=0;k<x.length;k++)x[k].style.display="none";
 					for(var k=0;k<t.length;k++)if(!t[k].id)t[k].style.backgroundImage="";
+					location="#"+this.innerHTML;
 					if(d==""){
 						this.style.backgroundImage=""
 						this.nextSibling.style.display="none"
