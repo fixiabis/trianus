@@ -124,9 +124,9 @@ input[type=button]:hover{
 	transition:background-image 0.1s;
 }
 #listscroll,#Storyscroll{
-	height:calc(100% + 17px);
+	height:100%;
 	overflow:scroll;
-	width:calc(100% + 17px);
+	width:100%;
 }
 #menu,#menuc{
 	cursor:pointer;
@@ -246,7 +246,7 @@ input[type=button]:hover{
 		width:calc(100% - 300px);
 	}
 	.story{
-		margin:10px calc(((100% - 17px) - 600px) / 2 + 7.5px);
+		margin:10px calc((100% - 600px) / 2);
 	}
 	#list{
 		width:300px;
@@ -272,7 +272,7 @@ input[type=button]:hover{
 		letter-spacing:2px;
 		line-height:20px;
 		margin:10px 0px;
-		width:calc(100% - 22px);
+		width:100%;
 	}
 	#join_us{
 		display:none;

@@ -52,17 +52,13 @@ clipboard = new Clipboard("#trianus_copy"),
 access_token="access_token=EAAEAhFsvEQIBAK6LTYJo1jv0lp5trzauCWyvJArA9jkwzEkIP7R2NsisUAogl7b4eWteLWk3ygt1CYTGhAN7vQRIjOVUDzmCLyyl8SFYb5Cye3QPRLXrV80ZC5DX78sVBa05l7dckDAUoT18eo5ZAZCA6qCqhA0jsUODy1sqgZDZD";
 clipboard.on('success',function(e){doc.querySelector("#trianus_post").value="已複製"});
 doc.body.onload=function(){
-	Story_Load();
+	Story_Load();Resize();
 	if(!Cookies.get("view"))doc.querySelector("#welcome").style.display="";
 }
-doc.body.onresize=function(){
-	doc.querySelector("#list").style.left="";
-	var menuc=doc.querySelector("#menuc");
-	if(menuc)menuc.id="menu";
-}
+doc.body.onresize=Resize;
 doc.body.onhashchange=Story_View;
 doc.body.oncontextmenu=function(e){
-	if(!(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i).test(navigator.userAgent))e.preventDefault()
+	if(!Mobile())e.preventDefault()
 }
 doc.body.onkeyup=Story_Save;
 doc.querySelector("#menu").addEventListener("click",Index_View);
@@ -86,6 +82,20 @@ doc.querySelector("#show").addEventListener("click",function(){
 	Story_Post();doc.querySelector("#trianus_content").placeholder="內容至少要60字喔，所有欄位編輯完成後點選["+doc.querySelector("#trianus_post").value+"]，即可複製已格式過的文章，並麻煩貼往facebook的社團喔~";
 });
 doc.querySelector("#Story").addEventListener("click",Index_View);
+function Mobile(){
+	return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i).test(navigator.userAgent)
+}
+function Resize(){
+	doc.querySelector("#list").style.left="";
+	var menuc=doc.querySelector("#menuc");
+	if(menuc)menuc.id="menu";
+	if(!Mobile()){
+		doc.querySelector("#listscroll").style.width="calc(100% + 17px)"
+		doc.querySelector("#listscroll").style.height="calc(100% + 17px)"
+		doc.querySelector("#Storyscroll").style.width="calc(100% + 17px)"
+		doc.querySelector("#Storyscroll").style.height="calc(100% + 17px)"
+	}
+}
 function Welcome(){
 	var w=doc.querySelector("#welcome");
 	if(!w.style.display){w.style.display="none";Cookies.set("view","yes",30)}
@@ -395,17 +405,9 @@ function Story_Link(id,index,n){
 	return a
 }
 function Story_View(){
-	var id=decodeURI(location.hash);
-	var fields=doc.querySelectorAll(".story.article"),field;
-	if(id&&id[1]!="_")id="#_trianus_"+Temp.refs.indexOf(id);
-	for(var i=0;i<fields.length;i++){
-		var d="";
-		if(fields[i].id!=id.replace("#_",""))d="none";
-		if(!id)d="";
-		if(!d)field=fields[i];
-		fields[i].style.display=d;
-	}
-	if(id)doc.querySelector("#Storyscroll").scrollTop=field.offsetTop-10;
+	var id=decodeURI(location.hash).replace("#","");
+	var fields=doc.querySelectorAll(".story.article");
+	for(var i=0;i<fields.length;i++)fields[i].style.display=(Storys[i].id.search(id)<0)?"none":"";
 }
 function Story_Post(){
 	doc.querySelector("#post").style.display="";
@@ -452,13 +454,13 @@ function Index_Show(sort,field,name){
 						t=doc.querySelectorAll("#list .tab");
 					for(var k=0;k<x.length;k++)x[k].style.display="none";
 					for(var k=0;k<t.length;k++)if(!t[k].id)t[k].style.backgroundImage="";
-					location="#"+this.innerHTML;
 					if(d==""){
-						this.style.backgroundImage=""
-						this.nextSibling.style.display="none"
+						this.style.backgroundImage="";
+						this.nextSibling.style.display="none";
 					}else{
-						this.style.backgroundImage="url(image/up.png)"
-						this.nextSibling.style.display=""
+						this.style.backgroundImage="url(image/up.png)";
+						this.nextSibling.style.display="";
+						location="#"+this.innerHTML;
 					}
 				}
 				doc.querySelector(field).appendChild(title);
