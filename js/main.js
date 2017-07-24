@@ -45,7 +45,8 @@ Temp={
 	fews:[],
 	fewo:[],
 	rews:[],
-	rewo:[]
+	rewo:[],
+	user:{}
 },
 Storys=[],
 clipboard = new Clipboard("#trianus_copy"),
@@ -80,6 +81,29 @@ doc.querySelector("#seed").addEventListener("click",function(){Story_Edit("",1,"
 doc.querySelector("#flow").addEventListener("click",function(){Story_Edit("",1,"尋源","尋源",1)});
 doc.querySelector("#show").addEventListener("click",Intro);
 doc.querySelector("#Story").addEventListener("click",Index_View);
+function FB_Login(){
+	if(Cookies.get("FBid"))return FB_UserC();
+	(function(d, s, id){
+		var js, fjs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id)) {return;}
+		js = d.createElement(s); js.id = id;
+		js.src = "https://connect.facebook.net/en_US/sdk.js";
+		js.onload = function(){
+			FB.login(function(){
+				Cookies.set("FBid",FB.getUserId(),30);FB_UserC();
+			});
+		}
+		fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));
+}
+function FB_UserC(){
+	var FBid=Cookies.get("FBid");
+	doc.querySelector("#User img").src="https://graph.facebook.com/"+FBid+"/picture?"+access_token;
+	if(Temp.user[FBid]){
+		doc.querySelector("#User td:nth-child(2)").innerHTML=Temp.user[FBid].post+"篇";
+		doc.querySelector("#User td:nth-child(4)").innerHTML=Temp.user[FBid].flow+"則";
+	}
+}
 function Message(msg,btn){
 	doc.querySelector("#Storyscroll").scrollTop=doc.querySelector("#Msg").offsetTop-10;
 	var arg=arguments;
@@ -223,6 +247,8 @@ function Story_Flow(field,article,Post_id,l){
 	var parameter=access_token,
 		proc=function(result,url,p){
 			for(var i=0;i<result.data.length;i++){
+				if(!Temp.user[result.data[i].id])Temp.user[result.data[i].id]={post:0,flow:0};
+				Temp.user[result.data[i].id].flow++;
 				if(result.data[i].message.search("#flow ")==0){
 					if(i!=0&&!p.f)Temp.floc[p.p]+="</p>";
 					Temp.floc[p.p]+="<p>"+result.data[i].message.replace("#flow ","");
@@ -236,7 +262,7 @@ function Story_Flow(field,article,Post_id,l){
 				p.article.innerHTML+=Temp.floc+"</p>";p.field.style.display="";
 			}
 		};
-	parameter+="&fields=message";
+	parameter+="&fields=message,id";
 	Loader("https://graph.facebook.com/"+Post_id+"/comments?"+parameter,proc,{
 		f:1,p:l,article:article,field:field
 	})
@@ -314,7 +340,7 @@ function Story_Tree(series,page,tree,seed){
 }
 function Story_Load(){
 	var parameter=access_token;
-		parameter+="&fields=comments,message",
+		parameter+="&fields=comments,message,from",
 		proc=function(result){
 			for(var i=0;i<result.data.length;i++){
 				if(!result.data[i].message)continue;
@@ -322,6 +348,8 @@ function Story_Load(){
 				if(ser==-1)continue;
 				var content=result.data[i].message.substr(ser,result.data[i].message.length-ser),
 					id=result.data[i].id;
+				if(!Temp.user[result.data[i].from.id])Temp.user[result.data[i].from.id]={post:0,flow:0};
+				Temp.user[result.data[i].from.id].post++;
 				Story_Proc(content.replace(/\n\n/g,"\n"),id);
 			}
 			if(!result.paging||!result.paging.next){

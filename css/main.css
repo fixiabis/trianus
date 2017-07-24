@@ -4,6 +4,7 @@ a{
 	text-decoration:none;
 }
 a,input,textarea{
+	-webkit-appearance:none;
 	outline:none;
 }
 body{
@@ -234,6 +235,9 @@ input[type=button]:hover{
 	margin-bottom:10px;
 	text-indent:16px;
 	width:100%;
+}
+#user td:nth-child(2){
+	width:50%;text-align:right;
 }
 @keyframes show{
 	0%{
