@@ -83,18 +83,7 @@ doc.querySelector("#show").addEventListener("click",Intro);
 doc.querySelector("#Story").addEventListener("click",Index_View);
 function FB_Login(){
 	if(Cookies.get("FBid"))return FB_UserC();
-	(function(d, s, id){
-		var js, fjs = d.getElementsByTagName(s)[0];
-		if (d.getElementById(id)) {return;}
-		js = d.createElement(s); js.id = id;
-		js.src = "https://connect.facebook.net/en_US/sdk.js";
-		js.onload = function(){
-			FB.login(function(){
-				Cookies.set("FBid",FB.getUserId(),30);FB_UserC();
-			});
-		}
-		fjs.parentNode.insertBefore(js, fjs);
-	}(document, 'script', 'facebook-jssdk'));
+	FB.login(function(){Cookies.set("FBid",FB.getUserId(),30)});
 }
 function FB_UserC(){
 	var FBid=Cookies.get("FBid");
@@ -597,3 +586,18 @@ function Index_Show(sort,field,name){
 	}
 	doc.querySelector("#list .loading").style.display="none";
 }
+window.fbAsyncInit = function() {
+	FB.init({
+		appId      : '282043442204930',
+		xfbml      : true,
+		version    : 'v2.9'
+	});
+	FB.AppEvents.logPageView();
+};
+(function(d, s, id){
+	var js, fjs = d.getElementsByTagName(s)[0];
+	if (d.getElementById(id)) {return;}
+	js = d.createElement(s); js.id = id;
+	js.src = "https://connect.facebook.net/en_US/sdk.js";
+	fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
