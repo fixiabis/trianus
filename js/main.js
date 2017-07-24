@@ -344,10 +344,8 @@ function Story_Load(){
 				var ser=result.data[i].message.search("#trianus_");
 				if(ser==-1)continue;
 				var content=result.data[i].message.substr(ser,result.data[i].message.length-ser),
-					id=result.data[i].id;
-				if(!Temp.user[result.data[i].from.id])Temp.user[result.data[i].from.id]={post:0,flow:0};
-				Temp.user[result.data[i].from.id].post++;FB_UserC();
-				Story_Proc(content.replace(/\n\n/g,"\n"),id);
+					id=result.data[i].id,fid=result.data[i].from.id;
+				Story_Proc(content.replace(/\n\n/g,"\n"),id,fid);
 			}
 			if(!result.paging||!result.paging.next){
 				doc.querySelector("#loading").style.display="none";
@@ -362,7 +360,7 @@ function Story_Load(){
 	Loader("https://graph.facebook.com/1961795094104661/feed?"+parameter,proc);
 	//Loader("https://graph.facebook.com/1511206835567537/feed?"+parameter);
 }
-function Story_Proc(content,id){
+function Story_Proc(content,id,fid){
 	content=content.split("\n");
 	var Story={
 			Post_id:id,
@@ -374,6 +372,7 @@ function Story_Proc(content,id){
 			prev:""
 		};
 	if(Story.id.substr(0,9)!="#trianus_")return;
+	if(!Temp.user[fid])Temp.user[fid]={post:0,flow:0};Temp.user[fid].post++;FB_UserC();
 	doc.querySelector("#list .loading").innerHTML="正在準備索引...(已載入"+Temp.refs.length+"篇)";
 	var idcheck=Story.id.split("_"),tlcheck=Story.title.split(" ");
 	if(isNaN(idcheck[2])){idcheck.splice(2,0,"");Story.id=idcheck.join("_")}
