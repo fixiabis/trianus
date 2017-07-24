@@ -244,13 +244,16 @@ function Story_Flow(field,article,Post_id,l){
 	var parameter=access_token,
 		proc=function(result,url,p){
 			for(var i=0;i<result.data.length;i++){
-				if(!Temp.user[result.data[i].from.id])Temp.user[result.data[i].from.id]={post:0,flow:0};
-				Temp.user[result.data[i].from.id].flow++;FB_UserC();
+				var c=0;
 				if(result.data[i].message.search("#flow ")==0){
-					if(i!=0&&!p.f)Temp.floc[p.p]+="</p>";
+					if(i!=0&&!p.f)Temp.floc[p.p]+="</p>";c=1;
 					Temp.floc[p.p]+="<p>"+result.data[i].message.replace("#flow ","");
 				}else if(result.data[i].message.search("#join ")==0){
-					Temp.floc[p.p]+=result.data[i].message.replace("#join ","");
+					Temp.floc[p.p]+=result.data[i].message.replace("#join ","");c=1;
+				}
+				if(c){
+					if(!Temp.user[result.data[i].from.id])Temp.user[result.data[i].from.id]={post:0,flow:0};
+					Temp.user[result.data[i].from.id].flow++;FB_UserC();
 				}
 			}
 			if(p.f)p.f=0;
