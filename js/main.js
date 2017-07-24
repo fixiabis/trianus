@@ -83,14 +83,20 @@ doc.querySelector("#show").addEventListener("click",Intro);
 doc.querySelector("#Story").addEventListener("click",Index_View);
 function FB_Login(){
 	if(Cookies.get("FBid"))return FB_UserC();
-	FB.login(function(){Cookies.set("FBid",FB.getUserId(),30)});
+	FB.getLoginStatus(function(r){
+		if(r.status=="connected"){
+			Cookies.set("FBid",FB.getUserID(),30);FB_UserC();
+		}else FB.login(function(){Cookies.set("FBid",FB.getUserID(),30);FB_UserC()});
+	})
 }
 function FB_UserC(){
 	var FBid=Cookies.get("FBid");
 	doc.querySelector("#User img").src="https://graph.facebook.com/"+FBid+"/picture?"+access_token;
+	doc.querySelector("#User input[type=button]").style.display="none";
 	if(Temp.user[FBid]){
-		doc.querySelector("#User td:nth-child(2)").innerHTML=Temp.user[FBid].post+"篇";
-		doc.querySelector("#User td:nth-child(4)").innerHTML=Temp.user[FBid].flow+"則";
+		var tds=doc.querySelectorAll("#User td")
+		tds[1].innerHTML=Temp.user[FBid].post+"篇";
+		tds[3].innerHTML=Temp.user[FBid].flow+"則";
 	}
 }
 function Message(msg,btn){
