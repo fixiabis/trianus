@@ -50,10 +50,11 @@ Temp={
 },
 Storys=[],
 clipboard = new Clipboard("#trianus_copy"),
-access_token="access_token=EAAEAhFsvEQIBAK6LTYJo1jv0lp5trzauCWyvJArA9jkwzEkIP7R2NsisUAogl7b4eWteLWk3ygt1CYTGhAN7vQRIjOVUDzmCLyyl8SFYb5Cye3QPRLXrV80ZC5DX78sVBa05l7dckDAUoT18eo5ZAZCA6qCqhA0jsUODy1sqgZDZD";
+access_token="access_token=EAAEAhFsvEQIBAK6LTYJo1jv0lp5trzauCWyvJArA9jkwzEkIP7R2NsisUAogl7b4eWteLWk3ygt1CYTGhAN7vQRIjOVUDzmCLyyl8SFYb5Cye3QPRLXrV80ZC5DX78sVBa05l7dckDAUoT18eo5ZAZCA6qCqhA0jsUODy1sqgZDZD",
+FBid="";
 clipboard.on('success',function(e){doc.querySelector("#trianus_post").value="已複製"});
 doc.body.onload=function(){
-	Story_Load();Resize();
+	Story_Load();Resize();FB_Login()
 	if(!Cookies.get("view"))doc.querySelector("#welcome").style.display="";
 }
 doc.body.onresize=Resize;
@@ -82,7 +83,8 @@ doc.querySelector("#flow").addEventListener("click",function(){Story_Edit("",1,"
 doc.querySelector("#show").addEventListener("click",Intro);
 doc.querySelector("#Story").addEventListener("click",Index_View);
 function FB_Login(v){
-	if(Cookies.get("FBid"))return FB_UserC();
+	var id=Cookies.get("FBid");
+	if(id){FBid=id;return FB_UserC()}
 	if(v)FB.getLoginStatus(function(r){
 		if(r.status=="connected"){
 			Cookies.set("FBid",FB.getUserID(),30);FB_UserC();
@@ -90,11 +92,10 @@ function FB_Login(v){
 	})
 }
 function FB_UserC(){
-	var FBid=Cookies.get("FBid");
 	doc.querySelector("#User img").src="https://graph.facebook.com/"+FBid+"/picture?"+access_token;
 	doc.querySelector("#User input[type=button]").style.display="none";
 	if(Temp.user[FBid]){
-		var tds=doc.querySelectorAll("#User td")
+		var tds=doc.querySelectorAll("#User td");
 		tds[1].innerHTML=Temp.user[FBid].post+"篇";
 		tds[3].innerHTML=Temp.user[FBid].flow+"則";
 	}
@@ -243,7 +244,7 @@ function Story_Flow(field,article,Post_id,l){
 		proc=function(result,url,p){
 			for(var i=0;i<result.data.length;i++){
 				if(!Temp.user[result.data[i].id])Temp.user[result.data[i].id]={post:0,flow:0};
-				Temp.user[result.data[i].id].flow++;
+				Temp.user[result.data[i].id].flow++;FB_UserC();
 				if(result.data[i].message.search("#flow ")==0){
 					if(i!=0&&!p.f)Temp.floc[p.p]+="</p>";
 					Temp.floc[p.p]+="<p>"+result.data[i].message.replace("#flow ","");
@@ -344,7 +345,7 @@ function Story_Load(){
 				var content=result.data[i].message.substr(ser,result.data[i].message.length-ser),
 					id=result.data[i].id;
 				if(!Temp.user[result.data[i].from.id])Temp.user[result.data[i].from.id]={post:0,flow:0};
-				Temp.user[result.data[i].from.id].post++;
+				Temp.user[result.data[i].from.id].post++;FB_UserC();
 				Story_Proc(content.replace(/\n\n/g,"\n"),id);
 			}
 			if(!result.paging||!result.paging.next){
@@ -352,7 +353,7 @@ function Story_Load(){
 				doc.querySelector("#forest").style.display="";
 				doc.querySelector("#river").style.display="";
 				doc.querySelector("#lakes").style.display="";
-				Story_Sort();Story_View();FB_Login();return
+				Story_Sort();Story_View();return
 			}
 			Loader(result.paging.next,proc);
 		};
