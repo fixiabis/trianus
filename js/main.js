@@ -53,7 +53,7 @@ clipboard = new Clipboard("#trianus_copy"),
 access_token="access_token=EAAEAhFsvEQIBAK6LTYJo1jv0lp5trzauCWyvJArA9jkwzEkIP7R2NsisUAogl7b4eWteLWk3ygt1CYTGhAN7vQRIjOVUDzmCLyyl8SFYb5Cye3QPRLXrV80ZC5DX78sVBa05l7dckDAUoT18eo5ZAZCA6qCqhA0jsUODy1sqgZDZD";
 clipboard.on('success',function(e){doc.querySelector("#trianus_post").value="已複製"});
 doc.body.onload=function(){
-	Story_Load();Resize();FB_Login();
+	Story_Load();Resize();
 	if(!Cookies.get("view"))doc.querySelector("#welcome").style.display="";
 }
 doc.body.onresize=Resize;
@@ -352,7 +352,7 @@ function Story_Load(){
 				doc.querySelector("#forest").style.display="";
 				doc.querySelector("#river").style.display="";
 				doc.querySelector("#lakes").style.display="";
-				Story_Sort();Story_View();return
+				Story_Sort();Story_View();FB_Login();return
 			}
 			Loader(result.paging.next,proc);
 		};
