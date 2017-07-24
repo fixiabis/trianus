@@ -92,6 +92,7 @@ function FB_Login(v){
 	})
 }
 function FB_UserC(){
+	if(!FBid)return;
 	doc.querySelector("#User img").src="https://graph.facebook.com/"+FBid+"/picture?"+access_token;
 	doc.querySelector("#User input[type=button]").style.display="none";
 	if(Temp.user[FBid]){
@@ -243,8 +244,8 @@ function Story_Flow(field,article,Post_id,l){
 	var parameter=access_token,
 		proc=function(result,url,p){
 			for(var i=0;i<result.data.length;i++){
-				if(!Temp.user[result.data[i].id])Temp.user[result.data[i].id]={post:0,flow:0};
-				Temp.user[result.data[i].id].flow++;FB_UserC();
+				if(!Temp.user[result.data[i].from.id])Temp.user[result.data[i].from.id]={post:0,flow:0};
+				Temp.user[result.data[i].from.id].flow++;FB_UserC();
 				if(result.data[i].message.search("#flow ")==0){
 					if(i!=0&&!p.f)Temp.floc[p.p]+="</p>";
 					Temp.floc[p.p]+="<p>"+result.data[i].message.replace("#flow ","");
@@ -258,7 +259,7 @@ function Story_Flow(field,article,Post_id,l){
 				p.article.innerHTML+=Temp.floc+"</p>";p.field.style.display="";
 			}
 		};
-	parameter+="&fields=message,id";
+	parameter+="&fields=message,from";
 	Loader("https://graph.facebook.com/"+Post_id+"/comments?"+parameter,proc,{
 		f:1,p:l,article:article,field:field
 	})
