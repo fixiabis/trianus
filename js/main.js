@@ -53,7 +53,7 @@ clipboard = new Clipboard("#trianus_copy"),
 access_token="access_token=EAAEAhFsvEQIBAK6LTYJo1jv0lp5trzauCWyvJArA9jkwzEkIP7R2NsisUAogl7b4eWteLWk3ygt1CYTGhAN7vQRIjOVUDzmCLyyl8SFYb5Cye3QPRLXrV80ZC5DX78sVBa05l7dckDAUoT18eo5ZAZCA6qCqhA0jsUODy1sqgZDZD";
 clipboard.on('success',function(e){doc.querySelector("#trianus_post").value="已複製"});
 doc.body.onload=function(){
-	Story_Load();Resize();
+	Story_Load();Resize();FB_Login();
 	if(!Cookies.get("view"))doc.querySelector("#welcome").style.display="";
 }
 doc.body.onresize=Resize;
@@ -81,9 +81,9 @@ doc.querySelector("#seed").addEventListener("click",function(){Story_Edit("",1,"
 doc.querySelector("#flow").addEventListener("click",function(){Story_Edit("",1,"尋源","尋源",1)});
 doc.querySelector("#show").addEventListener("click",Intro);
 doc.querySelector("#Story").addEventListener("click",Index_View);
-function FB_Login(){
+function FB_Login(v){
 	if(Cookies.get("FBid"))return FB_UserC();
-	FB.getLoginStatus(function(r){
+	if(v)FB.getLoginStatus(function(r){
 		if(r.status=="connected"){
 			Cookies.set("FBid",FB.getUserID(),30);FB_UserC();
 		}else FB.login(function(){Cookies.set("FBid",FB.getUserID(),30);FB_UserC()});
