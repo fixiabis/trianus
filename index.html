@@ -48,10 +48,6 @@
 						<input type="button" value="藏匿" onclick="Welcome()"/>
 					</div>
 				</div>				
-				<div id="Msg" class="story" style="display:none">
-					<div id="msgc"></div>
-					<div style="text-align:right;padding-bottom:0px"></div>
-				</div>
 				<div class="story" id="post" style="display:none;">
 					<input type="text" id="trianus_Mtitle" placeholder="故事標題"/><input type="text" id="trianus_count" readonly="true" value="1"/>
 					<input type="text" id="trianus_title" placeholder="段落標題"/>
@@ -77,7 +73,7 @@
 					</div>
 					<div align="center">
 						<input type="button" value="登入到FaceBook" style="width:90%;margin-left:0px" onclick="FB_Login(1)"/>
-						<table style="width:90%">
+						<table style="width:90%;display:none">
 							<tr>
 								<td>總發文數:</td><td>0篇</td>
 							</tr>
@@ -88,7 +84,7 @@
 					</div>
 				</div>
 				<div align="center" style="width:calc(100% - 3px)">
-					<input type="button" id="seed" value="播種" style="width:30%"/><input type="button" id="flow" value="尋源" style="width:30%"/><input type="button" id="show" value="樹精" style="width:30%"/>
+					<input type="button" id="seed" value="播種" style="width:30%"/><input type="button" id="flow" value="尋源" style="width:30%"/><input type="button" id="show" value="展現" style="width:30%"/>
 				</div>
 				<div class="loading" style="animation:show 1s infinite;margin:10px;">正在準備索引...</div>
 				<div id="forest" style="display:none">
