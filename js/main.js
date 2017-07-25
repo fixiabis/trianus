@@ -48,13 +48,13 @@ Temp={
 	rewo:[],
 	user:{}
 },
-Storys=[],
+Storys=[],Groups=["1961795094104661","1511206835567537"],
 clipboard = new Clipboard("#trianus_copy"),
 access_token="access_token=EAAEAhFsvEQIBAK6LTYJo1jv0lp5trzauCWyvJArA9jkwzEkIP7R2NsisUAogl7b4eWteLWk3ygt1CYTGhAN7vQRIjOVUDzmCLyyl8SFYb5Cye3QPRLXrV80ZC5DX78sVBa05l7dckDAUoT18eo5ZAZCA6qCqhA0jsUODy1sqgZDZD",
 FBid="";
 clipboard.on('success',function(e){doc.querySelector("#trianus_post").value="已複製"});
 doc.body.onload=function(){
-	Story_Load();Resize();FB_Login()
+	Story_Load(0);Resize();FB_Login()
 	if(!Cookies.get("view"))doc.querySelector("#welcome").style.display="";
 }
 doc.body.onresize=Resize;
@@ -249,7 +249,14 @@ function Story_Tree(series,page,tree,seed){
 	}
 	return Story_Tree(series,page+1,tree);
 }
-function Story_Load(){
+function Story_Load(v){
+	if(!Groups[v]){
+		doc.querySelector("#loading").style.display="none";
+		doc.querySelector("#forest").style.display="";
+		doc.querySelector("#river").style.display="";
+		doc.querySelector("#lakes").style.display="";
+		Story_Sort();Story_View();return
+	}
 	var parameter=access_token;
 		parameter+="&fields=comments,message,from",
 		proc=function(result){
@@ -264,18 +271,10 @@ function Story_Load(){
 				content=content.replace(/>/g,"&gt;");
 				Story_Proc(content,id,fid);
 			}
-			if(!result.paging||!result.paging.next){
-				doc.querySelector("#loading").style.display="none";
-				doc.querySelector("#forest").style.display="";
-				doc.querySelector("#river").style.display="";
-				doc.querySelector("#lakes").style.display="";
-				Story_Sort();Story_View();return
-			}
+			if(!result.paging||!result.paging.next){Story_Load(v+1);return}
 			Loader(result.paging.next,proc);
 		};
-	
-	Loader("https://graph.facebook.com/1961795094104661/feed?"+parameter,proc);
-	//Loader("https://graph.facebook.com/1511206835567537/feed?"+parameter);
+	Loader("https://graph.facebook.com/"+Groups[v]+"/feed?"+parameter,proc);
 }
 function Story_Proc(content,id,fid){
 	content=content.split("\n");
