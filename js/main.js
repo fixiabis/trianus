@@ -259,7 +259,10 @@ function Story_Load(){
 				if(ser==-1)continue;
 				var content=result.data[i].message.substr(ser,result.data[i].message.length-ser),
 					id=result.data[i].id,fid=result.data[i].from.id;
-				Story_Proc(content.replace(/\n\n/g,"\n"),id,fid);
+				content=content.replace(/\n\n/g,"\n");
+				content=content.replace(/</g,"&lt;");
+				content=content.replace(/>/g,"&gt;");
+				Story_Proc(content,id,fid);
 			}
 			if(!result.paging||!result.paging.next){
 				doc.querySelector("#loading").style.display="none";
