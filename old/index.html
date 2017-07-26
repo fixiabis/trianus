@@ -1,0 +1,143 @@
+<html>
+	<head>
+		<title>trianus</title>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+		<style>
+			@import "css/main.css";
+		</style>
+		<script src="js/main.js"></script>
+	</head>
+	<body>
+		<header>
+			<div id="Logo" onclick="Story_Search('')">trianus</div>
+			<div id="Search">
+				<input type="text" placeholder="找找看你想要的內容吧"/>
+				<hr/>
+				<input type="button" onclick="Story_Search()"/>
+			</div>
+			<div id="menu" onclick="show(this)"><div></div><div></div></div>
+			<div id="Description">
+				<a href="https://facebook.com/groups/trianus" target="_new">加入我們</a>，讓故事如同樹一般的成長吧。
+			</div>
+		</header>
+		<div class="story" id="Welcome" style="display:none">
+			<div style="font-size:20px;font-weight:bold;">第一次來到這裡嗎？先了解一下各個按鈕的用途吧！</div>
+			<div>
+				<div><input type="button" value="播種"/>：發布一個接龍的開頭</div>
+				<div><input type="button" value="摘除"/>：取消原欲發布的內容</div>
+				<div><input type="button" value="培養"/>：用來接續他人的文章</div>
+				<div><input type="button" value="吹拂"/>：進入臉書，留個言吧</div>
+				<div><input type="button" value="森林"/>：顯示現在存在的故事</div>
+				<div style="text-indent:32px">以上功能皆須<a href="https://facebook.com/groups/trianus" target="_new">加入trianus的社團</a>才能夠使用，若要使用本網頁的發布功能，則需要授權給我們的應用程式，方能使用。</div>
+				<div style="text-indent:32px;margin-bottom:10px;">
+					文章的標題藍字只要點選，便會將所有相同故事的文章全數顯示，文章下方的小藍字為下一個段落，只要點選，便可以跳轉至該文章，要顯示全部文章可按頂端的trianus。
+				</div>
+			</div>
+			<div style="font-size:20px;font-weight:bold;">不懂要如何發文？</div>
+			<div>
+				<div style="font-weight:bold;font-size:18px;">你要播種?(發文給別人接)</div>
+					<div style="text-indent:32px">
+						直接在發文版面輸入故事標題，段落標題及文章內容。
+					</div>
+				<div style="font-weight:bold;font-size:18px;">還是培養?(接別人的發文)</div>
+					<div style="text-indent:32px">
+						找到想接續的文章後按下培養，將會導向至發文版面，輸入故事標題，段落標題及文章內容。
+					</div>
+				<div style="font-weight:bold;font-size:18px;">輸入完後...</div>
+					<div style="text-indent:32px">
+						按下login to facebook(第一次使用會要求授權)，在那之後會出現一個完整的編輯版面，內部是已經將格式寫好的文字方塊(可再編輯)，按下播種/培養，版面消失後即發文成功。
+					</div>
+			</div>
+			<div align="right">
+				<input type="button" value="關閉" onclick='Cookies.set("Visit","yes",30);document.querySelector("#Welcome").style.display="none"'/>
+			</div>
+		</div>
+		<div class="story" style="display:none;animation:lshow 0.5s" id="ForestC">
+			<div style="font-size:20px;font-weight:bold">trianus之森</div><hr>
+			<div id="Forest">
+				
+			</div>
+			<div align="right">
+				<input type="button" value="關閉" onclick="forestoc()"/>
+			</div>
+		</div>
+		<div class="story" id="Post" style="display:none">
+			<input type="text" placeholder="故事名稱"/><input type="text" placeholder="編號" style="width:10%;text-align:center;margin:0px 10px;" value="1" readonly="true"/><input type="text" placeholder="段落名稱"/>
+			<hr>
+			<textarea placeholder="內容，上面的故事名稱與段落名稱請盡量避免使用特殊符號"></textarea><br>
+			<div align="right">
+				<input type="button" value="說明" onclick='Cookies.del("Visit");document.querySelector("#Welcome").style.display=""'/>
+				<input type="button" value="森林" onclick="forestoc()"/>
+				<input type="button" value="login to facebook" onclick="Story_Send()" style="width:150px"/>
+				<input type="button" value="摘除" onclick="kill()"/>
+			</div>
+		</div>
+		<div id="loading" class="story">
+			<div>正在載入...</div>
+		</div>
+		<div id="nomore" class="story" style="display:none">沒有更多內容</div>
+		<div id="cover" style="display:none;"></div>
+		<div id="postconfirm" class="story" style="display:none">
+			<div style="font-size:20px;margin-bottom:10px;font-weight:bold">確認內容後將送出到Facebook</div>
+			<textarea></textarea>
+			<div align="right">
+				<input type="button" value="播種" onclick="FB_Story_Post()"/>
+				<input type="button" value="摘除" onclick="kill()"/>
+				<input type="button" value="取消" onclick="Story_Send_Cancel()"/>
+			</div>
+		</div>
+		<div id="message" class="story" style="display:none;">
+			<div style="font-size:20px;font-weight:bold;">要摘除嗎?</div>
+			<div align="right">
+				<input type="button" value="確認" onclick="Story_Edit()"/>
+				<input type="button" value="取消" onclick='document.querySelector("#message").style.display="none";Story_Send_Cancel();'/>
+			</div>
+		</div>
+		<script>
+			document.body.onresize=resize
+			function resize(){
+				if(window.innerWidth>784){
+					var menuc=document.querySelector("#menuc")
+					if(menuc)menuc.id="menu";
+					document.querySelector("header").style.height="90px";
+				}
+				document.querySelector("#postconfirm").style.top=(window.innerHeight-258)/2
+				document.querySelector("#message").style.top=(window.innerHeight-74)/2
+			}
+			function show(m){
+				m.id=(m.id=='menu')?'menuc':'menu';
+				document.querySelector("header").style.height=(m.id=="menu")?"90px":"170px"
+			}
+			function forestoc(v){
+				var f=document.querySelector("#ForestC"),p=document.querySelector("#Post");
+				if(!f.style.display||v){
+					f.style.display="none";p.style.display="";Cookies.del("Forest")
+				}else{
+					f.style.display="";p.style.display="none";Cookies.set("Forest","yes",30)
+				}
+			}
+			document.body.onkeydown=function(e){
+				if(e.which==123){e.preventDefault();return}
+				if(e.which==13&&e.shiftKey){
+					switch(document.querySelector(":focus").parentNode.id){
+						case"Search":Story_Search();break
+						case"Post":Story_Send()
+					}
+				}else{
+					Story_Save()
+				}
+			}
+			document.body.onload=function(){
+				if(!Cookies.get("Visit"))document.querySelector("#Welcome").style.display="";
+				if(Cookies.get("Forest"))forestoc();else forestoc(1);
+				Story_Get();resize();
+			}
+			function kill(){
+				Story_Send_Cancel();
+				document.querySelector("#cover").style.display="";
+				document.querySelector("#message").style.display=""
+			}
+		</script>
+	</body>
+</html>
