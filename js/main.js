@@ -251,9 +251,9 @@ var Trianus={
 						var c=0;
 					if(result.data[i].message.search("#flow ")==0||result.data[i].message.search("#接續 ")==0){
 							if(i!=0&&!p.f)Trianus.Story.floc[p.p]+="</p>";c=1;
-							Trianus.Story.floc[p.p]+="<p>"+result.data[i].message.replace("#flow ","");
+							Trianus.Story.floc[p.p]+="<p>"+result.data[i].message.replace("#flow ","").replace("#接續 ","");
 						}else if(result.data[i].message.search("#join ")==0||result.data[i].message.search("#續上 ")==0){
-							Trianus.Story.floc[p.p]+=result.data[i].message.replace("#join ","");c=1;
+							Trianus.Story.floc[p.p]+=result.data[i].message.replace("#join ","").replace("#續上 ","");c=1;
 						}
 						if(c){
 							if(!Trianus.Story.user[result.data[i].from.id])Trianus.Story.user[result.data[i].from.id]={post:0,flow:0};
