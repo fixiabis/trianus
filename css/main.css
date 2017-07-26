@@ -160,40 +160,6 @@ input[type=button]:hover{
 	transform:translate(5px,-3px) rotateZ(-45deg);
 	transform-origin:left;
 }
-#post input[type=text]{
-	font-size:22px;
-	height:40px;
-}
-#post input[type=text],#post textarea{
-	background:#222;
-	border:none;
-	border-radius:5px;
-	color:#ddd;
-	letter-spacing:4px;
-	line-height:25px;
-}
-#seed,#flow,#show{
-	border:#ddd solid 2px;
-	margin:5px 0px;
-}
-#seed:hover,#flow:hover,#show:hover{
-	border-color:#3b5998;
-}
-#seed{
-	border-right:#ddd solid 1px;
-	border-top-right-radius:0px;
-	border-bottom-right-radius:0px;
-}
-#show{
-	border-left:#ddd solid 1px;
-	border-top-left-radius:0px;
-	border-bottom-left-radius:0px;
-}
-#flow{
-	border-right:#ddd solid 1px;
-	border-left:#ddd solid 1px;
-	border-radius:0px;
-}
 #Story{
 	height:calc(100% - 60px);
 	left:calc((100% - 640px) / 2);
@@ -213,28 +179,6 @@ input[type=button]:hover{
 	transition:all 1s;
 	top:0px;
 	width:200px;
-}
-#trianus_count{
-	margin-left:10px;
-	text-align:center;
-	width:calc(10% - 5px);
-}
-#trianus_content{
-	font-size:16px;
-	height:200px;
-	margin-bottom:10px;
-	padding:10px;
-	width:100%;
-}
-#trianus_MTitle{
-	margin-bottom:10px;
-	text-indent:16px;
-	width:calc(90% - 5px);
-}
-#trianus_title{
-	margin-bottom:10px;
-	text-indent:16px;
-	width:100%;
 }
 #user td:nth-child(2){
 	width:50%;text-align:right;
