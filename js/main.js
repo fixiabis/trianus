@@ -37,7 +37,7 @@ function FB_UserC(){
 	GetElem("#User table").style.display="";
 	GetElem("#User img").src="https://graph.facebook.com/"+FBid+"/picture?"+Trianus.Access;
 	GetElem("#User input[type=button]").style.display="none";
-	if(Trianus.user[FBid]){
+	if(Trianus.Story.user[FBid]){
 		var tds=doc.querySelectorAll("#User td");
 		tds[1].innerHTML=Trianus.user[FBid].post+"篇";
 		tds[3].innerHTML=Trianus.user[FBid].flow+"則";
