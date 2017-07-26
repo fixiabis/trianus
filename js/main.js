@@ -39,8 +39,8 @@ function FB_UserC(){
 	GetElem("#User input[type=button]").style.display="none";
 	if(Trianus.Story.user[FBid]){
 		var tds=doc.querySelectorAll("#User td");
-		tds[1].innerHTML=Trianus.user[FBid].post+"篇";
-		tds[3].innerHTML=Trianus.user[FBid].flow+"則";
+		tds[1].innerHTML=Trianus.Story.user[FBid].post+"篇";
+		tds[3].innerHTML=Trianus.Story.user[FBid].flow+"則";
 	}
 }
 function Resize(){
