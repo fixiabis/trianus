@@ -1,5 +1,5 @@
-var doc=document,FBid="";//簡化的寫法
-var Cookies={//Cookie操作
+var doc=document,FBid="";
+var Cookies={
 	set:function(name,value,expire){
 		var date=new Date();
 		date.setTime(date.getTime()+expire*24*60*60*1000);
@@ -18,12 +18,12 @@ var Cookies={//Cookie操作
 		doc.cookie=name+"=;expires="+date.toGMTString();
 	}
 }
-function GetElem(ord){return doc.querySelector(ord)}//取得單一文件元素
-function GetElems(ord){return doc.querySelectorAll(ord)}//取得多個文件元素
-function isMobile(){//確認是否為移動裝置
+function GetElem(ord){return doc.querySelector(ord)}
+function GetElems(ord){return doc.querySelectorAll(ord)}
+function isMobile(){
 	return(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i).test(navigator.userAgent)
 }
-function FB_Login(){//取得使用者Facebook ID
+function FB_Login(){
 	var id=Cookies.get("FBid");
 	if(id){FBid=id;return FB_UserC()}
 	FB.getLoginStatus(function(r){
@@ -32,7 +32,7 @@ function FB_Login(){//取得使用者Facebook ID
 		}else FB.login(function(){Cookies.set("FBid",FB.getUserID(),30);FB_UserC()});
 	})
 }
-function FB_UserC(){//依照使用者Facebook ID讀取頭像，並確認針對接龍的發文與留言數
+function FB_UserC(){
 	if(!FBid)return;
 	GetElem("#User table").style.display="";
 	GetElem("#User img").src="https://graph.facebook.com/"+FBid+"/picture?"+Trianus.Access;
@@ -43,7 +43,7 @@ function FB_UserC(){//依照使用者Facebook ID讀取頭像，並確認針對�
 		tds[3].innerHTML=Trianus.user[FBid].flow+"則";
 	}
 }
-function Resize(){//細部外觀調整
+function Resize(){
 	GetElem("#list").style.left="";
 	var menuc=GetElem("#menuc");
 	if(menuc)menuc.id="menu";
@@ -54,7 +54,7 @@ function Resize(){//細部外觀調整
 		GetElem("#Storyscroll").style.height="calc(100% + 17px)"
 	}
 }
-function Loader(url,proc,parameter){//載入FB內容
+function Loader(url,proc,parameter){
 	var xhr=new XMLHttpRequest();
 	xhr.onload=function(){proc(JSON.parse(this.response),url,parameter)}
 	xhr.open("get",url);
@@ -305,7 +305,12 @@ var Trianus={
 			else if(page==series.length)return tree;
 			else{
 				var ref=Trianus.Story.refs.indexOf(id),p=tree.indexOf(Trianus.Storys[ref].prev);
-					prevfield=GetElem("#trianus_"+Trianus.Story.refs.indexOf(Trianus.Storys[ref].prev)+" .next");
+					prevfield=GetElem("#trianus_"+Trianus.Story.refs.indexOf(Trianus.Storys[ref].prev)+" .next"),
+					field=GetElem("#trianus_"+ref+" .next"),
+					pvlink=this.link(Trianus.Storys[ref].prev);
+				pvlink.style.color="#c4a667";
+				field.appendChild(pvlink);
+				field.appendChild(doc.createElement("br"));
 				if(prevfield){
 					var sr=p+1;
 					prevfield.appendChild(this.link(id));
@@ -315,7 +320,7 @@ var Trianus={
 			}
 			return this.tree(series,page+1,tree);
 		},
-		link:function(id,index,n){
+		link:function(id,index){
 			var a=doc.createElement("a"),
 				p=Trianus.Story.refs.indexOf(id),
 				c=(id.split("_")[2]-1)*20,
@@ -327,6 +332,8 @@ var Trianus={
 			if(index){
 				a.innerHTML=t[1]+" "+t[2];
 				a.style.marginLeft=c+"px";
+				var b=Trianus.Story.type.indexOf(Trianus.Storys[p].type)
+				if(b==2)a.style.opacity=0.5;
 			}else a.innerHTML=Trianus.Storys[p].title;
 			a.onclick=this.view;
 			return a
@@ -335,7 +342,7 @@ var Trianus={
 			var id=decodeURI(location.hash).replace("#","");
 			var fields=doc.querySelectorAll(".story.article");
 			for(var i=0;i<fields.length;i++){
-				fields[i].style.display=(Storys[i].id.search(id)<0&&fields[i].id!=id.replace("_",""))?"none":"";
+				fields[i].style.display=(Trianus.Storys[i].id.search(id)<0&&fields[i].id!=id.replace("_",""))?"none":"";
 			}
 		}
 	}
