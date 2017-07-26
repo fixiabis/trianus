@@ -233,7 +233,7 @@ var Trianus={
 				field.style.display="none";
 			}
 			next.className="next";
-			comment.value="吹拂";comment.type="button";comment.title="說說你的想法吧?";
+			comment.value="留言";comment.type="button";comment.title="說說你的想法吧?";
 			comment.onclick=function(){
 				var group=Story.Post_id.split("_")[0],feeds=Story.Post_id.split("_")[1]
 				window.open("https://facebook.com/"+group+"?view=permalink&id="+feeds)
