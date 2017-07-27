@@ -122,11 +122,11 @@ var Trianus={
 		}
 	},
 	Story:{
-		type:["開端","接續","前篇","視角","接龍","活動"],
+		type:["開端","接續","前篇","視角","接龍","活動","單篇"],
 		prev:[],
 		next:[],
-		seri:{tree:[],flow:[],lake:[]},
-		sers:{tree:[],flow:[],lake:[]},
+		seri:{tree:[],flow:[],lake:[],sand:[]},
+		sers:{tree:[],flow:[],lake:[],sand:[]},
 		user:{},
 		refs:[],
 		floc:[],
@@ -137,7 +137,8 @@ var Trianus={
 				GetElem("#forest").style.display="";
 				GetElem("#river").style.display="";
 				GetElem("#lakes").style.display="";
-				this.sort();//this.view();
+				GetElem("#sands").style.display="";
+				this.sort();this.view();
 				console.log("loaded");
 				return;
 			}
@@ -172,7 +173,7 @@ var Trianus={
 			var odv=function(t){
 				var type=[
 						["seed"],["grow","leaf","dews"],["soil"],
-						["muck","root","bole","vein","mist"],["flow"],["lake","pond"]
+						["muck","root","bole","vein","mist"],["flow"],["lake","pond"],["sand"]
 					];
 				for(var i=0;i<type.length;i++)if(type[i].indexOf(t)>-1)return Trianus.Story.type[i];return t;
 			}
@@ -212,6 +213,12 @@ var Trianus={
 						Trianus.Story.seri.lake.push(Story.Title);
 						Trianus.Story.sers.lake.push([Story.id]);
 					}else Trianus.Story.sers.lake[ser].push(Story.id);
+				}else if(Story.type=="單篇"){
+					var ser=Trianus.Story.seri.sand.indexOf(Story.Title);
+					if(ser<0){
+						Trianus.Story.seri.sand.push(Story.Title);
+						Trianus.Story.sers.sand.push([Story.id]);
+					}else Trianus.Story.sers.sand[ser].push(Story.id);
 				}
 			}
 			Trianus.Story.refs.push(Story.id);
@@ -298,6 +305,7 @@ var Trianus={
 			Trianus.Index.show(sort,"#forest","tree")
 			Trianus.Index.show(Trianus.Story.sers.flow,"#river","flow")
 			Trianus.Index.show(Trianus.Story.sers.lake,"#lakes","lake")
+			Trianus.Index.show(Trianus.Story.sers.sand,"#sands","sand")
 		},
 		tree:function(series,page,tree,seed){
 			var id=series[page];
@@ -356,6 +364,7 @@ GetElem("#title").addEventListener("click",function(){location="#"});
 GetElem("#ptree").addEventListener("click",Trianus.Index.hide);
 GetElem("#pflow").addEventListener("click",Trianus.Index.hide);
 GetElem("#plake").addEventListener("click",Trianus.Index.hide);
+GetElem("#psand").addEventListener("click",Trianus.Index.hide);
 GetElem("#Story").addEventListener("click",Trianus.Index.view);
 window.fbAsyncInit = function() {
 	FB.init({
