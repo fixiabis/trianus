@@ -56,7 +56,8 @@ function Resize(){
 }
 function Loader(url,proc,parameter){
 	var xhr=new XMLHttpRequest();
-	xhr.onload=function(){proc(JSON.parse(this.response),url,parameter)}
+	xhr.onload=function(){proc(JSON.parse(this.response),url,parameter)};
+	xhr.onerror=function(){Loader(url,proc,parameter)};
 	xhr.open("get",url);
 	xhr.send();
 }
@@ -139,7 +140,10 @@ var Trianus={
 				GetElem("#lakes").style.display="";
 				GetElem("#sands").style.display="";
 				this.sort();this.view();
-				console.log("loaded");
+				GetElem("#ptree").click();
+				GetElem("#pflow").click();
+				GetElem("#plake").click();
+				GetElem("#psand").click();
 				return;
 			}
 			var proc=function(result){
