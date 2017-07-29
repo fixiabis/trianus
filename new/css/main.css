@@ -101,12 +101,12 @@ header{
     transition: all 1s;
 }
 #list{
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.2);
     color: #FFF;
     height: 100%; width: 300px;
     position: absolute; top: 0px; left: 0px; z-index: 2;
     overflow: hidden;
-    transition-property: left background-color;
+    transition-property: left,background-color;
     transition-duration: 1s;
 }
 #story{
@@ -165,7 +165,7 @@ header{
 }
 @media screen and (max-width: 940px){
     #list{
-		background:rgba(0, 0, 0, 0.9);
+        background:rgba(0, 0, 0, 0.9);
         left: -300px;
     }
     #story{
