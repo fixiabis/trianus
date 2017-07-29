@@ -41,7 +41,7 @@ function StoryFlow(p){
                 }else count = false;
                 if(count && res.data[i].from){
                     var uid = res.data[i].from.id;
-                    if(!Storys.sortBy.users[uid])Storys.sortBy.users[uid] = {story : [], flow : 0};
+                    if(!Storys.sortBy.users[uid])Storys.sortBy.users[uid] = {story: [], flow: 0};
                     Storys.sortBy.users[uid].flow++;
                 }
             }
@@ -49,7 +49,7 @@ function StoryFlow(p){
             if(res.paging && res.paging.next)Request(res.paging.next, proc, p);
             else Storys.all[p.p].article += "</p>";
 		};
-	Request("https://graph.facebook.com/" + Story.postId + "/comments?fields=message,from&access_token=" + key, proc, {p : p, f : 1})
+	Request("https://graph.facebook.com/" + Story.postId + "/comments?fields=message,from&access_token=" + key, proc, {p: p, f: 1});
 }
 function StoryLoad(){
     if(!groupsId.length)return console.log(Storys);
@@ -68,7 +68,7 @@ function StoryLoad(){
 }
 function StoryProc(data, ser){
     var content = data.message.substr(ser, data.message.length - ser),
-        ids = data.id.split("_"), article = "", ref = "",
+        ids = data.id.split("_"), article = "", ref = "", n = Storys.all.length,
         uid = "", type = "", id = "", title = "", serie = "";
     if(data.from)uid=data.from.id;
     content = content.replace(/\n\n/g, "\n").replace(/</g, "&lt;").replace(/>/g, "&gt;").split("\n");
@@ -89,25 +89,26 @@ function StoryProc(data, ser){
 		for(var i=0;i<oldtype.length;i++)if(oldtype[i].indexOf(type)>-1)return Storys.type[i];return type
     })(type);
     var Story = {
-        groupId : ids[0],
-        postId : ids[1],
-        userId : uid,
-        type : type,
-        id : id,
-        serie : serie,
-        title : title,
-        article : article,
-        ref : ref
+        groupId: ids[0],
+        postId: ids[1],
+        userId: uid,
+        type: type,
+        id: id,
+        serie: serie,
+        title: title,
+        article: article,
+        ref: ref
     };
-    if(!Storys.sortBy.users[uid])Storys.sortBy.users[uid] = {story : [], flow : 0};
-    Storys.sortBy.users[uid].story.push(Storys.all.length);
-    if(!Storys.sortBy.groups[ids[0]])Storys.sortBy.groups[ids[0]] = []; Storys.sortBy.groups[ids[0]].push(Storys.all.length);
-    if(!Storys.sortBy.series[serie])Storys.sortBy.series[serie] = []; Storys.sortBy.series[serie].push(Storys.all.length);
-    if(!Storys.sortBy.relate[ref])Storys.sortBy.relate[ref] = []; Storys.sortBy.relate[ref].push(Storys.all.length);
+    if(!Storys.sortBy.users[uid])Storys.sortBy.users[uid] = {story: [], flow: 0};
+    Storys.sortBy.users[uid].story.push(n);
+    if(!Storys.sortBy.groups[ids[0]])Storys.sortBy.groups[ids[0]] = []; Storys.sortBy.groups[ids[0]].push(n);
+    if(!Storys.sortBy.series[serie])Storys.sortBy.series[serie] = []; Storys.sortBy.series[serie].push(n);
+    if(!Storys.sortBy.relate[ref])Storys.sortBy.relate[ref] = []; Storys.sortBy.relate[ref].push(n);
+    $("#story .scroll").append(StoryField(Story, n));
     Storys.all.push(Story);
-    if(Story.type == "接龍")StoryFlow(Storys.all.length - 1);
+    if(Story.type == "接龍")StoryFlow(n);
 }
-function StoryField(Story){
+function StoryField(Story, id){
     var field = doc.createElement("div"),
         title = doc.createElement("div"),
         article = doc.createElement("div"),
@@ -117,13 +118,14 @@ function StoryField(Story){
     title.className = "title"; title.innerHTML = Story.title;
     article.className = "article"; article.innerHTML = Story.article;
     refLink.className = "refLink";
-    comment.value="留言";
+    comment.value="留言"; comment.type = "button";
     comment.onclick=function(){
         window.open("https://facebook.com/" + Story.groupId + "?view=permalink&id=" + Story.postId)
     };
-    action.align = "center";
+    action.align = "right";
     action.appendChild(comment);
     field.className = "story";
+    field.id = "trianus" + id;
     field.appendChild(title);
     field.appendChild(doc.createElement("hr"));
     field.appendChild(article);

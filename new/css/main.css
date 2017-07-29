@@ -27,21 +27,54 @@ header{
     height: 80px; width: 100%;
     position: fixed; top: 0px; left: 0px; z-index: 5;
 }
+#menu,#menuc{
+	cursor: pointer;
+	display: none;
+	height: 40px; width: 40px;
+	position: absolute; top: 20px; left: 20px;
+    transition: all 0.5s;
+    animation: show 1s;
+}
+#menu div,#menuc div{
+	background: #77ABB7;
+	height: 2px; width: 30px;
+	margin: 9px 5px;
+	transition: all 0.5s;
+}
+#menuc{
+	transform: rotateZ(180deg);
+}
+#menuc div:first-child{
+	transform: translate(5px, -2px) rotateZ(45.5deg);
+	transform-origin: left;
+}
+#menuc div:nth-child(2){
+	opacity: 0;
+}
+#menuc div:last-child{
+	transform: translate(5px, -3px) rotateZ(-45deg);
+	transform-origin: left;
+}
 #title{
     font-size: 40px;
     line-height: 80px;
+    text-align: center;
+    height: 80px; width: 110px;
     position: absolute; top:0px; left: 40px;
+    transition: all 1s;
 }
 #list{
     color: #476D7C;
     height: 100%; width: 300px;
     position: absolute; top: 0px; left: 0px;
     overflow: hidden;
+    transition: all 1s;
 }
 #story{
     height: 100%; width: calc(100% - 300px);
     position: absolute; top: 0px; left: 300px;
     overflow: hidden;
+    transition: all 1s;
 }
 #story .scroll > :first-child{
     margin-top: 80px;
@@ -51,12 +84,12 @@ header{
     overflow: scroll;
 }
 .story{
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.2);
     letter-spacing:4px;
     width: 600px;
     padding: 10px;
     border-radius: 10px;
-    margin: 10px calc((100% - 600px) / 2);
+    margin: 10px calc((100% - 620px) / 2);
 }
 .story .title{
     font-size: 25px; font-weight: bold;
@@ -66,11 +99,46 @@ header{
     border-bottom: solid 1px;
 }
 .story .article{
-    font-size: 20px;
+    font-size: 16px;
+    padding: 0px 10px 10px;
+}
+.story .article p{
+    text-indent: 32px;
 }
 .story input[type=button]{
     background: inherit;
-    font-size: 18px;
-    height: 25px;width: 60px;
-    border:solid 1px; border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    height: 30px;width: 80px;
+    border: solid 1px; border-radius: 5px;
+}
+@media screen and (max-width: 940px){
+    #list{
+        left: -300px;
+    }
+    #story{
+        left: 0px;
+        width: 100%;
+    }
+    #menu,#menuc{
+        display: block;
+    }
+    #title{
+        left: 80px;
+    }
+}
+@media screen and (max-width: 640px){
+    .story{
+        width: calc(100% - 40px);
+        margin-left: 10px;
+    }
+    #title{
+        width: 100%;
+        left: 0px;
+    }
+}
+@keyframes show{
+    0%{
+        opacity: 0
+    }
 }
