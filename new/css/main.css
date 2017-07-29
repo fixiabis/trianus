@@ -84,7 +84,8 @@ header{
     overflow: scroll;
 }
 .story{
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.4);
+    color: #FFF;
     letter-spacing:4px;
     width: 600px;
     padding: 10px;
@@ -107,6 +108,7 @@ header{
 }
 .story input[type=button]{
     background: inherit;
+    color: inherit;
     cursor: pointer;
     font-size: 16px;
     height: 30px;width: 80px;

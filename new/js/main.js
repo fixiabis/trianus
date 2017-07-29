@@ -89,15 +89,8 @@ function StoryProc(data, ser){
 		for(var i=0;i<oldtype.length;i++)if(oldtype[i].indexOf(type)>-1)return Storys.type[i];return type
     })(type);
     var Story = {
-        groupId: ids[0],
-        postId: ids[1],
-        userId: uid,
-        type: type,
-        id: id,
-        serie: serie,
-        title: title,
-        article: article,
-        ref: ref
+        groupId: ids[0], postId: ids[1], userId: uid, type: type,id: id,
+        serie: serie, title: title, article: article, ref: ref
     };
     if(!Storys.sortBy.users[uid])Storys.sortBy.users[uid] = {story: [], flow: 0};
     Storys.sortBy.users[uid].story.push(n);
