@@ -10,6 +10,31 @@ a,input,textarea{
 	-webkit-appearance: none;
 	outline: none;
 }
+ul{
+    list-style: none;
+    padding-left:20px;
+}
+.mcls::before{
+    background-image: url(../img/arrow.png);
+    background-size: 15px;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: block; float: left;
+    content: "";
+    height: 25px; width: 25px;
+}
+hr{
+    border: none;
+    border-bottom: solid 1px;
+}
+input[type=button]{
+    background: inherit;
+    color: inherit;
+    cursor: pointer;
+    font-size: 16px;
+    height: 30px;width: 80px;
+    border: solid 1px; border-radius: 5px;
+}
 body{
     background: -webkit-linear-gradient(#000, #173242, #74818a, #9FA6AA);
     background: -moz-linear-gradient(#000, #173242, #74818a, #9FA6AA);
@@ -69,7 +94,7 @@ header{
     background: linear-gradient(left, #000, rgba(0, 0, 0, 0));
     color: #476D7C;
     height: 100%; width: 300px;
-    position: absolute; top: 0px; left: 0px;
+    position: absolute; top: 0px; left: 0px; z-index: 4;
     overflow: hidden;
     transition: all 1s;
 }
@@ -79,7 +104,7 @@ header{
     overflow: hidden;
     transition: all 1s;
 }
-#story .scroll > :first-child{
+.scroll > :first-child{
     margin-top: 80px;
 }
 .scroll{
@@ -95,27 +120,18 @@ header{
     border-radius: 10px;
     margin: 10px calc((100% - 620px) / 2);
 }
-.story .title{
+.load div{
+    animation: show 1s infinite;
+}
+.title{
     font-size: 25px; font-weight: bold;
 }
-.story hr{
-    border: none;
-    border-bottom: solid 1px;
-}
-.story .article{
+.article{
     font-size: 16px;
     padding: 0px 10px 10px;
 }
-.story .article p{
+.article p{
     text-indent: 32px;
-}
-.story input[type=button]{
-    background: inherit;
-    color: inherit;
-    cursor: pointer;
-    font-size: 16px;
-    height: 30px;width: 80px;
-    border: solid 1px; border-radius: 5px;
 }
 @media screen and (max-width: 940px){
     #list{

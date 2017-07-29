@@ -11,6 +11,7 @@ var doc = document,
             series:{},
             relate:{}
         },
+        series:[],
         type:["開端", "接續", "前篇", "視角", "接龍", "活動", "單篇"]
     };
 function isMobile(){
@@ -61,7 +62,7 @@ function StoryFlow(p){
 	Request("https://graph.facebook.com/" + Story.postId + "/comments?fields=message,from&access_token=" + key, proc, {p: p, f: 1});
 }
 function StoryLoad(){
-    if(!groupsId.length)return console.log(Storys);
+    if(!groupsId.length)return $(".load").css("display", "none");
     var groupId = groupsId.shift(),
         proc = function(res){
             for(var i = 0; i < res.data.length; i++){
@@ -106,7 +107,7 @@ function StoryProc(data, ser){
     if(!Storys.sortBy.groups[ids[0]])Storys.sortBy.groups[ids[0]] = []; Storys.sortBy.groups[ids[0]].push(n);
     if(!Storys.sortBy.series[serie])Storys.sortBy.series[serie] = []; Storys.sortBy.series[serie].push(n);
     if(!Storys.sortBy.relate[ref])Storys.sortBy.relate[ref] = []; Storys.sortBy.relate[ref].push(n);
-    $("#story .scroll").append(StoryField(Story, n));
+    $("#story .load").before(StoryField(Story, n));
     Storys.all.push(Story);
     if(Story.type == "接龍")StoryFlow(n);
 }
@@ -144,4 +145,3 @@ doc.body.onresize=function(){
     Menu();
 }
 $("#menu").click(Menu);
-$("#story").click(Menu);
