@@ -28,6 +28,15 @@ function Request(url, proc, parameter){
 	xhr.open("get", url);
 	xhr.send();
 }
+function Menu(){
+    if(this.id && this.id == "menu"){
+        $("#list").css("left", "0px"); this.id = "menuc";
+    }else{
+        var menuc = $("#menuc")[0];
+        $("#list").css("left", "");
+        if(menuc)menuc.id = "menu";
+    }
+}
 function StoryFlow(p){
     var Story=Storys.all[p],
         proc=function(res,url,p){
@@ -130,4 +139,9 @@ doc.body.onload=function(){
     noScrollbar();
     StoryLoad();
 }
-doc.body.onresize=function(){noScrollbar()}
+doc.body.onresize=function(){
+    noScrollbar();
+    Menu();
+}
+$("#menu").click(Menu);
+$("#story").click(Menu);

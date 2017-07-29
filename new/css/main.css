@@ -64,6 +64,9 @@ header{
     transition: all 1s;
 }
 #list{
+    background: -webkit-linear-gradient(left, #000, rgba(0, 0, 0, 0));
+    background: -moz-linear-gradient(left, #000, rgba(0, 0, 0, 0));
+    background: linear-gradient(left, #000, rgba(0, 0, 0, 0));
     color: #476D7C;
     height: 100%; width: 300px;
     position: absolute; top: 0px; left: 0px;
