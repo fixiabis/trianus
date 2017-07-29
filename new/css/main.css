@@ -35,7 +35,7 @@ hr{
     border-bottom: solid 1px;
 }
 input[type=button]{
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0);
     color: inherit;
     cursor: pointer;
     font-size: 16px;
@@ -106,7 +106,8 @@ header{
     height: 100%; width: 300px;
     position: absolute; top: 0px; left: 0px; z-index: 2;
     overflow: hidden;
-    transition: left 1s;
+    transition-property: left background-color;
+    transition-duration: 1s;
 }
 #story{
     height: 100%; width: calc(100% - 300px);
@@ -164,6 +165,7 @@ header{
 }
 @media screen and (max-width: 940px){
     #list{
+		background:rgba(0, 0, 0, 0.9);
         left: -300px;
     }
     #story{
@@ -179,7 +181,7 @@ header{
 }
 @media screen and (max-width: 640px){
     .story{
-        width: calc(100% - 40px);
+        width: calc(100% - 20px);
         margin-left: 10px;
     }
     #title{
