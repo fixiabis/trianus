@@ -49,9 +49,10 @@ function StoryFlow(p) {
                 var content = res.data[i].message, count = true;
                 if (content.search("#flow ") == 0 || content.search("#接續 ") == 0) {
                     if (i != 0 && !p.f) Storys.all[p.p].article += "</p>";
+                    $("#trianustory" + p.p + " .article")[0].innerHTML = Storys.all[p.p].article;
                     Storys.all[p.p].article += "<p>" + content.replace("#flow ", "").replace("#接續 ", "");
                 } else if (content.search("#join ") == 0 || content.search("#續上 ") == 0) {
-                    Storys.all[p.p].article += "<p>" + content.replace("#join ", "").replace("#續上 ", "");
+                    Storys.all[p.p].article += content.replace("#join ", "").replace("#續上 ", "");
                 } else count = false;
                 if (count && res.data[i].from) {
                     var uid = res.data[i].from.id;
@@ -61,12 +62,19 @@ function StoryFlow(p) {
             }
             if (p.f) p.f = 0;
             if (res.paging && res.paging.next) Request(res.paging.next, proc, p);
-            else Storys.all[p.p].article += "</p>";
+            else {
+                Storys.all[p.p].article += "</p>";
+                $("#trianustory" + p.p + " .article")[0].innerHTML = Storys.all[p.p].article;
+            }
         };
     Request("https://graph.facebook.com/" + Story.postId + "/comments?fields=message,from&access_token=" + key, proc, { p: p, f: 1 });
 }
 function StoryLoad() {
-    if (!groupsId.length) return $(".load").css("display", "none");
+    if (!groupsId.length) {
+        while (Storys.noRef.length > 0) IndexReporc();
+        StoryView();
+        return $(".load").css("display", "none");
+    }
     var groupId = groupsId.shift(),
         proc = function (res) {
             for (var i = 0; i < res.data.length; i++) {
@@ -112,10 +120,25 @@ function StoryProc(data, ser) {
     if (!Storys.sortBy.series[serie]) Storys.sortBy.series[serie] = []; Storys.sortBy.series[serie].push(n);
     if (!Storys.sortBy.relate[ref]) Storys.sortBy.relate[ref] = []; Storys.sortBy.relate[ref].push(n);
     if (!Storys.sortBy.id[id]) Storys.sortBy.id[id] = n;
+    if (Storys.noRef.length > 0) IndexReporc();
     IndexProc(Story, n);
     $("#story .load").before(StoryField(Story, n));
     Storys.all.push(Story);
     if (Story.type == "接龍") StoryFlow(n);
+}
+function StoryView() {
+    var method = location.hash.replace("#_", "");
+    $(".story").css("display", "none");
+    if (method.search("trianus") > -1) {
+        $("#trianustory" + method.replace("trianus", "")).css("display", "");
+    } else if (method.search("trindex") > -1) {
+        var series = Storys.sortBy.series[Storys.series.title[method.replace("trindex", "")]];
+        for (var i = 0; i < series.length; i++)$("#trianustory" + series[i]).css("display", "");
+    } else if (Storys.sortBy.id[method]) {
+        $("#trianustory" + Storys.sortBy.id[method]).css("display", "");
+    } else if (method == "") $(".story").css("display", "");
+    $(".load").css("display", "none");
+    $("#story .scroll").animate({ scrollTop: 0 });
 }
 function IndexProc(Story, n, r) {
     var idxser = Storys.series.title.indexOf(Story.serie);
@@ -127,28 +150,59 @@ function IndexProc(Story, n, r) {
         Storys.series.type.push(indexType);
     }
     if (Storys.series.type[idxser] == "tri") {
-        if (!Story.ref) $("#trindex" + idxser + " ul")[0].appendChild(IndexTitle(Story.title, "", n));
+        if (!Story.ref) $("#trindex" + idxser + " ul")[0].appendChild(IndexTitle(Story.title, "s", n));
         else {
-            var idx = $("#trianus" + Storys.sortBy.id[Story.ref] + "ul")[0];
-            if (idx) {
-                idx.appendChild(IndexTitle(Story.title, "", n));
+            var idx = $("#trianus" + Storys.sortBy.id[Story.ref] + " ul");
+            if (idx[0]) {
+                var prt = $("#trianus" + Storys.sortBy.id[Story.ref] + " label")[0],
+                    prtm = $("#trianustory" + Storys.sortBy.id[Story.ref] + " .refLink")[0],
+                    lnk = doc.createElement("a");
+                lnk.innerHTML = Story.title;
+                lnk.href = "#_trianus" + n;
+                lnk.style.marginLeft = "20px";
+                prtm.appendChild(lnk);
+                prt.className = "title cls"; prt.style.marginLeft = "0px";
+                idx[0].appendChild(IndexTitle(Story.title, "s", n));
             } else { if (!r) Storys.noRef.push(n); return false }
         }
-    } else $("#trindex" + idxser + " ul")[0].appendChild(IndexTitle(Story.title, "s"));
+    } else $("#trindex" + idxser + " ul")[0].appendChild(IndexTitle(Story.title, "s", n));
     return true;
+}
+function IndexReporc() {
+    var reproc = [];
+    for (var i = 0; i < Storys.noRef.length; i++) {
+        var nn = Storys.noRef[i];
+        if (!IndexProc(Storys.all[nn], nn, 1)) reproc.push(nn);
+    }
+    Storys.noRef = reproc;
 }
 function IndexTitle(Title, n, s) {
     var li = doc.createElement("li"), title = doc.createElement("label"), ul = doc.createElement("ul");
     if (n == "s") {
-        title.className = "title"; title.style.marginLeft = "20px";
-    } else title.className = "title cls clsc";
+        title.className = "title";
+    } else {
+        title.className = "title cls"; title.style.marginLeft = "0px";
+    }
     title.innerHTML = Title;
     title.style.lineHeight = "25px";
     title.style.fontSize = "20px";
     if (typeof n == "number") li.id = "trindex" + n;
     if (typeof s == "number") li.id = "trianus" + s;
+    title.onclick = function () {
+        if (this.className == "title") {
+            location = "#_" + this.parentNode.id; return;
+        }
+        if (this.className == "title cls") {
+            this.className = "title cls clsc";
+            this.nextSibling.style.display = "";
+            location = "#_" + this.parentNode.id;
+        } else {
+            this.className = "title cls";
+            this.nextSibling.style.display = "none";
+        }
+    }
     li.appendChild(title);
-    //ul.style.display = "none";
+    ul.style.display = "none";
     li.appendChild(ul);
     return li;
 }
@@ -159,7 +213,7 @@ function StoryField(Story, id) {
         refLink = doc.createElement("div"),
         action = doc.createElement("div"),
         comment = doc.createElement("input");
-    title.className = "title"; title.innerHTML = Story.serie + "" + Story.title;
+    title.className = "title"; title.innerHTML = Story.serie + " " + Story.title;
     article.className = "article"; article.innerHTML = Story.article;
     refLink.className = "refLink";
     comment.value = "留言"; comment.type = "button";
@@ -185,12 +239,16 @@ doc.body.onresize = function () {
     noScrollbar();
     Menu();
 }
+window.onhashchange = StoryView;
 $("#menu").click(Menu);
-function Reporc() {
-    var reproc = [];
-    for (var i = 0; i < Storys.noRef.length; i++) {
-        var nn = Storys.noRef[i]; console.log(nn);
-        if (!IndexProc(Storys.all[nn], nn, 1)) reproc.push(nn);
+$("#story").click(Menu)
+$("#title").click(function () { location = "#"; $("#story .scroll").animate({ scrollTop: 0 }) })
+$("#list label").click(function () {
+    if (this.className == "title cls") {
+        this.className = "title cls clsc";
+        this.nextSibling.style.display = "";
+    } else {
+        this.className = "title cls";
+        this.nextSibling.style.display = "none";
     }
-    Storys.noRef = reproc;
-}
+});
