@@ -16,19 +16,26 @@ a{
     text-decoration: none;
 }
 ul{
+    display: block;
     list-style: none;
     padding-left:20px;
 }
 li{
+    text-align: left;
     white-space: nowrap;
     animation: show 1s;
+}
+li::before{
+    display: inline-block;
+    content: "";
+    height: 25px;
 }
 hr{
     border: none;
     border-bottom: solid 1px;
 }
 input[type=button]{
-    background: inherit;
+    background: rgba(0, 0, 0, 0.4);
     color: inherit;
     cursor: pointer;
     font-size: 16px;
@@ -94,9 +101,6 @@ header{
     transition: all 1s;
 }
 #list{
-    background: -webkit-linear-gradient(left, #000, rgba(0, 0, 0, 0));
-    background: -moz-linear-gradient(left, #000, rgba(0, 0, 0, 0));
-    background: linear-gradient(left, #000, rgba(0, 0, 0, 0));
     background: rgba(0, 0, 0, 0.5);
     color: #FFF;
     height: 100%; width: 300px;
