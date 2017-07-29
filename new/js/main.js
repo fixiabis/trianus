@@ -114,10 +114,10 @@ function StoryProc(data, ser) {
     if (!Storys.sortBy.id[id]) Storys.sortBy.id[id] = n;
     IndexProc(Story, n);
     $("#story .load").before(StoryField(Story, n));
-    Storys.all.push(Story, n);
+    Storys.all.push(Story);
     if (Story.type == "接龍") StoryFlow(n);
 }
-function IndexProc(Story, n) {
+function IndexProc(Story, n, r) {
     var idxser = Storys.series.title.indexOf(Story.serie);
     if (idxser < 0) {
         var indexType = (Story.type == "活動") ? "evt" : (Story.type == "單篇") ? "sng" : (Story.type == "接龍") ? "flw" : "tri";
@@ -132,7 +132,7 @@ function IndexProc(Story, n) {
             var idx = $("#trianus" + Storys.sortBy.id[Story.ref] + "ul")[0];
             if (idx) {
                 idx.appendChild(IndexTitle(Story.title, "", n));
-            } else { Storys.noRef.push(n); return false }
+            } else { if (!r) Storys.noRef.push(n); return false }
         }
     } else $("#trindex" + idxser + " ul")[0].appendChild(IndexTitle(Story.title, "s"));
     return true;
@@ -141,7 +141,7 @@ function IndexTitle(Title, n, s) {
     var li = doc.createElement("li"), title = doc.createElement("label"), ul = doc.createElement("ul");
     if (n == "s") {
         title.className = "title"; title.style.marginLeft = "20px";
-    } else title.className = "title cls";
+    } else title.className = "title cls clsc";
     title.innerHTML = Title;
     title.style.lineHeight = "25px";
     title.style.fontSize = "20px";
@@ -189,8 +189,8 @@ $("#menu").click(Menu);
 function Reporc() {
     var reproc = [];
     for (var i = 0; i < Storys.noRef.length; i++) {
-        var nn = Storys.noRef[i]; console.log(i, nn);
-        if (!IndexProc(Storys.all[nn], nn)) reproc.push(i);
+        var nn = Storys.noRef[i]; console.log(nn);
+        if (!IndexProc(Storys.all[nn], nn, 1)) reproc.push(nn);
     }
     Storys.noRef = reproc;
 }
