@@ -1,0 +1,76 @@
+/*
+    深至淺
+    #000,#173242,#1D3E53
+    #254B62,#476D7C,#74818a
+    #77ABB7,#91A1AC,#9FA6AA
+    #BBBEBF,#DCE1E5,#EAEDEF
+    #FFF
+*/
+a,input,textarea{
+	-webkit-appearance: none;
+	outline: none;
+}
+body{
+    background: -webkit-linear-gradient(#000, #173242, #74818a, #9FA6AA);
+    background: -moz-linear-gradient(#000, #173242, #74818a, #9FA6AA);
+    background: linear-gradient(#000, #173242, #74818a, #9FA6AA);
+    user-select: none; -ms-user-select: none;
+    -moz-user-select: none; -webkit-user-select: none;
+    margin: 0px;
+    overflow: hidden;
+}
+header{
+    background: -webkit-linear-gradient(#000, rgba(0, 0, 0, 0));
+    background: -moz-linear-gradient(#000, rgba(0, 0, 0, 0));
+    background: linear-gradient(#000, rgba(0, 0, 0, 0));
+    color: #77ABB7;
+    height: 80px; width: 100%;
+    position: fixed; top: 0px; left: 0px; z-index: 5;
+}
+#title{
+    font-size: 40px;
+    line-height: 80px;
+    position: absolute; top:0px; left: 40px;
+}
+#list{
+    color: #476D7C;
+    height: 100%; width: 300px;
+    position: absolute; top: 0px; left: 0px;
+    overflow: hidden;
+}
+#story{
+    height: 100%; width: calc(100% - 300px);
+    position: absolute; top: 0px; left: 300px;
+    overflow: hidden;
+}
+#story .scroll > :first-child{
+    margin-top: 80px;
+}
+.scroll{
+    height: 100%; width: 100%;
+    overflow: scroll;
+}
+.story{
+    background: rgba(255, 255, 255, 0.1);
+    letter-spacing:4px;
+    width: 600px;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px calc((100% - 600px) / 2);
+}
+.story .title{
+    font-size: 25px; font-weight: bold;
+}
+.story hr{
+    border: none;
+    border-bottom: solid 1px;
+}
+.story .article{
+    font-size: 20px;
+}
+.story input[type=button]{
+    background: inherit;
+    font-size: 18px;
+    height: 25px;width: 60px;
+    border:solid 1px; border-radius: 5px;
+}
