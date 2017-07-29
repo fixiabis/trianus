@@ -182,7 +182,7 @@ header{
 @media screen and (max-width: 640px){
     .story{
         width: calc(100% - 20px);
-        margin-left: 10px;
+        margin-left: 0px;
     }
     #title{
         width: 100%;
