@@ -185,7 +185,6 @@ function IndexTitle(Title, n, s) {
     }
     title.innerHTML = Title;
     title.style.lineHeight = "25px";
-    title.style.fontSize = "20px";
     if (typeof n == "number") li.id = "trindex" + n;
     if (typeof s == "number") li.id = "trianus" + s;
     title.onclick = function () {
