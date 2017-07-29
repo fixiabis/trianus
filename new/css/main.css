@@ -14,14 +14,8 @@ ul{
     list-style: none;
     padding-left:20px;
 }
-.mcls::before{
-    background-image: url(../img/arrow.png);
-    background-size: 15px;
-    background-repeat: no-repeat;
-    background-position: center;
-    display: block; float: left;
-    content: "";
-    height: 25px; width: 25px;
+li{
+    animation: show 1s;
 }
 hr{
     border: none;
@@ -33,7 +27,11 @@ input[type=button]{
     cursor: pointer;
     font-size: 16px;
     height: 30px;width: 80px;
-    border: solid 1px; border-radius: 5px;
+    border: solid 2px; border-radius: 5px;
+    transition: all 1s;
+}
+input[type=button]:hover{
+    color:#77ABB7;
 }
 body{
     background: -webkit-linear-gradient(#000, #173242, #74818a, #9FA6AA);
@@ -50,7 +48,7 @@ header{
     background: linear-gradient(#000, rgba(0, 0, 0, 0));
     color: #77ABB7;
     height: 80px; width: 100%;
-    position: fixed; top: 0px; left: 0px; z-index: 5;
+    position: fixed; top: 0px; left: 0px; z-index: 3;
 }
 #menu,#menuc{
 	cursor: pointer;
@@ -92,17 +90,18 @@ header{
     background: -webkit-linear-gradient(left, #000, rgba(0, 0, 0, 0));
     background: -moz-linear-gradient(left, #000, rgba(0, 0, 0, 0));
     background: linear-gradient(left, #000, rgba(0, 0, 0, 0));
-    color: #476D7C;
+    background: rgba(0, 0, 0, 0.5);
+    color: #FFF;
     height: 100%; width: 300px;
-    position: absolute; top: 0px; left: 0px; z-index: 4;
+    position: absolute; top: 0px; left: 0px; z-index: 2;
     overflow: hidden;
-    transition: all 1s;
+    transition: left 1s;
 }
 #story{
     height: 100%; width: calc(100% - 300px);
     position: absolute; top: 0px; left: 300px;
     overflow: hidden;
-    transition: all 1s;
+    transition: left 1s;
 }
 .scroll > :first-child{
     margin-top: 80px;
@@ -119,6 +118,7 @@ header{
     padding: 10px;
     border-radius: 10px;
     margin: 10px calc((100% - 620px) / 2);
+    animation: show 1s;
 }
 .load div{
     animation: show 1s infinite;
@@ -132,6 +132,19 @@ header{
 }
 .article p{
     text-indent: 32px;
+}
+.cls::before{
+    background-image: url(../img/arrow.png);
+    background-size: 15px;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: block; float: left;
+    content: "";
+    height: 25px; width: 25px;
+    transition: transform 0.5s;
+}
+.clsc::before{
+    transform: rotate(90deg);
 }
 @media screen and (max-width: 940px){
     #list{
