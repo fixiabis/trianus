@@ -8,7 +8,8 @@ var doc = document,
         sortBy:{
             users:{},
             groups:{},
-            series:{}
+            series:{},
+            relate:{}
         },
         type:["開端", "接續", "前篇", "視角", "接龍", "活動", "單篇"]
     };
@@ -77,7 +78,7 @@ function StoryProc(data, ser){
     serie = id.split("_")[0];
     for(var i = 3; i < content.length; i++){
         if(content[i].substr(0, 9) != triformat)article += "<p>" + content[i] + "</p>";
-        else{ref = ref.replace(triformat, ""); break}
+        else{ref = content[i].replace(triformat, ""); break}
     }
     type=(function(type){
 		var oldtype=[
@@ -102,7 +103,9 @@ function StoryProc(data, ser){
     Storys.sortBy.users[uid].story.push(Storys.all.length);
     if(!Storys.sortBy.groups[ids[0]])Storys.sortBy.groups[ids[0]] = []; Storys.sortBy.groups[ids[0]].push(Storys.all.length);
     if(!Storys.sortBy.series[serie])Storys.sortBy.series[serie] = []; Storys.sortBy.series[serie].push(Storys.all.length);
+    if(!Storys.sortBy.relate[ref])Storys.sortBy.relate[ref] = []; Storys.sortBy.relate[ref].push(Storys.all.length);
     Storys.all.push(Story);
+    if(Story.type == "接龍")StoryFlow(Storys.all.length - 1);
 }
 function StoryField(Story){
     var field = doc.createElement("div"),
