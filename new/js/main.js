@@ -16,7 +16,7 @@ var doc = document,
             title: [], type: []
         },
         noRef: [],
-        type: ["開端", "接續", "前篇", "視角", "接龍", "活動", "單篇"]
+        type: ["開端", "接續", "前篇", "視角", "接龍", "活動", "單篇", "圖片"]
     };
 function isMobile() {
     return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i).test(navigator.userAgent)
@@ -71,7 +71,8 @@ function StoryFlow(p) {
 }
 function StoryLoad() {
     if (!groupsId.length) {
-        while (Storys.noRef.length > 0) IndexReporc();
+        var p = 15;
+        while (Storys.noRef.length > 0 && p) { IndexReporc(); p-- }
         StoryView();
         return $(".load").css("display", "none");
     }
@@ -80,7 +81,6 @@ function StoryLoad() {
             for (var i = 0; i < res.data.length; i++) {
                 if (!res.data[i].message) continue;
                 var ser = res.data[i].message.search("#trianus_");
-				if(ser == -1) console.log(res.data[i]);
                 if (ser == -1) continue;
                 StoryProc(res.data[i], ser);
             }
@@ -94,10 +94,11 @@ function StoryProc(data, ser) {
         ids = data.id.split("_"), article = "", ref = "", n = Storys.all.length,
         uid = "", type = "", id = "", title = "", serie = "", image = "";
     if (data.from) uid = data.from.id;
-	if (data.full_picture) image = data.full_picture;
+    if (data.full_picture) image = data.full_picture;
     content = content.replace(/\n\n/g, "\n").replace(/</g, "&lt;").replace(/>/g, "&gt;").split("\n");
     type = content[0].replace(/ /g, ""); if (type.substr(0, 9) != triformat) return; type = type.replace(triformat, "");
     id = content[1].replace(/ /g, ""); if (id.substr(0, 9) != triformat) return; id = id.replace(triformat, "");
+    id = id.split("(")[0];
     serie = content[2].split(" ")[0];
     title = content[2].replace(serie + " ", "");
     for (var i = 3; i < content.length; i++) {
@@ -112,6 +113,11 @@ function StoryProc(data, ser) {
         ];
         for (var i = 0; i < oldtype.length; i++)if (oldtype[i].indexOf(type) > -1) return Storys.type[i]; return type
     })(type);
+    if (Storys.sortBy.id[id]) {
+        var sn = 0;
+        while (Storys.sortBy.id[id + sn]) sn++;
+        id += sn;
+    }
     var Story = {
         groupId: ids[0], postId: ids[1], userId: uid, type: type, id: id,
         serie: serie, title: title, article: article, ref: ref, image: image
@@ -151,24 +157,22 @@ function IndexProc(Story, n, r) {
         Storys.series.title.push(Story.serie);
         Storys.series.type.push(indexType);
     }
-    if (Storys.series.type[idxser] == "tri") {
-        if (!Story.ref) $("#trindex" + idxser + " ul")[0].appendChild(IndexTitle(Story.title, "s", n));
-        else {
-            var idx = $("#trianus" + Storys.sortBy.id[Story.ref] + " ul");
-            if (idx[0]) {
-                var prt = $("#trianus" + Storys.sortBy.id[Story.ref] + " label")[0],
-                    prtm = $("#trianustory" + Storys.sortBy.id[Story.ref] + " .refLink")[0],
-                    lnk = doc.createElement("a");
-                lnk.innerHTML = Story.title;
-                lnk.href = "#_trianus" + n;
-                lnk.style.marginLeft = "20px";
-                prtm.appendChild(lnk);
-				prtm.appendChild(doc.createElement("br"));
-                prt.className = "title cls"; prt.style.marginLeft = "0px";
-                idx[0].appendChild(IndexTitle(Story.title, "s", n));
-            } else { if (!r) Storys.noRef.push(n); return false }
-        }
-    } else $("#trindex" + idxser + " ul")[0].appendChild(IndexTitle(Story.title, "s", n));
+    if (!Story.ref) $("#trindex" + idxser + " ul")[0].appendChild(IndexTitle(Story.title, "s", n));
+    else {
+        var idx = $("#trianus" + Storys.sortBy.id[Story.ref] + " ul");
+        if (idx[0]) {
+            var prt = $("#trianus" + Storys.sortBy.id[Story.ref] + " label")[0],
+                prtm = $("#trianustory" + Storys.sortBy.id[Story.ref] + " .refLink")[0],
+                lnk = doc.createElement("a");
+            lnk.innerHTML = Story.title;
+            lnk.href = "#_trianus" + n;
+            lnk.style.marginLeft = "20px";
+            prtm.appendChild(lnk);
+            prtm.appendChild(doc.createElement("br"));
+            prt.className = "title cls"; prt.style.marginLeft = "0px";
+            idx[0].appendChild(IndexTitle(Story.title, "s", n));
+        } else { if (!r) Storys.noRef.push(n); return false }
+    }
     return true;
 }
 function IndexReporc() {
@@ -212,8 +216,8 @@ function StoryField(Story, id) {
     var field = doc.createElement("div"),
         title = doc.createElement("div"),
         article = doc.createElement("div"),
-		picture = doc.createElement("div"),
-		img = doc.createElement("img"),
+        picture = doc.createElement("div"),
+        img = doc.createElement("img"),
         refLink = doc.createElement("div"),
         action = doc.createElement("div"),
         comment = doc.createElement("input");
@@ -231,13 +235,15 @@ function StoryField(Story, id) {
     field.appendChild(title);
     field.appendChild(doc.createElement("hr"));
     field.appendChild(article);
-	if(Story.image){
-		img.src = Story.image;
-		img.style.width="90%";
-		picture.style.textAlign = "center";
-		picture.appendChild(img);
-		field.appendChild(picture);
-	}
+    if (Story.image) {
+        img.src = Story.image;
+        if (img.clientWidth > $(".story").width() * 0.9) {
+            img.style.width = "90%";
+        }
+        picture.style.textAlign = "center";
+        picture.appendChild(img);
+        field.appendChild(picture);
+    }
     field.appendChild(refLink);
     field.appendChild(action);
     return field
