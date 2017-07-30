@@ -39,7 +39,7 @@ function FB_Group_Request(url){
 		for(var i in Storys)for(var j=0;j<Storys[i].next.length;j++){
 			if(!Storys[i].nexted)Storys[i].nexted=[];
 			if(Storys[i].nexted.indexOf(Storys[i].next[j])>-1)continue;
-			if(document.querySelector(i)){
+			if(i&&document.querySelector(i)){
 				document.querySelector(i+" .next").innerHTML+="<a href='"+Storys[i].next[j]+"'>"+Storys[Storys[i].next[j]].title+"</a><br>";
 				Storys[i].nexted.push(Storys[i].next[j]);
 			}
@@ -235,7 +235,7 @@ function Story_Index(){
 			aq[ser].splice(psr+1,0,i);
 			tq[ser].splice(psr+1,0,Storys[i].title);
 			mq[ser].splice(psr+1,0,count*20);
-		}else{
+		}else if(ser>-1){
 			aq[ser].push(i);
 			tq[ser].push(Storys[i].title);
 			mq[ser].push(20);
