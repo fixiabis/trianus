@@ -80,19 +80,21 @@ function StoryLoad() {
             for (var i = 0; i < res.data.length; i++) {
                 if (!res.data[i].message) continue;
                 var ser = res.data[i].message.search("#trianus_");
+				if(ser == -1) console.log(res.data[i]);
                 if (ser == -1) continue;
                 StoryProc(res.data[i], ser);
             }
             if (!res.paging || !res.paging.next) { StoryLoad(); return }
             Request(res.paging.next, proc);
         };
-    Request("https://graph.facebook.com/" + groupId + "/feed?fields=comments,message,from&access_token=" + key, proc)
+    Request("https://graph.facebook.com/" + groupId + "/feed?fields=message,from,full_picture&access_token=" + key, proc)
 }
 function StoryProc(data, ser) {
     var content = data.message.substr(ser, data.message.length - ser),
         ids = data.id.split("_"), article = "", ref = "", n = Storys.all.length,
-        uid = "", type = "", id = "", title = "", serie = "";
+        uid = "", type = "", id = "", title = "", serie = "", image = "";
     if (data.from) uid = data.from.id;
+	if (data.full_picture) image = data.full_picture;
     content = content.replace(/\n\n/g, "\n").replace(/</g, "&lt;").replace(/>/g, "&gt;").split("\n");
     type = content[0].replace(/ /g, ""); if (type.substr(0, 9) != triformat) return; type = type.replace(triformat, "");
     id = content[1].replace(/ /g, ""); if (id.substr(0, 9) != triformat) return; id = id.replace(triformat, "");
@@ -112,7 +114,7 @@ function StoryProc(data, ser) {
     })(type);
     var Story = {
         groupId: ids[0], postId: ids[1], userId: uid, type: type, id: id,
-        serie: serie, title: title, article: article, ref: ref
+        serie: serie, title: title, article: article, ref: ref, image: image
     };
     if (!Storys.sortBy.users[uid]) Storys.sortBy.users[uid] = { story: [], flow: 0 };
     Storys.sortBy.users[uid].story.push(n);
@@ -161,6 +163,7 @@ function IndexProc(Story, n, r) {
                 lnk.href = "#_trianus" + n;
                 lnk.style.marginLeft = "20px";
                 prtm.appendChild(lnk);
+				prtm.appendChild(doc.createElement("br"));
                 prt.className = "title cls"; prt.style.marginLeft = "0px";
                 idx[0].appendChild(IndexTitle(Story.title, "s", n));
             } else { if (!r) Storys.noRef.push(n); return false }
@@ -209,6 +212,8 @@ function StoryField(Story, id) {
     var field = doc.createElement("div"),
         title = doc.createElement("div"),
         article = doc.createElement("div"),
+		picture = doc.createElement("div"),
+		img = doc.createElement("img"),
         refLink = doc.createElement("div"),
         action = doc.createElement("div"),
         comment = doc.createElement("input");
@@ -226,6 +231,13 @@ function StoryField(Story, id) {
     field.appendChild(title);
     field.appendChild(doc.createElement("hr"));
     field.appendChild(article);
+	if(Story.image){
+		img.src = Story.image;
+		img.style.width="90%";
+		picture.style.textAlign = "center";
+		picture.appendChild(img);
+		field.appendChild(picture);
+	}
     field.appendChild(refLink);
     field.appendChild(action);
     return field
