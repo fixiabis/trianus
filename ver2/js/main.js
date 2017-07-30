@@ -162,7 +162,7 @@ function Story_Flow(field,article,Post_id,l){
 				}else if(result.data[i].message.search("#join ")==0){
 					Temp.floc[p.p]+=result.data[i].message.replace("#join ","");c=1;
 				}
-				if(c){
+				if(c&&result.data[i].from){
 					if(!Temp.user[result.data[i].from.id])Temp.user[result.data[i].from.id]={post:0,flow:0};
 					Temp.user[result.data[i].from.id].flow++;FB_UserC();
 				}
@@ -265,7 +265,8 @@ function Story_Load(v){
 				var ser=result.data[i].message.search("#trianus_");
 				if(ser==-1)continue;
 				var content=result.data[i].message.substr(ser,result.data[i].message.length-ser),
-					id=result.data[i].id,fid=result.data[i].from.id;
+					id=result.data[i].id,fid="";
+				if(result.data[i].from)fid=result.data[i].from.id;
 				content=content.replace(/\n\n/g,"\n");
 				content=content.replace(/</g,"&lt;");
 				content=content.replace(/>/g,"&gt;");
