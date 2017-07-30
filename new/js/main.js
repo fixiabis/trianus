@@ -237,9 +237,8 @@ function StoryField(Story, id) {
     field.appendChild(article);
     if (Story.image) {
         img.src = Story.image;
-        if (img.clientWidth > $(".story").width() * 0.9) {
-            img.style.width = "90%";
-        }
+        img.style.width = "90%";
+        picture.style.padding = "10px";
         picture.style.textAlign = "center";
         picture.appendChild(img);
         field.appendChild(picture);
