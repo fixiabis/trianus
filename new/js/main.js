@@ -15,7 +15,7 @@ function notMobile() {
 function DataRequest(url, callback, parameter) {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () { callback(JSON.parse(this.response), url, parameter) };
-    xhr.onerror = function () { DataRequest(url, callback, parameter) };
+    //xhr.onerror = function () { DataRequest(url, callback, parameter) };
     xhr.open("get", url);
     xhr.send();
 }
@@ -122,8 +122,8 @@ function Proc_to_Story(data, fetch_start) {
             Libary.all.push(Story);
             Libary.ref.push(Story.id);
             for (sortType of ["series", "relate"]) {
-                var index = Libary.sortBy[sortType].ref.indexOf(Story[sortType]);
-                if (index < 0) {
+                var sortindex = Libary.sortBy[sortType].ref.indexOf(Story[sortType]);
+                if (sortindex < 0) {
                     Libary.sortBy[sortType].ref.push(Story[sortType]);
                     Libary.sortBy[sortType].all.push([index]);
                     if (sortType == "series") {
@@ -135,7 +135,7 @@ function Proc_to_Story(data, fetch_start) {
                         }
                         Libary.sortBy.series.type.push(indextype);
                     }
-                } else Libary.sortBy[sortType].all[index].push(index);
+                } else Libary.sortBy[sortType].all[sortindex].push(index);
             }
             if (Story.type == "接龍") Story_FlowType(index);
         };
@@ -158,22 +158,22 @@ function Proc_to_Story(data, fetch_start) {
 }
 function CreateIndexList(Story, index) {
     var seriesidx = Libary.sortBy.series.ref.indexOf(Story.series),
-        parentListList = document.querySelector("#mindex" + seriesidx + "~ ul");
-    if (!parentListList) {
-        parentList = document.createElement("li");
-        var parentListSwitch = document.createElement("input"),
-            parentListTitle = document.createElement("label"),
-            parentListList = document.createElement("ul");
-        parentList.appendChild(parentListSwitch);
-        parentList.appendChild(parentListTitle);
-        parentList.appendChild(parentListList);
-        parentListSwitch.id = "mindex" + seriesidx;
-        parentListSwitch.type = "checkbox";
-        parentListTitle.className = "title";
-        parentListTitle.innerHTML = Story.series;
-        parentListTitle.htmlFor = "mindex" + seriesidx;
+        mainListList = document.querySelector("#mindex" + seriesidx + "~ ul"),
+        mainList = document.createElement("li"),
+        mainListSwitch = document.createElement("input"),
+        mainListTitle = document.createElement("label");
+    if (!mainListList) {
+        mainListList = document.createElement("ul");
+        mainList.appendChild(mainListSwitch);
+        mainList.appendChild(mainListTitle);
+        mainList.appendChild(mainListList);
+        mainListSwitch.id = "mindex" + seriesidx;
+        mainListSwitch.type = "checkbox";
+        mainListTitle.className = "title";
+        mainListTitle.innerHTML = Story.series;
+        mainListTitle.htmlFor = "mindex" + seriesidx;
         var mainListId = Libary.sortBy.series.type[seriesidx];
-        $("#" + mainListId + " ~ ul").append(parentList);
+        $("#" + mainListId + " ~ ul").append(mainList);
     }
     var List = document.createElement("li"),
         ListSwitch = document.createElement("input"),
@@ -188,7 +188,23 @@ function CreateIndexList(Story, index) {
     ListTitle.className = "title";
     ListTitle.innerHTML = Story.title;
     ListTitle.htmlFor = "index" + index;
-    if(!Story.relate)parentListList.appendChild(List);
+    if (Story.relate) {
+        var relateparentref = Libary.ref.indexOf(Story.relate);
+        parentList = document.querySelector("#index" + relateparentref + "~ ul");
+        if (parentList) {
+            parentList.appendChild(List);
+            document.querySelector("#index" + relateparentref).disabled = "";
+        } else mainListList.appendChild(List);
+    } else mainListList.appendChild(List);
+    var relatechildref = Libary.sortBy.relate.ref.indexOf(Story.id),
+        relatechilds = Libary.sortBy.relate.all[relatechildref];
+    if (relatechilds) for (var i = 0; i < relatechilds.length; i++) {
+        var childListSwitch = document.querySelector("#index" + relatechilds[i]);
+        if (!childListSwitch) continue;
+        document.adoptNode(childListSwitch.parentNode);
+        ListList.appendChild(childListSwitch.parentNode);
+        ListSwitch.disabled = "";
+    }
 }
 function CreateStoryCard(Story, index) {
     var Card = document.createElement("div"),
