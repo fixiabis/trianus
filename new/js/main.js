@@ -21,7 +21,7 @@ function DataRequest(url, callback, parameter) {
 }
 function HideScrollbar() {
     var nowSize = $(".scrollcontent")[0],
-        newSize = "calc(100% + " + (nowSize.offsetWidth - nowSize.scrollWidth) + "px)";
+        newSize = "calc(100% + " + (nowSize.offsetWidth - nowSize.scrollWidth + 1) + "px)";
     if (notMobile()) $(".scrollcontent").css("width", newSize).css("height", newSize);
 }
 function ListSwitch() {
@@ -72,32 +72,39 @@ function Story_FlowType(index) {
             for (var i = 0; i < res.data.length; i++) {
                 var content = res.data[i].message;
                 if (content.search("#flow ") == 0 || content.search("#接續 ") == 0) {
-                    if (i != 0 && !p.first) Libary.all[p.index].article += "</p>";
+                    if (i != 0 && !p.first) {
+                        Libary.all[p.index].article += "</p>";
+                        $("#story" + p.index + " .article")[0].innerHTML = Libary.all[p.index].article;
+                    }
                     Libary.all[p.index].article += "<p>" + content.replace("#flow ", "").replace("#接續 ", "");
                 } else if (content.search("#join ") == 0 || content.search("#續上 ") == 0) {
+                    if (i == 0 && p.first) Libary.all[p.index].article += "<p>";
                     Libary.all[p.index].article += content.replace("#join ", "").replace("#續上 ", "");
                 }
             }
             if (p.first) p.first = false;
             if (res.paging && res.paging.next) DataRequest(res.paging.next, proc, p);
-            else Libary.all[p.index].article += "</p>";
+            else {
+                Libary.all[p.index].article += "</p>";
+                $("#story" + p.index + " .article")[0].innerHTML = Libary.all[p.index].article;
+            }
         };
     FB_Data_Request(Story.postId, "comments", "message", proc, { index: index, first: true });
 }
 function Proc_to_Story(data, fetch_start) {
     var post_content = data.message.substr(fetch_start, data.message.length - fetch_start).replace(/\n\n/g, "\n"),
-        batch_content = post_content.split("\n"), index = Libary.all.length, ids = data.id.split("_")
-    Story = {
-        groupId: ids[0],
-        postId: ids[1],
-        type: "",
-        id: "",
-        series: "",
-        title: "",
-        article: "",
-        relate: "",
-        imageUrl: ""
-    },
+        batch_content = post_content.split("\n"), index = Libary.all.length, ids = data.id.split("_"),
+        Story = {
+            groupId: ids[0],
+            postId: ids[1],
+            type: "",
+            id: "",
+            series: "",
+            title: "",
+            article: "",
+            relate: "",
+            imageUrl: ""
+        },
         type_check = function (type) {
             var newtype = ["開端", "接續", "前篇", "視角", "接龍", "活動", "單篇", "圖片"],
                 oldtypes = [
@@ -156,6 +163,16 @@ function Proc_to_Story(data, fetch_start) {
     CreateStoryCard(Story, index);
     CreateIndexList(Story, index);
 }
+function StoryCardShow(index) {
+    $("#storybox .scrollcontent").animate({ scrollTop: 0 });
+    if (this.id) {
+        $(".storycard").css("display", "");
+        $(".loading").css("display", "none");
+        return;
+    }
+    $(".storycard").css("display", "none");
+    $("#story" + index).css("display", "");
+}
 function CreateIndexList(Story, index) {
     var seriesidx = Libary.sortBy.series.ref.indexOf(Story.series),
         mainListList = document.querySelector("#mindex" + seriesidx + "~ ul"),
@@ -188,12 +205,19 @@ function CreateIndexList(Story, index) {
     ListTitle.className = "title";
     ListTitle.innerHTML = Story.title;
     ListTitle.htmlFor = "index" + index;
+    ListTitle.onclick = function () { StoryCardShow(index) };
     if (Story.relate) {
         var relateparentref = Libary.ref.indexOf(Story.relate);
         parentList = document.querySelector("#index" + relateparentref + "~ ul");
         if (parentList) {
             parentList.appendChild(List);
             document.querySelector("#index" + relateparentref).disabled = "";
+            var relatelink = document.createElement("a");
+            relatelink.setAttribute("data-index", index);
+            relatelink.onclick = function () { StoryCardShow(this.getAttribute("data-index")) };
+            relatelink.innerHTML = Story.title;
+            document.querySelector("#story" + relateparentref + " .relate").appendChild(relatelink);
+            document.querySelector("#story" + relateparentref + " .relate").appendChild(document.createElement("br"));
         } else mainListList.appendChild(List);
     } else mainListList.appendChild(List);
     var relatechildref = Libary.sortBy.relate.ref.indexOf(Story.id),
@@ -201,6 +225,12 @@ function CreateIndexList(Story, index) {
     if (relatechilds) for (var i = 0; i < relatechilds.length; i++) {
         var childListSwitch = document.querySelector("#index" + relatechilds[i]);
         if (!childListSwitch) continue;
+        var relatelink = document.createElement("a");
+        relatelink.setAttribute("data-index", relatechilds[i]);
+        relatelink.onclick = function () { StoryCardShow(this.getAttribute("data-index")) };
+        relatelink.innerHTML = Libary.all[relatechilds[i]].title;
+        document.querySelector("#story" + index + " .relate").appendChild(relatelink);
+        document.querySelector("#story" + index + " .relate").appendChild(document.createElement("br"));
         document.adoptNode(childListSwitch.parentNode);
         ListList.appendChild(childListSwitch.parentNode);
         ListSwitch.disabled = "";
@@ -228,6 +258,14 @@ function CreateStoryCard(Story, index) {
     CardArticle.className = "article";
     CardArticle.innerHTML = Story.article;
     CardAction.align = "right";
+    CardImage.align = "center";
+    if(Story.imageUrl){
+        var image = document.createElement("img");
+        image.src = Story.imageUrl;
+        image.style.width = "90%";
+        CardImage.appendChild(image);
+    }
+    CardRelate.className = "relate";
     CardComment.value = "留言";
     CardComment.type = "button";
     CardComment.onclick = function () {
@@ -239,5 +277,10 @@ document.body.onload = function () {
     HideScrollbar();
     Load_Posts_By_Group_Id();
 }
+document.body.onresize = HideScrollbar;
 document.getElementById("showlist").onclick = ListSwitch;
 document.getElementById("storybox").onclick = ListSwitch;
+document.getElementById("title").onclick = StoryCardShow;
+document.getElementById("videoplayer").onload = function(r){
+    console.log(r)
+}

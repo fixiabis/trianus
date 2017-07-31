@@ -136,6 +136,10 @@ header{
     margin: 10px calc((100% - 620px) / 2);
     animation: show 1s;
 }
+.storycard .relate a{
+    cursor: pointer;
+    margin-left: 20px;
+}
 .loading div{
     animation: show 1s infinite;
 }
