@@ -136,9 +136,6 @@ header{
     margin: 10px calc((100% - 620px) / 2);
     animation: show 1s;
 }
-.storycard .sound{
-    overflow: auto;
-}
 .storycard .relate a{
     cursor: pointer;
     margin-left: 20px;

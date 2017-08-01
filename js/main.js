@@ -271,6 +271,7 @@ function CreateStoryCard(Story, index) {
         var image = document.createElement("img");
         image.src = Story.imageUrl;
         image.style.width = "90%";
+        CardImage.style.marginBottom = "10px";
         CardImage.appendChild(image);
     }
     if (Story.soundUrl) {
@@ -279,8 +280,9 @@ function CreateStoryCard(Story, index) {
         sound.style.border = "none";
         sound.style.width = "90%";
         sound.style.height = "300px";
-        CardSound.className = "sound";
+        CardSound.style.overflow = "auto";
         CardSound.align = "center";
+        CardSound.style.marginBottom = "10px";
         CardSound.appendChild(sound);
     }
     CardRelate.className = "relate";
