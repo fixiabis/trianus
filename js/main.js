@@ -15,7 +15,7 @@ function notMobile() {
 function DataRequest(url, callback, parameter) {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () { callback(JSON.parse(this.response), url, parameter) };
-    //xhr.onerror = function () { DataRequest(url, callback, parameter) };
+    xhr.onerror = function () { DataRequest(url, callback, parameter) };
     xhr.open("get", url);
     xhr.send();
 }
@@ -263,6 +263,7 @@ function CreateStoryCard(Story, index) {
     Card.id = "story" + index;
     CardTitle.className = "title";
     CardTitle.innerHTML = Story.series + " " + Story.title;
+	if(Story.series == Story.title)CardTitle.innerHTML = Story.series;
     CardArticle.className = "article";
     CardArticle.innerHTML = Story.article;
     CardAction.align = "right";
