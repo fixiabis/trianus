@@ -274,34 +274,14 @@ function CreateStoryCard(Story, index) {
         CardImage.appendChild(image);
     }
     if (Story.soundUrl) {
-        var sound = document.createElement("iframe"),
-            container = document.createElement("div"),
-            playtext = document.createElement("div");
-        CardSound.style.position = "relative";
-        CardSound.style.width = "90px";
-        CardSound.style.height = "25px";
-        CardSound.style.top = "0px";
-        CardSound.style.left = "20px";
-        playtext.style.position = "absolute";
-        playtext.style.top = "0px";
-        playtext.style.left = "0px";
-        playtext.style.fontWeight = "bold";
-        playtext.innerHTML = "點此播放";
-        playtext.style.color = "#ddd";
-        container.style.position = "absolute";
-        container.style.top = "0px";
-        container.style.left = "0px";
-        container.style.opacity = 0;
+        var sound = document.createElement("iframe")
         sound.src = Story.soundUrl;
         sound.style.border = "none";
-        sound.style.width = "90px";
-        sound.style.height = "25px";
-        sound.onload = function () {
-            playtext.style.color = "#74818a";
-        }
-        container.appendChild(sound);
-        CardSound.appendChild(playtext);
-        CardSound.appendChild(container);
+        sound.style.width = "90%";
+        sound.style.height = "300px";
+        CardSound.className = "sound";
+        CardSound.align = "center";
+        CardSound.appendChild(sound);
     }
     CardRelate.className = "relate";
     CardComment.value = "留言";
