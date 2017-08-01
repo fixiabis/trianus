@@ -1,270 +1,321 @@
-var doc = document,
-    key = "EAAEAhFsvEQIBAK6LTYJo1jv0lp5trzauCWyvJArA9jkwzEkIP7R2NsisUAogl7b4eWteLWk3ygt1CYTGhAN7vQ\
-           RIjOVUDzmCLyyl8SFYb5Cye3QPRLXrV80ZC5DX78sVBa05l7dckDAUoT18eo5ZAZCA6qCqhA0jsUODy1sqgZDZD",
-    groupsId = ["1961795094104661", "1511206835567537"],
-    triformat = "#trianus_",
-    Storys = {
+var FB_Access_token = "EAAEAhFsvEQIBAK6LTYJo1jv0lp5trzauCWyvJArA9jkwzEkIP7R2NsisUAogl7b4eWteLWk3ygt1CYTGhAN7vQRIjOVUDzmCLyyl8SFYb5Cye3QPRLXrV80ZC5DX78sVBa05l7dckDAUoT18eo5ZAZCA6qCqhA0jsUODy1sqgZDZD",
+    FB_Fetch_Groups_Id = ["1961795094104661", "1511206835567537"],
+    Triformat = "#trianus_",
+    Libary = {
         all: [],
+        ref: [],
         sortBy: {
-            users: {},
-            groups: {},
-            series: {},
-            relate: {},
-            id: {}
-        },
-        series: {
-            title: [], type: []
-        },
-        noRef: [],
-        type: ["開端", "接續", "前篇", "視角", "接龍", "活動", "單篇", "圖片"]
-    };
-function isMobile() {
-    return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i).test(navigator.userAgent)
+            series: { ref: [], all: [], type: [] },
+            relate: { ref: [], all: [] }
+        }
+    }
+function notMobile() {
+    return !(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i).test(navigator.userAgent)
 }
-function noScrollbar() {
-    var Sample = $(".scroll")[0],
-        newSize = "calc(100% + " + (Sample.offsetWidth - Sample.scrollWidth) + "px)";
-    if (!isMobile()) $(".scroll").css("width", newSize).css("height", newSize);
-}
-function Request(url, proc, parameter) {
+function DataRequest(url, callback, parameter) {
     var xhr = new XMLHttpRequest();
-    xhr.onload = function () { proc(JSON.parse(this.response), url, parameter) };
-    xhr.onerror = function () { Request(url, proc, parameter) };
+    xhr.onload = function () { callback(JSON.parse(this.response), url, parameter) };
+    //xhr.onerror = function () { DataRequest(url, callback, parameter) };
     xhr.open("get", url);
     xhr.send();
 }
-function Menu() {
-    if (this.id && this.id == "menu") {
-        $("#list").css("left", "0px"); this.id = "menuc";
-    } else {
-        var menuc = $("#menuc")[0];
-        $("#list").css("left", "");
-        if (menuc) menuc.id = "menu";
-    }
+function HideScrollbar() {
+    var nowSize = $(".scrollcontent")[0],
+        newSize = "calc(100% + " + (nowSize.offsetWidth - nowSize.scrollWidth + 1) + "px)";
+    if (notMobile()) $(".scrollcontent").css("width", newSize).css("height", newSize);
 }
-function StoryFlow(p) {
-    var Story = Storys.all[p],
-        proc = function (res, url, p) {
-            for (var i = 0; i < res.data.length; i++) {
-                var content = res.data[i].message, count = true;
-                if (content.search("#flow ") == 0 || content.search("#接續 ") == 0) {
-                    if (i != 0 && !p.f) Storys.all[p.p].article += "</p>";
-                    $("#trianustory" + p.p + " .article")[0].innerHTML = Storys.all[p.p].article;
-                    Storys.all[p.p].article += "<p>" + content.replace("#flow ", "").replace("#接續 ", "");
-                } else if (content.search("#join ") == 0 || content.search("#續上 ") == 0) {
-                    Storys.all[p.p].article += content.replace("#join ", "").replace("#續上 ", "");
-                } else count = false;
-                if (count && res.data[i].from) {
-                    var uid = res.data[i].from.id;
-                    if (!Storys.sortBy.users[uid]) Storys.sortBy.users[uid] = { story: [], flow: 0 };
-                    Storys.sortBy.users[uid].flow++;
-                }
-            }
-            if (p.f) p.f = 0;
-            if (res.paging && res.paging.next) Request(res.paging.next, proc, p);
-            else {
-                Storys.all[p.p].article += "</p>";
-                $("#trianustory" + p.p + " .article")[0].innerHTML = Storys.all[p.p].article;
-            }
+function ListSwitch() {
+    var list = document.getElementById("list"),
+        list_is_Show = list.style.left != "",
+        listHide = function () {
+            var hidelist = document.getElementById("hidelist");
+            list.style.left = "";
+            if (hidelist) hidelist.id = "showlist";
+        },
+        listShow = function () {
+            var showlist = document.getElementById("showlist");
+            list.style.left = "0px";
+            if (showlist) showlist.id = "hidelist";
         };
-    Request("https://graph.facebook.com/" + Story.postId + "/comments?fields=message,from&access_token=" + key, proc, { p: p, f: 1 });
+    if (list_is_Show) listHide();
+    else if (this.id.search("list") > -1) listShow();
 }
-function StoryLoad() {
-    if (!groupsId.length) {
-        var p = 15;
-        while (Storys.noRef.length > 0 && p) { IndexReporc(); p-- }
-        StoryView();
-        return $(".load").css("display", "none");
+function FB_Data_Request(id, content, requestfield, callback, parameter) {
+    var url = "https://graph.facebook.com/";
+    url += id;
+    url += "/" + content;
+    url += "?fields=" + requestfield;
+    url += "&access_token=" + FB_Access_token;
+    DataRequest(url, callback, parameter)
+}
+function Load_Posts_By_Group_Id() {
+    if (FB_Fetch_Groups_Id.length == 0) {
+        $(".storycard.loading").css("display", "none"); return;
     }
-    var groupId = groupsId.shift(),
+    var FB_Fetch_Group_Id = FB_Fetch_Groups_Id.shift(),
         proc = function (res) {
             for (var i = 0; i < res.data.length; i++) {
                 if (!res.data[i].message) continue;
-                var ser = res.data[i].message.search("#trianus_");
-                if (ser == -1) continue;
-                StoryProc(res.data[i], ser);
+                var start = res.data[i].message.search(Triformat);
+                if (start < 0) continue;
+                Proc_to_Story(res.data[i], start);
             }
-            if (!res.paging || !res.paging.next) { StoryLoad(); return }
-            Request(res.paging.next, proc);
+            if (!res.paging || !res.paging.next) Load_Posts_By_Group_Id();
+            else DataRequest(res.paging.next, proc);
+        }
+    FB_Data_Request(FB_Fetch_Group_Id, "feed", "message,full_picture", proc);
+}
+function Story_FlowType(index) {
+    var Story = Libary.all[index],
+        proc = function (res, url, parameter) {
+            var p = parameter;
+            for (var i = 0; i < res.data.length; i++) {
+                var content = res.data[i].message;
+                if (content.search("#flow ") == 0 || content.search("#接續 ") == 0) {
+                    if (i != 0 && !p.first) {
+                        Libary.all[p.index].article += "</p>";
+                        $("#story" + p.index + " .article")[0].innerHTML = Libary.all[p.index].article;
+                    }
+                    Libary.all[p.index].article += "<p>" + content.replace("#flow ", "").replace("#接續 ", "");
+                } else if (content.search("#join ") == 0 || content.search("#續上 ") == 0) {
+                    if (i == 0 && p.first) Libary.all[p.index].article += "<p>";
+                    Libary.all[p.index].article += content.replace("#join ", "").replace("#續上 ", "");
+                }
+            }
+            if (p.first) p.first = false;
+            if (res.paging && res.paging.next) DataRequest(res.paging.next, proc, p);
+            else {
+                Libary.all[p.index].article += "</p>";
+                $("#story" + p.index + " .article")[0].innerHTML = Libary.all[p.index].article;
+            }
         };
-    Request("https://graph.facebook.com/" + groupId + "/feed?fields=message,from,full_picture&access_token=" + key, proc)
+    FB_Data_Request(Story.postId, "comments", "message", proc, { index: index, first: true });
 }
-function StoryProc(data, ser) {
-    var content = data.message.substr(ser, data.message.length - ser),
-        ids = data.id.split("_"), article = "", ref = "", n = Storys.all.length,
-        uid = "", type = "", id = "", title = "", serie = "", image = "";
-    if (data.from) uid = data.from.id;
-    if (data.full_picture) image = data.full_picture;
-    content = content.replace(/\n\n/g, "\n").replace(/</g, "&lt;").replace(/>/g, "&gt;").split("\n");
-    type = content[0].replace(/ /g, ""); if (type.substr(0, 9) != triformat) return; type = type.replace(triformat, "");
-    id = content[1].replace(/ /g, ""); if (id.substr(0, 9) != triformat) return; id = id.replace(triformat, "");
-    id = id.split("(")[0];
-    serie = content[2].split(" ")[0];
-    title = content[2].replace(serie + " ", "");
-    for (var i = 3; i < content.length; i++) {
-        if (content[i].search(triformat) < 0) article += "<p>" + content[i] + "</p>";
-        else { ref = content[i].replace(/ /g, "").replace(triformat, ""); break }
+function Proc_to_Story(data, fetch_start) {
+    var post_content = data.message.substr(fetch_start, data.message.length - fetch_start).replace(/\n\n/g, "\n"),
+        batch_content = post_content.split("\n"), index = Libary.all.length, ids = data.id.split("_"),
+        Story = {
+            groupId: ids[0],
+            postId: ids[1],
+            type: "",
+            id: "",
+            series: "",
+            title: "",
+            article: "",
+            relate: "",
+            imageUrl: "",
+            soundUrl: ""
+        },
+        type_check = function (type) {
+            var newtype = ["開端", "接續", "前篇", "視角", "接龍", "活動", "單篇", "圖片"],
+                oldtypes = [
+                    ["seed"], ["grow", "leaf", "dews"], ["soil"],
+                    ["muck", "root", "bole", "vein", "mist"],
+                    ["flow"], ["lake", "pond"], ["sand"]
+                ];
+            type = type.replace(/ /g, "");
+            if (type.search(Triformat) != 0) return;
+            type = type.replace(Triformat, "");
+            for (var i = 0; i < oldtypes.length; i++)
+                if (oldtypes[i].indexOf(type) > -1) return newtype[i];
+            return type;
+        },
+        id_check = function (id) {
+            id = id.replace(/ /g, "");
+            if (id.search(Triformat) != 0) return;
+            id = id.replace(Triformat, "").split("(")[0];
+            return id;
+        },
+        Add_to_Libary = function (Story, index) {
+            Libary.all.push(Story);
+            Libary.ref.push(Story.id);
+            for (sortType of ["series", "relate"]) {
+                var sortindex = Libary.sortBy[sortType].ref.indexOf(Story[sortType]);
+                if (sortindex < 0) {
+                    Libary.sortBy[sortType].ref.push(Story[sortType]);
+                    Libary.sortBy[sortType].all.push([index]);
+                    if (sortType == "series") {
+                        var indextype = "tri";
+                        switch (Story.type) {
+                            case "活動": indextype = "evt"; break;
+                            case "接龍": indextype = "flw"; break;
+                            case "單篇": indextype = "sng"; break;
+                        }
+                        Libary.sortBy.series.type.push(indextype);
+                    }
+                } else Libary.sortBy[sortType].all[sortindex].push(index);
+            }
+            if (Story.type == "接龍") Story_FlowType(index);
+        };
+    Story.type = type_check(batch_content[0]);
+    Story.id = id_check(batch_content[1]);
+    if (!Story.type || !Story.id) return;
+    Story.series = batch_content[2].split(" ")[0];
+    Story.title = batch_content[2].replace(Story.series + " ", "");
+    for (var i = 3; i < batch_content.length; i++) {
+        if (batch_content[i].search("youtube.com") > -1) {
+            var youtubeIdstart = batch_content[i].search("v=");
+            if (youtubeIdstart == -1) continue;
+            var youtubeId = batch_content[i].substr(youtubeIdstart, batch_content[i].length - youtubeIdstart).split("&")[0].replace("v=", "");
+            Story.soundUrl = "https://youtube.com/embed/" + youtubeId + "?autoplay=0&controls=0";
+        } else if (batch_content[i].search(Triformat) < 0) {
+            var content = batch_content[i];
+            if (content.search("　　") == 0) content = content.replace("　　", "");
+            Story.article += "<p>" + content + "</p>";
+        } else { Story.relate = id_check(batch_content[i]) }
     }
-    type = (function (type) {
-        var oldtype = [
-            ["seed"], ["grow", "leaf", "dews"], ["soil"],
-            ["muck", "root", "bole", "vein", "mist"],
-            ["flow"], ["lake", "pond"], ["sand"]
-        ];
-        for (var i = 0; i < oldtype.length; i++)if (oldtype[i].indexOf(type) > -1) return Storys.type[i]; return type
-    })(type);
-    if (Storys.sortBy.id[id]) {
-        var sn = 0;
-        while (Storys.sortBy.id[id + sn]) sn++;
-        id += sn;
-    }
-    var Story = {
-        groupId: ids[0], postId: ids[1], userId: uid, type: type, id: id,
-        serie: serie, title: title, article: article, ref: ref, image: image
-    };
-    if (!Storys.sortBy.users[uid]) Storys.sortBy.users[uid] = { story: [], flow: 0 };
-    Storys.sortBy.users[uid].story.push(n);
-    if (!Storys.sortBy.groups[ids[0]]) Storys.sortBy.groups[ids[0]] = []; Storys.sortBy.groups[ids[0]].push(n);
-    if (!Storys.sortBy.series[serie]) Storys.sortBy.series[serie] = []; Storys.sortBy.series[serie].push(n);
-    if (!Storys.sortBy.relate[ref]) Storys.sortBy.relate[ref] = []; Storys.sortBy.relate[ref].push(n);
-    if (!Storys.sortBy.id[id]) Storys.sortBy.id[id] = n;
-    if (Storys.noRef.length > 0) IndexReporc();
-    IndexProc(Story, n);
-    $("#story .load").before(StoryField(Story, n));
-    Storys.all.push(Story);
-    if (Story.type == "接龍") StoryFlow(n);
+    if (data.full_picture) Story.imageUrl = data.full_picture;
+    Add_to_Libary(Story, index);
+    CreateStoryCard(Story, index);
+    CreateIndexList(Story, index);
 }
-function StoryView() {
-    var method = location.hash.replace("#_", "");
-    $(".story").css("display", "none");
-    if (method.search("trianus") > -1) {
-        $("#trianustory" + method.replace("trianus", "")).css("display", "");
-    } else if (method.search("trindex") > -1) {
-        var series = Storys.sortBy.series[Storys.series.title[method.replace("trindex", "")]];
-        for (var i = 0; i < series.length; i++)$("#trianustory" + series[i]).css("display", "");
-    } else if (Storys.sortBy.id[method]) {
-        $("#trianustory" + Storys.sortBy.id[method]).css("display", "");
-    } else if (method == "") $(".story").css("display", "");
-    $(".load").css("display", "none");
-    $("#story .scroll").animate({ scrollTop: 0 });
+function StoryCardShow(index) {
+    $("#storybox .scrollcontent").animate({ scrollTop: 0 });
+    if (this.id) {
+        $(".storycard").css("display", "");
+        $(".loading").css("display", "none");
+        return;
+    }
+    $(".storycard").css("display", "none");
+    $("#story" + index).css("display", "");
 }
-function IndexProc(Story, n, r) {
-    var idxser = Storys.series.title.indexOf(Story.serie);
-    if (idxser < 0) {
-        var indexType = (Story.type == "活動") ? "evt" : (Story.type == "單篇") ? "sng" : (Story.type == "接龍") ? "flw" : "tri";
-        idxser = Storys.series.title.length;
-        $("#" + indexType + " ul")[0].appendChild(IndexTitle(Story.serie, idxser));
-        Storys.series.title.push(Story.serie);
-        Storys.series.type.push(indexType);
+function CreateIndexList(Story, index) {
+    var seriesidx = Libary.sortBy.series.ref.indexOf(Story.series),
+        mainListList = document.querySelector("#mindex" + seriesidx + "~ ul"),
+        mainList = document.createElement("li"),
+        mainListSwitch = document.createElement("input"),
+        mainListTitle = document.createElement("label");
+    if (!mainListList) {
+        mainListList = document.createElement("ul");
+        mainList.appendChild(mainListSwitch);
+        mainList.appendChild(mainListTitle);
+        mainList.appendChild(mainListList);
+        mainListSwitch.id = "mindex" + seriesidx;
+        mainListSwitch.type = "checkbox";
+        mainListTitle.className = "title";
+        mainListTitle.innerHTML = Story.series;
+        mainListTitle.htmlFor = "mindex" + seriesidx;
+        var mainListId = Libary.sortBy.series.type[seriesidx];
+        $("#" + mainListId + " ~ ul").append(mainList);
     }
-    if (!Story.ref) $("#trindex" + idxser + " ul")[0].appendChild(IndexTitle(Story.title, "s", n));
-    else {
-        var idx = $("#trianus" + Storys.sortBy.id[Story.ref] + " ul");
-        if (idx[0]) {
-            var prt = $("#trianus" + Storys.sortBy.id[Story.ref] + " label")[0],
-                prtm = $("#trianustory" + Storys.sortBy.id[Story.ref] + " .refLink")[0],
-                lnk = doc.createElement("a");
-            lnk.innerHTML = Story.title;
-            lnk.href = "#_trianus" + n;
-            lnk.style.marginLeft = "20px";
-            prtm.appendChild(lnk);
-            prtm.appendChild(doc.createElement("br"));
-            prt.className = "title cls"; prt.style.marginLeft = "0px";
-            idx[0].appendChild(IndexTitle(Story.title, "s", n));
-        } else { if (!r) Storys.noRef.push(n); return false }
+    var List = document.createElement("li"),
+        ListSwitch = document.createElement("input"),
+        ListTitle = document.createElement("label"),
+        ListList = document.createElement("ul");
+    List.appendChild(ListSwitch);
+    List.appendChild(ListTitle);
+    List.appendChild(ListList);
+    ListSwitch.id = "index" + index;
+    ListSwitch.type = "checkbox";
+    ListSwitch.disabled = "disabled";
+    ListTitle.className = "title";
+    ListTitle.innerHTML = Story.title;
+    ListTitle.htmlFor = "index" + index;
+    ListTitle.onclick = function () { StoryCardShow(index) };
+    if (Story.relate) {
+        var relateparentref = Libary.ref.indexOf(Story.relate);
+        parentList = document.querySelector("#index" + relateparentref + "~ ul");
+        if (parentList) {
+            parentList.appendChild(List);
+            document.querySelector("#index" + relateparentref).disabled = "";
+            var relatelink = document.createElement("a");
+            relatelink.setAttribute("data-index", index);
+            relatelink.onclick = function () { StoryCardShow(this.getAttribute("data-index")) };
+            relatelink.innerHTML = Story.title;
+            document.querySelector("#story" + relateparentref + " .relate").appendChild(relatelink);
+            document.querySelector("#story" + relateparentref + " .relate").appendChild(document.createElement("br"));
+        } else mainListList.appendChild(List);
+    } else mainListList.appendChild(List);
+    var relatechildref = Libary.sortBy.relate.ref.indexOf(Story.id),
+        relatechilds = Libary.sortBy.relate.all[relatechildref];
+    if (relatechilds) for (var i = 0; i < relatechilds.length; i++) {
+        var childListSwitch = document.querySelector("#index" + relatechilds[i]);
+        if (!childListSwitch) continue;
+        var relatelink = document.createElement("a");
+        relatelink.setAttribute("data-index", relatechilds[i]);
+        relatelink.onclick = function () { StoryCardShow(this.getAttribute("data-index")) };
+        relatelink.innerHTML = Libary.all[relatechilds[i]].title;
+        document.querySelector("#story" + index + " .relate").appendChild(relatelink);
+        document.querySelector("#story" + index + " .relate").appendChild(document.createElement("br"));
+        document.adoptNode(childListSwitch.parentNode);
+        ListList.appendChild(childListSwitch.parentNode);
+        ListSwitch.disabled = "";
     }
-    return true;
 }
-function IndexReporc() {
-    var reproc = [];
-    for (var i = 0; i < Storys.noRef.length; i++) {
-        var nn = Storys.noRef[i];
-        if (!IndexProc(Storys.all[nn], nn, 1)) reproc.push(nn);
+function CreateStoryCard(Story, index) {
+    var Card = document.createElement("div"),
+        CardTitle = document.createElement("div"),
+        CardArticle = document.createElement("div"),
+        CardImage = document.createElement("div"),
+        CardSound = document.createElement("div"),
+        CardRelate = document.createElement("div"),
+        CardAction = document.createElement("div"),
+        CardComment = document.createElement("input");
+    Card.appendChild(CardTitle);
+    Card.appendChild(document.createElement("hr"));
+    Card.appendChild(CardArticle);
+    Card.appendChild(CardImage);
+    Card.appendChild(CardSound);
+    Card.appendChild(CardRelate);
+    Card.appendChild(CardAction);
+    CardAction.appendChild(CardComment);
+    Card.className = "storycard";
+    Card.id = "story" + index;
+    CardTitle.className = "title";
+    CardTitle.innerHTML = Story.series + " " + Story.title;
+    CardArticle.className = "article";
+    CardArticle.innerHTML = Story.article;
+    CardAction.align = "right";
+    CardImage.align = "center";
+    if (Story.imageUrl) {
+        var image = document.createElement("img");
+        image.src = Story.imageUrl;
+        image.style.width = "90%";
+        CardImage.appendChild(image);
     }
-    Storys.noRef = reproc;
-}
-function IndexTitle(Title, n, s) {
-    var li = doc.createElement("li"), title = doc.createElement("label"), ul = doc.createElement("ul");
-    if (n == "s") {
-        title.className = "title";
-    } else {
-        title.className = "title cls"; title.style.marginLeft = "0px";
-    }
-    title.innerHTML = Title;
-    title.style.lineHeight = "25px";
-    if (typeof n == "number") li.id = "trindex" + n;
-    if (typeof s == "number") li.id = "trianus" + s;
-    title.onclick = function () {
-        if (this.className == "title") {
-            location = "#_" + this.parentNode.id; return;
+    if (Story.soundUrl) {
+        var sound = document.createElement("iframe"),
+            container = document.createElement("div"),
+            playtext = document.createElement("div");
+        CardSound.style.position = "relative";
+        CardSound.style.width = "90px";
+        CardSound.style.height = "25px";
+        CardSound.style.top = "0px";
+        CardSound.style.left = "20px";
+        playtext.style.position = "absolute";
+        playtext.style.top = "0px";
+        playtext.style.left = "0px";
+        playtext.style.fontWeight = "bold";
+        playtext.innerHTML = "點此播放";
+        playtext.style.color = "#ddd";
+        container.style.position = "absolute";
+        container.style.top = "0px";
+        container.style.left = "0px";
+        container.style.opacity = 0;
+        sound.src = Story.soundUrl;
+        sound.style.border = "none";
+        sound.style.width = "90px";
+        sound.style.height = "25px";
+        sound.onload = function () {
+            playtext.style.color = "#74818a";
         }
-        if (this.className == "title cls") {
-            this.className = "title cls clsc";
-            this.nextSibling.style.display = "";
-            location = "#_" + this.parentNode.id;
-        } else {
-            this.className = "title cls";
-            this.nextSibling.style.display = "none";
-        }
+        container.appendChild(sound);
+        CardSound.appendChild(playtext);
+        CardSound.appendChild(container);
     }
-    li.appendChild(title);
-    ul.style.display = "none";
-    li.appendChild(ul);
-    return li;
-}
-function StoryField(Story, id) {
-    var field = doc.createElement("div"),
-        title = doc.createElement("div"),
-        article = doc.createElement("div"),
-        picture = doc.createElement("div"),
-        img = doc.createElement("img"),
-        refLink = doc.createElement("div"),
-        action = doc.createElement("div"),
-        comment = doc.createElement("input");
-    title.className = "title"; title.innerHTML = Story.serie + " " + Story.title;
-    article.className = "article"; article.innerHTML = Story.article;
-    refLink.className = "refLink";
-    comment.value = "留言"; comment.type = "button";
-    comment.onclick = function () {
+    CardRelate.className = "relate";
+    CardComment.value = "留言";
+    CardComment.type = "button";
+    CardComment.onclick = function () {
         window.open("https://facebook.com/" + Story.groupId + "?view=permalink&id=" + Story.postId)
-    };
-    action.align = "right";
-    action.appendChild(comment);
-    field.className = "story";
-    field.id = "trianustory" + id;
-    field.appendChild(title);
-    field.appendChild(doc.createElement("hr"));
-    field.appendChild(article);
-    if (Story.image) {
-        img.src = Story.image;
-        img.style.width = "90%";
-        picture.style.padding = "10px";
-        picture.style.textAlign = "center";
-        picture.appendChild(img);
-        field.appendChild(picture);
     }
-    field.appendChild(refLink);
-    field.appendChild(action);
-    return field
+    $(".storycard.loading").before(Card);
 }
-doc.body.onload = function () {
-    noScrollbar();
-    StoryLoad();
+document.body.onload = function () {
+    HideScrollbar();
+    Load_Posts_By_Group_Id();
 }
-doc.body.onresize = function () {
-    noScrollbar();
-    Menu();
-}
-window.onhashchange = StoryView;
-$("#menu").click(Menu);
-$("#story").click(Menu)
-$("#title").click(function () { location = "#"; $("#story .scroll").animate({ scrollTop: 0 }) })
-$("#list label").click(function () {
-    if (this.className == "title cls") {
-        this.className = "title cls clsc";
-        this.nextSibling.style.display = "";
-    } else {
-        this.className = "title cls";
-        this.nextSibling.style.display = "none";
-    }
-});
+document.body.onresize = HideScrollbar;
+document.getElementById("showlist").onclick = ListSwitch;
+document.getElementById("storybox").onclick = ListSwitch;
+document.getElementById("title").onclick = StoryCardShow;

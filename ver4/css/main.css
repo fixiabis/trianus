@@ -7,144 +7,142 @@
     #FFF
 */
 a,input,textarea{
-	-webkit-appearance: none; outline: none;
+	-webkit-appearance: none;
+	outline: none;
 }
 a{
-    color: #77ABB7; text-decoration: none; font-weight: bold; line-height: 25px;
+    color: #77ABB7;
+    font-weight: bold;
+    line-height: 25px;
+    text-decoration: none;
 }
 ul{
+    display: block;
     list-style: none;
     padding-left:20px;
 }
 li{
-    text-align: left; white-space: nowrap;
+    text-align: left;
+    white-space: nowrap;
     animation: show 1s;
 }
 li::before{
     display: inline-block;
-    content: ""; height: 25px;
+    content: "";
+    height: 25px;
 }
 hr{
-    border: none; border-bottom: solid 1px;
+    border: none;
+    border-bottom: solid 1px;
 }
 input[type=button]{
-    cursor: pointer;
-    color: inherit; font-size: 16px;
     background: rgba(0, 0, 0, 0);
-    height: 30px; width: 80px;
+    color: inherit;
+    cursor: pointer;
+    font-size: 16px;
+    height: 30px;width: 80px;
     border: solid 2px; border-radius: 5px;
     transition: all 1s;
 }
 input[type=button]:hover{
     color:#77ABB7;
 }
-input[type=checkbox]{
-    display: none;
-}
 body{
-    user-select: none; -ms-user-select: none; -moz-user-select: none; -webkit-user-select: none;
     background: -webkit-linear-gradient(#000, #173242, #74818a, #9FA6AA);
     background: -moz-linear-gradient(#000, #173242, #74818a, #9FA6AA);
     background: linear-gradient(#000, #173242, #74818a, #9FA6AA);
-    overflow: hidden;
+    user-select: none; -ms-user-select: none;
+    -moz-user-select: none; -webkit-user-select: none;
     margin: 0px;
+    overflow: hidden;
 }
 header{
-    color: #77ABB7;
     background: -webkit-linear-gradient(#000, #000, rgba(0, 0, 0, 0));
     background: -moz-linear-gradient(#000, #000, rgba(0, 0, 0, 0));
     background: linear-gradient(#000, #000, rgba(0, 0, 0, 0));
+    color: #77ABB7;
     height: 80px; width: 100%;
     position: fixed; top: 0px; left: 0px; z-index: 3;
 }
-#showlist,#hidelist{
-	cursor: pointer; display: none;
+#menu,#menuc{
+	cursor: pointer;
+	display: none;
 	height: 40px; width: 40px;
 	position: absolute; top: 20px; left: 20px;
-    animation: show 1s; transition: all 0.5s;
+    transition: all 0.5s;
+    animation: show 1s;
 }
-#showlist div,#hidelist div{
+#menu div,#menuc div{
 	background: #77ABB7;
 	height: 2px; width: 30px;
 	margin: 9px 5px;
 	transition: all 0.5s;
 }
-#hidelist{
+#menuc{
 	transform: rotateZ(180deg);
 }
-#hidelist div:first-child{
-	transform: translate(5px, -2px) rotateZ(45.5deg); transform-origin: left;
+#menuc div:first-child{
+	transform: translate(5px, -2px) rotateZ(45.5deg);
+	transform-origin: left;
 }
-#hidelist div:nth-child(2){
+#menuc div:nth-child(2){
 	opacity: 0;
 }
-#hidelist div:last-child{
-	transform: translate(5px, -3px) rotateZ(-45deg); transform-origin: left;
+#menuc div:last-child{
+	transform: translate(5px, -3px) rotateZ(-45deg);
+	transform-origin: left;
 }
 #title{
     cursor: pointer;
-    font-size: 40px; text-align: center; line-height: 80px;
+    font-size: 40px;
+    line-height: 80px;
+    text-align: center;
     height: 80px; width: 110px;
     position: absolute; top:0px; left: 40px;
     transition: all 1s;
 }
 #list{
-    color: #FFF;
     background: rgba(0, 0, 0, 0.2);
-    height: 100%; width: 300px; overflow: hidden;
+    color: #FFF;
+    height: 100%; width: 300px;
     position: absolute; top: 0px; left: 0px; z-index: 2;
-    transition-property: left, background-color; transition-duration: 1s;
+    overflow: hidden;
+    transition-property: left,background-color;
+    transition-duration: 1s;
 }
-#list input ~ label::before{
-    background-repeat: no-repeat; background-image: url(../img/arrow.png); background-size: 15px; background-position: center;
-    display: block;
-    content: ""; height: 25px; width: 25px;
-    float: left;
-    transition: transform 0.5s;
-}
-#list input:checked:not(:disabled) ~ label::before{
-    transform: rotate(90deg);
-}
-#list input:disabled + label::before{
-    opacity: 0;
-}
-#list input ~ ul{
-    display: none;
-    animation: show 1s;
-}
-#list input:checked:not(:disabled) ~ ul{
-    display: block;
-}
-#storybox{
-    height: 100%; width: calc(100% - 300px); overflow: hidden;
+#story{
+    height: 100%; width: calc(100% - 300px);
     position: absolute; top: 0px; left: 300px;
+    overflow: hidden;
     transition: left 1s;
 }
-.scrollcontent::before{
+.scroll::before{
+    content: "";
     display: block;
-    content: ""; height: 70px; width: 100%;
+    width: 100%; height: 70px;
 }
-.scrollcontent{
-    height: 100%; width: 100%; overflow: scroll;
+.scroll{
+    height: 100%; width: 100%;
+    overflow: scroll;
 }
-.storycard{
-    color: #FFF; letter-spacing:4px;
+.story{
     background: rgba(0, 0, 0, 0.4);
+    color: #FFF;
+    letter-spacing:4px;
     width: 600px;
     padding: 10px;
     border-radius: 10px;
     margin: 10px calc((100% - 620px) / 2);
     animation: show 1s;
 }
-.storycard .relate a{
-    cursor: pointer;
-    margin-left: 20px;
-}
-.loading div{
+.load div{
     animation: show 1s infinite;
 }
 .title{
     font-size: 20px; font-weight: bold;
+}
+#list .title{
+    margin-left: 25px;
 }
 .article{
     font-size: 16px;
@@ -153,16 +151,29 @@ header{
 .article p{
     text-indent: 32px;
 }
+.cls::before{
+    background-image: url(../img/arrow.png);
+    background-size: 15px;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: block; float: left;
+    content: "";
+    height: 25px; width: 25px;
+    transition: transform 0.5s;
+}
+.clsc::before{
+    transform: rotate(90deg);
+}
 @media screen and (max-width: 940px){
     #list{
-        background: rgba(0, 0, 0, 0.9);
+        background:rgba(0, 0, 0, 0.9);
         left: -300px;
     }
-    #storybox{
+    #story{
         left: 0px;
         width: 100%;
     }
-    #showlist,#hidelist{
+    #menu,#menuc{
         display: block;
     }
     #title{
@@ -170,7 +181,7 @@ header{
     }
 }
 @media screen and (max-width: 640px){
-    .storycard{
+    .story{
         width: calc(100% - 20px);
         margin-left: 0px;
     }
