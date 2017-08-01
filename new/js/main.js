@@ -103,7 +103,8 @@ function Proc_to_Story(data, fetch_start) {
             title: "",
             article: "",
             relate: "",
-            imageUrl: ""
+            imageUrl: "",
+            soundUrl: ""
         },
         type_check = function (type) {
             var newtype = ["開端", "接續", "前篇", "視角", "接龍", "活動", "單篇", "圖片"],
@@ -152,11 +153,16 @@ function Proc_to_Story(data, fetch_start) {
     Story.series = batch_content[2].split(" ")[0];
     Story.title = batch_content[2].replace(Story.series + " ", "");
     for (var i = 3; i < batch_content.length; i++) {
-        if (batch_content[i].search(Triformat) < 0) {
+        if (batch_content[i].search("youtube.com") > -1) {
+            var youtubeIdstart = batch_content[i].search("v=");
+            if (youtubeIdstart == -1) continue;
+            var youtubeId = batch_content[i].substr(youtubeIdstart, batch_content[i].length - youtubeIdstart).split("&")[0].replace("v=", "");
+            Story.soundUrl = "https://youtube.com/embed/" + youtubeId + "?autoplay=0&controls=0";
+        } else if (batch_content[i].search(Triformat) < 0) {
             var content = batch_content[i];
             if (content.search("　　") == 0) content = content.replace("　　", "");
             Story.article += "<p>" + content + "</p>";
-        } else { Story.relate = id_check(batch_content[i]); break }
+        } else { Story.relate = id_check(batch_content[i]) }
     }
     if (data.full_picture) Story.imageUrl = data.full_picture;
     Add_to_Libary(Story, index);
@@ -241,6 +247,7 @@ function CreateStoryCard(Story, index) {
         CardTitle = document.createElement("div"),
         CardArticle = document.createElement("div"),
         CardImage = document.createElement("div"),
+        CardSound = document.createElement("div"),
         CardRelate = document.createElement("div"),
         CardAction = document.createElement("div"),
         CardComment = document.createElement("input");
@@ -248,6 +255,7 @@ function CreateStoryCard(Story, index) {
     Card.appendChild(document.createElement("hr"));
     Card.appendChild(CardArticle);
     Card.appendChild(CardImage);
+    Card.appendChild(CardSound);
     Card.appendChild(CardRelate);
     Card.appendChild(CardAction);
     CardAction.appendChild(CardComment);
@@ -259,11 +267,41 @@ function CreateStoryCard(Story, index) {
     CardArticle.innerHTML = Story.article;
     CardAction.align = "right";
     CardImage.align = "center";
-    if(Story.imageUrl){
+    if (Story.imageUrl) {
         var image = document.createElement("img");
         image.src = Story.imageUrl;
         image.style.width = "90%";
         CardImage.appendChild(image);
+    }
+    if (Story.soundUrl) {
+        var sound = document.createElement("iframe"),
+            container = document.createElement("div"),
+            playtext = document.createElement("div");
+        CardSound.style.position = "relative";
+        CardSound.style.width = "90px";
+        CardSound.style.height = "25px";
+        CardSound.style.top = "0px";
+        CardSound.style.left = "20px";
+        playtext.style.position = "absolute";
+        playtext.style.top = "0px";
+        playtext.style.left = "0px";
+        playtext.style.fontWeight = "bold";
+        playtext.innerHTML = "點此播放";
+        playtext.style.color = "#ddd";
+        container.style.position = "absolute";
+        container.style.top = "0px";
+        container.style.left = "0px";
+        container.style.opacity = 0;
+        sound.src = Story.soundUrl;
+        sound.style.border = "none";
+        sound.style.width = "90px";
+        sound.style.height = "25px";
+        sound.onload = function () {
+            playtext.style.color = "#74818a";
+        }
+        container.appendChild(sound);
+        CardSound.appendChild(playtext);
+        CardSound.appendChild(container);
     }
     CardRelate.className = "relate";
     CardComment.value = "留言";
@@ -281,6 +319,3 @@ document.body.onresize = HideScrollbar;
 document.getElementById("showlist").onclick = ListSwitch;
 document.getElementById("storybox").onclick = ListSwitch;
 document.getElementById("title").onclick = StoryCardShow;
-document.getElementById("videoplayer").onload = function(r){
-    console.log(r)
-}
