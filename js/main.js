@@ -74,7 +74,7 @@ function Story_FlowType(index) {
                 if (content.search("#flow ") == 0 || content.search("#接續 ") == 0) {
                     if (i != 0 && !p.first) {
                         Libary.all[p.index].article += "</p>";
-                        $("#story" + p.index + " .article")[0].innerHTML = Libary.all[p.index].article;
+                        $("#story" + p.index + " .article")[0].innerHTML = Libary.all[p.index].article.replace(/</g,"&lt").replace(/>/g,"&gt");
                     }
                     Libary.all[p.index].article += "<p>" + content.replace("#flow ", "").replace("#接續 ", "");
                 } else if (content.search("#join ") == 0 || content.search("#續上 ") == 0) {
@@ -86,7 +86,7 @@ function Story_FlowType(index) {
             if (res.paging && res.paging.next) DataRequest(res.paging.next, proc, p);
             else {
                 Libary.all[p.index].article += "</p>";
-                $("#story" + p.index + " .article")[0].innerHTML = Libary.all[p.index].article;
+                $("#story" + p.index + " .article")[0].innerHTML = Libary.all[p.index].article.replace(/</g,"&lt").replace(/>/g,"&gt");
             }
         };
     FB_Data_Request(Story.postId, "comments", "message", proc, { index: index, first: true });
@@ -262,10 +262,10 @@ function CreateStoryCard(Story, index) {
     Card.className = "storycard";
     Card.id = "story" + index;
     CardTitle.className = "title";
-    CardTitle.innerHTML = Story.series + " " + Story.title;
+    CardTitle.innerHTML = Story.series.replace(/</g,"&lt").replace(/>/g,"&gt") + " " + Story.title.replace(/</g,"&lt").replace(/>/g,"&gt");
     if (Story.series == Story.title) CardTitle.innerHTML = Story.series;
     CardArticle.className = "article";
-    CardArticle.innerHTML = Story.article;
+    CardArticle.innerHTML = Story.article.replace(/</g,"&lt").replace(/>/g,"&gt");
     CardAction.align = "right";
     CardImage.align = "center";
     if (Story.imageUrl) {
