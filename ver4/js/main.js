@@ -255,6 +255,7 @@ doc.body.onresize = function () {
     noScrollbar();
     Menu();
 }
+doc.body.oncontextmenu = function (e) { e.preventDefault(); };
 window.onhashchange = StoryView;
 $("#menu").click(Menu);
 $("#story").click(Menu)
