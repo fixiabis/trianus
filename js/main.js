@@ -263,7 +263,7 @@ function CreateStoryCard(Story, index) {
     Card.id = "story" + index;
     CardTitle.className = "title";
     CardTitle.innerHTML = Story.series + " " + Story.title;
-	if(Story.series == Story.title)CardTitle.innerHTML = Story.series;
+    if (Story.series == Story.title) CardTitle.innerHTML = Story.series;
     CardArticle.className = "article";
     CardArticle.innerHTML = Story.article;
     CardAction.align = "right";
@@ -299,6 +299,7 @@ document.body.onload = function () {
     Load_Posts_By_Group_Id();
 }
 document.body.onresize = HideScrollbar;
+document.body.oncontextmenu = function (e) { e.preventDefault(); };
 document.getElementById("showlist").onclick = ListSwitch;
 document.getElementById("storybox").onclick = ListSwitch;
 document.getElementById("title").onclick = StoryCardShow;
