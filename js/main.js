@@ -74,19 +74,19 @@ function Story_FlowType(index) {
                 if (content.search("#flow ") == 0 || content.search("#接續 ") == 0) {
                     if (i != 0 && !p.first) {
                         Libary.all[p.index].article += "</p>";
-                        $("#story" + p.index + " .article")[0].innerHTML = Libary.all[p.index].article.replace(/</g,"&lt").replace(/>/g,"&gt");
+                        $("#story" + p.index + " .article")[0].innerHTML = Libary.all[p.index].article;
                     }
-                    Libary.all[p.index].article += "<p>" + content.replace("#flow ", "").replace("#接續 ", "");
+                    Libary.all[p.index].article += "<p>" + content.replace("#flow ", "").replace("#接續 ", "").replace(/</g,"&lt").replace(/>/g,"&gt");
                 } else if (content.search("#join ") == 0 || content.search("#續上 ") == 0) {
                     if (i == 0 && p.first) Libary.all[p.index].article += "<p>";
-                    Libary.all[p.index].article += content.replace("#join ", "").replace("#續上 ", "");
+                    Libary.all[p.index].article += content.replace("#join ", "").replace("#續上 ", "").replace(/</g,"&lt").replace(/>/g,"&gt");
                 }
             }
             if (p.first) p.first = false;
             if (res.paging && res.paging.next) DataRequest(res.paging.next, proc, p);
             else {
                 Libary.all[p.index].article += "</p>";
-                $("#story" + p.index + " .article")[0].innerHTML = Libary.all[p.index].article.replace(/</g,"&lt").replace(/>/g,"&gt");
+                $("#story" + p.index + " .article")[0].innerHTML = Libary.all[p.index].article;
             }
         };
     FB_Data_Request(Story.postId, "comments", "message", proc, { index: index, first: true });
@@ -161,7 +161,7 @@ function Proc_to_Story(data, fetch_start) {
         } else if (batch_content[i].search(Triformat) < 0) {
             var content = batch_content[i];
             if (content.search("　　") == 0) content = content.replace("　　", "");
-            Story.article += "<p>" + content + "</p>";
+            Story.article += "<p>" + content.replace(/</g,"&lt").replace(/>/g,"&gt") + "</p>";
         } else { Story.relate = id_check(batch_content[i]) }
     }
     if (data.full_picture) Story.imageUrl = data.full_picture;
@@ -265,7 +265,7 @@ function CreateStoryCard(Story, index) {
     CardTitle.innerHTML = Story.series.replace(/</g,"&lt").replace(/>/g,"&gt") + " " + Story.title.replace(/</g,"&lt").replace(/>/g,"&gt");
     if (Story.series == Story.title) CardTitle.innerHTML = Story.series;
     CardArticle.className = "article";
-    CardArticle.innerHTML = Story.article.replace(/</g,"&lt").replace(/>/g,"&gt");
+    CardArticle.innerHTML = Story.article;
     CardAction.align = "right";
     CardImage.align = "center";
     if (Story.imageUrl) {
