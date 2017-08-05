@@ -103,13 +103,20 @@ function CreateCountList(id) {
                 img.style.width = "30px"
                 td.appendChild(img);
             } else if (i == 1) {
-                td.innerHTML = Libary.user[id].name;
+                td.innerHTML = Libary.user[id].name + "<span>[1]</span>";
             }
             tr.appendChild(td);
         }
         tr.id = "u" + id;
         $("#countbox table").append(tr);
     }
+    var ucountp = 0, ucountm = 0, utypcount = Libary.user[id].typeCount;
+    for (var i in utypcount) {
+        if (utypcount[i] instanceof Object)
+            for (var j in utypcount[i]) ucountm += utypcount[i][j];
+        else ucountp += utypcount[i];
+    }
+    $("#u" + id + " span")[0].innerHTML = "[" + ucountp + "/" + ucountm + "]"
     for (var i = 0; i < types.length; i++) {
         if (types[i] instanceof Array) {
             for (var j = 0; j < types[i].length; j++) {
