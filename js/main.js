@@ -1,5 +1,4 @@
-var FB_Access_token = "EAAEAhFsvEQIBAK6LTYJo1jv0lp5trzauCWyvJArA9jkwzEkIP7R2NsisUAogl7b4eWteLWk3ygt1CYTGhAN7vQRIjOVUDzmCLyyl8SFYb5Cye3QPRLXrV80ZC5DX78sVBa05l7dckDAUoT18eo5ZAZCA6qCqhA0jsUODy1sqgZDZD",
-    FB_Fetch_Groups_Id = ["1961795094104661", "1511206835567537"],
+var FB_Fetch_Groups_Id = ["1961795094104661", "1511206835567537"],
     Triformat = "#trianus_",
     Libary = {
         all: [],
@@ -45,7 +44,7 @@ function FB_Data_Request(id, content, requestfield, callback, parameter) {
     url += id;
     url += "/" + content;
     url += "?fields=" + requestfield;
-    url += "&access_token=" + FB_Access_token;
+    url += "&access_token=EAAEAhFsvEQIBAK6LTYJo1jv0lp5trzauCWyvJArA9jkwzEkIP7R2NsisUAogl7b4eWteLWk3ygt1CYTGhAN7vQRIjOVUDzmCLyyl8SFYb5Cye3QPRLXrV80ZC5DX78sVBa05l7dckDAUoT18eo5ZAZCA6qCqhA0jsUODy1sqgZDZD";
     DataRequest(url, callback, parameter)
 }
 function Load_Posts_By_Group_Id() {
@@ -76,10 +75,10 @@ function Story_FlowType(index) {
                         Libary.all[p.index].article += "</p>";
                         $("#story" + p.index + " .article")[0].innerHTML = Libary.all[p.index].article;
                     }
-                    Libary.all[p.index].article += "<p>" + content.replace("#flow ", "").replace("#接續 ", "").replace(/</g,"&lt").replace(/>/g,"&gt");
+                    Libary.all[p.index].article += "<p>" + content.replace("#flow ", "").replace("#接續 ", "").replace(/</g, "&lt").replace(/>/g, "&gt");
                 } else if (content.search("#join ") == 0 || content.search("#續上 ") == 0) {
                     if (i == 0 && p.first) Libary.all[p.index].article += "<p>";
-                    Libary.all[p.index].article += content.replace("#join ", "").replace("#續上 ", "").replace(/</g,"&lt").replace(/>/g,"&gt");
+                    Libary.all[p.index].article += content.replace("#join ", "").replace("#續上 ", "").replace(/</g, "&lt").replace(/>/g, "&gt");
                 }
             }
             if (p.first) p.first = false;
@@ -107,7 +106,7 @@ function Proc_to_Story(data, fetch_start) {
             soundUrl: ""
         },
         type_check = function (type) {
-            var newtype = ["開端", "接續", "前篇", "視角", "接龍", "活動", "單篇", "圖片"],
+            var newtype = ["開端", "接續", "前篇", "視角", "接龍", "活動", "單篇"],
                 oldtypes = [
                     ["seed"], ["grow", "leaf", "dews"], ["soil"],
                     ["muck", "root", "bole", "vein", "mist"],
@@ -161,7 +160,7 @@ function Proc_to_Story(data, fetch_start) {
         } else if (batch_content[i].search(Triformat) < 0) {
             var content = batch_content[i];
             if (content.search("　　") == 0) content = content.replace("　　", "");
-            Story.article += "<p>" + content.replace(/</g,"&lt").replace(/>/g,"&gt") + "</p>";
+            Story.article += "<p>" + content.replace(/</g, "&lt").replace(/>/g, "&gt") + "</p>";
         } else { Story.relate = id_check(batch_content[i]) }
     }
     if (data.full_picture) Story.imageUrl = data.full_picture;
@@ -262,7 +261,7 @@ function CreateStoryCard(Story, index) {
     Card.className = "storycard";
     Card.id = "story" + index;
     CardTitle.className = "title";
-    CardTitle.innerHTML = Story.series.replace(/</g,"&lt").replace(/>/g,"&gt") + " " + Story.title.replace(/</g,"&lt").replace(/>/g,"&gt");
+    CardTitle.innerHTML = Story.series.replace(/</g, "&lt").replace(/>/g, "&gt") + " " + Story.title.replace(/</g, "&lt").replace(/>/g, "&gt");
     if (Story.series == Story.title) CardTitle.innerHTML = Story.series;
     CardArticle.className = "article";
     CardArticle.innerHTML = Story.article;

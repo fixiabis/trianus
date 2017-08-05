@@ -1,0 +1,65 @@
+/*
+    深至淺
+    #000,#173242,#1D3E53
+    #254B62,#476D7C,#74818a
+    #77ABB7,#91A1AC,#9FA6AA
+    #BBBEBF,#DCE1E5,#EAEDEF
+    #FFF
+*/
+body{
+    user-select: none; -ms-user-select: none; -moz-user-select: none; -webkit-user-select: none;
+    background: -webkit-linear-gradient(#000, #173242, #74818a, #9FA6AA);
+    background: -moz-linear-gradient(#000, #173242, #74818a, #9FA6AA);
+    background: linear-gradient(#000, #173242, #74818a, #9FA6AA);
+    overflow: hidden;
+    margin: 0px;
+}
+header{
+    color: #77ABB7;
+    background: -webkit-linear-gradient(#000, #000, rgba(0, 0, 0, 0));
+    background: -moz-linear-gradient(#000, #000, rgba(0, 0, 0, 0));
+    background: linear-gradient(#000, #000, rgba(0, 0, 0, 0));
+    height: 80px; width: 100%;
+    position: fixed; top: 0px; left: 0px; z-index: 3;
+}
+#title{
+    cursor: pointer;
+    font-size: 40px; text-align: center; line-height: 80px;
+    height: 80px; width: 110px;
+    position: absolute; top:0px; left: 40px;
+    transition: all 1s;
+}
+#countbox{
+    height: 100%; width: 100%; overflow: hidden;
+    position: absolute; top: 0px; left: 0px;
+    transition: left 1s;
+}
+#countbox table{
+    color:#FFF;
+}
+#countbox th{
+    width:100px;
+}
+#countbox th, #countbox td{
+    white-space: nowrap;
+    height:30px;
+    border-right:soild 1px;
+}
+.scrollcontent::before{
+    display: block;
+    content: ""; height: 70px; width: 100%;
+}
+.scrollcontent{
+    height: 100%; width: 100%; overflow: scroll;
+}
+@media screen and (max-width: 640px){
+    #title{
+        width: 100%;
+        left: 0px;
+    }
+}
+@keyframes show{
+    0%{
+        opacity: 0
+    }
+}
