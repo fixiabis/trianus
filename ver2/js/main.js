@@ -279,6 +279,7 @@ function Story_Load(v){
 }
 function Story_Proc(content,id,fid){
 	content=content.split("\n");
+	if(!content[3])return;
 	var Story={
 			Post_id:id,
 			type:content[0].substr(0,13).replace(/ /g,""),

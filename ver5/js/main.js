@@ -120,6 +120,7 @@ function Proc_to_Story(data, fetch_start) {
             return type;
         },
         id_check = function (id) {
+			if(!id)return;
             id = id.replace(/ /g, "");
             if (id.search(Triformat) != 0) return;
             id = id.replace(Triformat, "").split("(")[0];

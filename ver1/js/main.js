@@ -64,6 +64,7 @@ function Story_Style(story, fbpostid) {
 		section = story.split("\n"),
 		section_content = "",
 		section_prev = "";
+	if (!section[3])return;
 	if (section[1].substr(0, 9) != "#trianus_") return;
 	for (var i = 3; i < section.length; i++) {
 		if (section[i].substr(0, 9) != "#trianus_") section_content += "<p>" + section[i] + "</p>";

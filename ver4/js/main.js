@@ -97,6 +97,7 @@ function StoryProc(data, ser) {
     if (data.full_picture) image = data.full_picture;
     content = content.replace(/\n\n/g, "\n").replace(/</g, "&lt;").replace(/>/g, "&gt;").split("\n");
     type = content[0].replace(/ /g, ""); if (type.substr(0, 9) != triformat) return; type = type.replace(triformat, "");
+	if(!content[3])return;
     id = content[1].replace(/ /g, ""); if (id.substr(0, 9) != triformat) return; id = id.replace(triformat, "");
     id = id.split("(")[0];
     serie = content[2].split(" ")[0];
